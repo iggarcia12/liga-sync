@@ -22,7 +22,9 @@ export class AuthService {
 
   isAdmin(): boolean {
     const rol = this.getRol();
-    return rol === 'ADMIN' || rol === 'ROLE_ADMIN';
+    // Accept both uppercase and lowercase role values
+    const normalized = rol ? rol.toUpperCase() : '';
+    return normalized === 'ADMIN' || normalized === 'ROLE_ADMIN';
   }
 
   logout() {
