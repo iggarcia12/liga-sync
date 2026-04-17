@@ -1,0 +1,160 @@
+.seccion-container {
+  padding: 2rem;
+}
+
+.cabecera-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 1rem;
+}
+
+.cabecera-seccion h2 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.btn-nuevo {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-nuevo:hover { background-color: #2ecc71; }
+
+.estado-mensaje {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 8px;
+  color: #7f8c8d;
+}
+
+.estado-mensaje.vacio {
+  border: 2px dashed #bdc3c7;
+}
+
+/* --- Lista de Marcadores --- */
+.lista-partidos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.card-marcador {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border: 1px solid #eaeaea;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.card-marcador:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+}
+
+.jornada-badge {
+  align-self: center;
+  background: #34495e;
+  color: white;
+  padding: 0.3rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.enfrentamiento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.equipo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 33%;
+  text-align: center;
+}
+
+.equipo .escudo {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: #f8f9fa;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 2px solid #eaeaea;
+}
+
+.equipo .nombre {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.resultado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: #f8f9fa;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  border: 2px solid #ecf0f1;
+}
+
+.resultado .goles {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.resultado .separador {
+  font-size: 2rem;
+  color: #bdc3c7;
+  padding-bottom: 0.3rem;
+}
+
+.card-footer {
+  border-top: 1px solid #eaeaea;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-editar {
+  background: transparent;
+  border: 1px solid #3498db;
+  color: #3498db;
+  padding: 0.5rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-editar:hover {
+  background: #3498db;
+  color: white;
+}

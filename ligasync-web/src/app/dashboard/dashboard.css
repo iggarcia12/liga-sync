@@ -1,0 +1,222 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Encabezado */
+.header-section {
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Panel de Estadísticas Base */
+.panel-estadisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  border: none;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.stat-info .stat-label {
+  margin: 0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.stat-info .stat-value {
+  margin: 0.5rem 0 0 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.stat-icono {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+.metric-azul { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.metric-verde { background: linear-gradient(135deg, #10b981, #059669); }
+.metric-naranja { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+/* Dashboard Grid Principal */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-header-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.card-header-simple.border-bottom {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.card-header-simple h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.badge {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Grilla Jugadores (Mini cards) */
+.grid-jugadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.player-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+.player-mini-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-md);
+}
+
+.player-avatar-bg {
+  width: 40px;
+  height: 40px;
+  background-color: var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.p-dorsal {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.player-info h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.p-pos {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+}
+
+/* Feed Noticias */
+.news-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.news-item {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+}
+
+.news-icon {
+  width: 32px;
+  height: 32px;
+  background-color: var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.news-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.news-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.news-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Estado Vacío */
+.estado-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.icon-vacio {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}

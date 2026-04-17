@@ -1,0 +1,54 @@
+<div class="app-wrapper">
+  <!-- Navbar Global Sticky -->
+  <header class="global-navbar" *ngIf="mostrarMenu()">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <span class="brand-icon">🏆</span>
+        <span class="brand-name">LigaSync <strong>PRO</strong></span>
+      </div>
+
+      <nav class="navbar-links">
+        <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+          <span class="icon">📊</span> Inicio
+        </a>
+        <a routerLink="/equipos" routerLinkActive="active-link">
+          <span class="icon">🛡️</span> Plantillas
+        </a>
+        <a routerLink="/estadisticas" routerLinkActive="active-link">
+          <span class="icon">📈</span> Estadísticas
+        </a>
+        <a routerLink="/mercado" routerLinkActive="active-link">
+          <span class="icon">🤝</span> Mercado
+        </a>
+        <a routerLink="/mensajes" routerLinkActive="active-link">
+          <span class="icon">✉️</span> Mensajes
+        </a>
+        <!-- Este enlace se puede ocultar según el rol más adelante -->
+        <a *ngIf="authService.isAdmin()" routerLink="/admin" routerLinkActive="active-link">
+          <span class="icon">⚙️</span> Admin
+        </a>
+      </nav>
+
+      <div class="navbar-actions">
+        <!-- Modo Oscuro Toggle -->
+        <button class="btn-icon theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
+          <span *ngIf="isDarkMode">☀️</span>
+          <span *ngIf="!isDarkMode">🌙</span>
+        </button>
+        
+        <!-- Perfil y Cierre -->
+        <a routerLink="/perfil" class="btn-icon profile-link" title="Perfil">
+          <span>👤</span>
+        </a>
+        <button (click)="salir()" class="btn-logout" title="Cerrar Sesión">
+          <span>🚪</span> <span class="logout-text">Salir</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

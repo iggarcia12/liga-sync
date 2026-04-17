@@ -1,0 +1,82 @@
+<div class="dashboard-page">
+
+  <div class="header-section">
+    <h1 class="page-title">Panorama General</h1>
+    <p class="page-subtitle">Revisa el estado de la liga, las estadísticas globales y las últimas noticias.</p>
+  </div>
+
+  <div class="panel-estadisticas">
+    <div class="card stat-card metric-azul">
+      <div class="stat-info">
+        <p class="stat-label">Jugadores Inscritos</p>
+        <h3 class="stat-value">{{ totalJugadores }}</h3>
+      </div>
+      <div class="stat-icono">🏃‍♂️</div>
+    </div>
+
+    <div class="card stat-card metric-verde">
+      <div class="stat-info">
+        <p class="stat-label">Equipos en Liga</p>
+        <h3 class="stat-value">{{ totalEquipos }}</h3>
+      </div>
+      <div class="stat-icono">🛡️</div>
+    </div>
+
+    <div class="card stat-card metric-naranja">
+      <div class="stat-info">
+        <p class="stat-label">Partidos Jugados</p>
+        <h3 class="stat-value">{{ partidosJugados }} / {{ partidos.length }}</h3>
+      </div>
+      <div class="stat-icono">⚽</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Columna Principal -->
+    <div class="main-column">
+      <div class="card">
+        <div class="card-header-simple">
+          <h3>Liga Global</h3>
+          <span class="badge">Todos los jugadores</span>
+        </div>
+        
+        <div class="grid-jugadores" *ngIf="jugadores.length > 0; else sinJugadores">
+          <div class="card player-mini-card" *ngFor="let jugador of jugadores">
+             <div class="player-avatar-bg">
+                <span class="p-dorsal">{{ jugador.media || '-' }}</span>
+             </div>
+             <div class="player-info">
+               <h4>{{ jugador.nombre }}</h4>
+               <span class="p-pos" [ngClass]="jugador.pos">{{ jugador.pos || 'N/A' }}</span>
+             </div>
+          </div>
+        </div>
+
+        <ng-template #sinJugadores>
+          <div class="estado-vacio">
+            <span class="icon-vacio">📭</span>
+            <p>No hay jugadores en la base de datos o están cargando...</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Columna Lateral Feed -->
+    <aside class="side-column">
+      <div class="card news-card">
+        <div class="card-header-simple border-bottom">
+          <h3>Últimas Noticias</h3>
+        </div>
+        <div class="news-feed">
+          <div class="news-item" *ngFor="let noticia of noticiasRecientes">
+            <div class="news-icon">{{ noticia.icono }}</div>
+            <div class="news-content">
+              <p class="news-text">{{ noticia.texto }}</p>
+              <span class="news-time">{{ noticia.fecha }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

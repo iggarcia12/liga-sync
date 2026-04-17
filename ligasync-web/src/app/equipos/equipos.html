@@ -1,0 +1,133 @@
+<div class="equipos-page">
+
+  <div class="header-section">
+    <h1 class="page-title">Gestión de Plantillas</h1>
+    <p class="page-subtitle">Visualiza la alineación y administra tus jugadores asignados.</p>
+  </div>
+
+  <div class="estado-mensaje" *ngIf="cargando">
+    <p>⏳ Cargando equipos y tácticas...</p>
+  </div>
+
+  <div class="estado-mensaje vacio" *ngIf="!cargando && equipos.length === 0">
+    <p>Aún no hay equipos registrados en la liga. ¡Crea el primero!</p>
+    <button class="btn btn-primary" (click)="abrirFormulario()" style="margin-top: 1rem;">+ Crear Equipo</button>
+  </div>
+
+  <!-- Controles y Selector -->
+  <div class="filtros-card card" *ngIf="!cargando && equipos.length > 0">
+    <div class="selector-equipo">
+      <label>Seleccionar Equipo: </label>
+      <select class="input-select" [(ngModel)]="equipoActualSeleccionado" (ngModelChange)="onEquipoChange($event)">
+        <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+      </select>
+    </div>
+    <div class="acciones-equipo">
+      <!-- Mostramos editar/borrar de la lógica base anterior de equipos -->
+      <button class="btn" (click)="abrirFormulario()">+ Nuevo Equipo</button>
+      <button class="btn" (click)="abrirFormulario(equipoActualDetalles)" *ngIf="equipoActualDetalles">✏️ Editar Configuración</button>
+    </div>
+  </div>
+
+  <div class="team-layout" *ngIf="equipoActualDetalles">
+    
+    <!-- Pizarra Táctica (Soccer Pitch) -->
+    <div class="pitch-container card">
+      <div class="pitch-header">
+        <h3>Alineación Titular</h3>
+      </div>
+      
+      <div class="soccer-pitch">
+        <!-- ZONA DELANTEROS -->
+        <div class="pitch-zone zone-del">
+           <div class="player-dot" *ngFor="let del of delanteros | slice:0:3" title="{{del.nombre}}">
+             <span class="p-dorsal">{{ del.media || '-' }}</span>
+             <span class="p-name">{{ del.nombre.split(' ')[0] }}</span>
+           </div>
+        </div>
+
+        <!-- ZONA C.M. -->
+        <div class="pitch-zone zone-med">
+          <div class="player-dot" *ngFor="let med of medios | slice:0:4" title="{{med.nombre}}">
+            <span class="p-dorsal">{{ med.media || '-' }}</span>
+            <span class="p-name">{{ med.nombre.split(' ')[0] }}</span>
+          </div>
+        </div>
+
+        <!-- ZONA DEFENSAS -->
+        <div class="pitch-zone zone-def">
+          <div class="player-dot" *ngFor="let def of defensas | slice:0:4" title="{{def.nombre}}">
+            <span class="p-dorsal">{{ def.media || '-' }}</span>
+            <span class="p-name">{{ def.nombre.split(' ')[0] }}</span>
+          </div>
+        </div>
+
+        <!-- ZONA PORTERO -->
+        <div class="pitch-zone zone-por">
+          <div class="player-dot" *ngFor="let por of porteros | slice:0:1" title="{{por.nombre}}">
+            <span class="p-dorsal bg-gold">{{ por.media || '-' }}</span>
+            <span class="p-name">{{ por.nombre.split(' ')[0] }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista Lateral de la Plantilla -->
+    <div class="plantilla-container">
+      
+      <div class="team-summary card">
+        <div class="escudo-large">🛡️</div>
+        <h2>{{ equipoActualDetalles.nombre }}</h2>
+        <p>Ciudad: {{ equipoActualDetalles.ciudad || 'No definida' }}</p>
+        <p class="summary-stat"><strong>{{ jugadoresFiltrados.length }}</strong> Jugadores en Plantilla</p>
+      </div>
+
+      <div class="players-checklist">
+        <h3>Lista Completa</h3>
+        
+        <div class="grid-jugadores mini">
+          <div class="card player-mini-card" *ngFor="let j of jugadoresFiltrados">
+             <div class="player-avatar-bg">
+                <span class="p-dorsal">{{ j.media || '-' }}</span>
+             </div>
+             <div class="player-info">
+               <h4>{{ j.nombre }}</h4>
+               <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
+             </div>
+             <!-- Botón Vender si asumimos el rol de Entrenador -->
+             <button class="btn btn-danger btn-vender" (click)="venderJugador(j)" title="Vender al Mercado">💰</button>
+          </div>
+        </div>
+        
+        <div class="estado-vacio" *ngIf="jugadoresFiltrados.length === 0">
+           <p>Este equipo no tiene jugadores asignados actualmente.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal CRUD Equipo Original -->
+  <div class="modal-overlay" *ngIf="mostrarFormulario">
+    <div class="modal-content">
+      <h3>{{ modoEdicion ? 'Editar Equipo' : 'Crear Nuevo Equipo' }}</h3>
+
+      <form (ngSubmit)="guardarEquipo()">
+        <div class="grupo-input">
+          <label>Nombre del Equipo</label>
+          <input type="text" name="nombre" [(ngModel)]="nuevoEquipo.nombre" required />
+        </div>
+        <div class="grupo-input">
+          <label>Ciudad</label>
+          <input type="text" name="ciudad" [(ngModel)]="nuevoEquipo.ciudad" />
+        </div>
+
+        <div class="modal-acciones">
+          <button type="button" class="btn" (click)="cancelarFormulario()">Cancelar</button>
+          <button type="button" class="btn btn-danger" *ngIf="modoEdicion" (click)="eliminarEquipo(equipoSeleccionadoId!)">Eliminar</button>
+          <button type="submit" class="btn btn-primary">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

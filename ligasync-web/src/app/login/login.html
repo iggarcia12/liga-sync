@@ -1,0 +1,30 @@
+<div class="pantalla-centrada">
+  <div class="tarjeta-login">
+    <h2>🏆 LigaSync</h2>
+    <p>Inicia sesión para gestionar tu equipo</p>
+
+    <div class="caja-error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <form (ngSubmit)="hacerLogin()">
+      <div class="grupo-input">
+        <label>Email</label>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          placeholder="entrenador@ligasync.com"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label>Contraseña</label>
+        <input type="password" name="pass" [(ngModel)]="pass" required placeholder="******" />
+      </div>
+
+      <button type="submit" class="btn-entrar">Entrar al panel</button>
+    </form>
+  </div>
+</div>

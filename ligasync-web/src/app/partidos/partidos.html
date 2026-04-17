@@ -1,0 +1,43 @@
+<div class="seccion-container">
+  <div class="cabecera-seccion">
+    <h2>📅 Calendario de Partidos</h2>
+    <button class="btn-nuevo">+ Nuevo Partido</button>
+  </div>
+
+  <div class="estado-mensaje" *ngIf="cargando">
+    <p>⏳ Cargando el calendario desde el servidor...</p>
+  </div>
+  <div class="estado-mensaje vacio" *ngIf="!cargando && partidos.length === 0">
+    <p>Aún no hay partidos programados en la liga.</p>
+  </div>
+
+  <div class="lista-partidos" *ngIf="!cargando && partidos.length > 0">
+    <div class="card-marcador" *ngFor="let partido of partidos">
+      <div class="jornada-badge">Jornada {{ partido.jornada || '-' }}</div>
+
+      <div class="enfrentamiento">
+        <div class="equipo">
+          <span class="escudo">🛡️</span>
+          <span class="nombre">{{ partido.local?.nombre || 'Por definir' }}</span>
+        </div>
+
+        <div class="resultado">
+          <span class="goles">{{ partido.golesLocal !== null ? partido.golesLocal : '-' }}</span>
+          <span class="separador">:</span>
+          <span class="goles">{{
+            partido.golesVisitante !== null ? partido.golesVisitante : '-'
+          }}</span>
+        </div>
+
+        <div class="equipo">
+          <span class="escudo">🛡️</span>
+          <span class="nombre">{{ partido.visitante?.nombre || 'Por definir' }}</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn-editar">✏️ Actualizar Resultado</button>
+      </div>
+    </div>
+  </div>
+</div>

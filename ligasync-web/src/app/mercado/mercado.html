@@ -1,0 +1,100 @@
+<div class="mercado-page">
+   <div class="header-section">
+      <h1 class="page-title">💰 Mercado de Fichajes</h1>
+      <p class="page-subtitle">Explora agentes libres disponibles o registra nuevos talentos (Cantera).</p>
+   </div>
+
+   <div class="estado-mensaje" *ngIf="cargando">
+      <p>⏳ Buscando talentos...</p>
+   </div>
+
+   <!-- Panel de Presupuesto / Control -->
+   <div class="presupuesto-panel card" *ngIf="!cargando">
+      <div class="presupuesto-info">
+         <h3>Tu Equipo (Simulado):
+            <select [(ngModel)]="miEquipoId" class="team-selector-inline">
+               <option [ngValue]="null">--- Selecciona un Equipo ---</option>
+               <option *ngFor="let eq of equipos" [value]="eq.id">{{eq.nombre}}</option>
+            </select>
+         </h3>
+         <div class="saldo">
+            <span class="currency">€</span>
+            <span class="amount">124.500.000</span>
+         </div>
+         <p class="text-sm">Presupuesto para Fichajes</p>
+      </div>
+      <div class="presupuesto-acciones">
+         <button class="btn btn-primary" (click)="abrirModal()">+ Crear Nuevo Jugador</button>
+      </div>
+   </div>
+
+   <!-- Catálogo de Agentes Libres -->
+   <div class="seccion-agentes" *ngIf="!cargando && agentesLibres.length > 0">
+      <h3>Lista de Agentes Libres</h3>
+      <div class="grid-jugadores-mercado">
+         
+         <div class="card market-card" *ngFor="let j of agentesLibres">
+            <div class="player-photo">
+               <span class="p-dorsal">{{ j.media || '-' }}</span>
+            </div>
+            <div class="market-info">
+               <h4>{{j.nombre}}</h4>
+               <span class="p-pos" [ngClass]="j.pos">{{j.pos}}</span>
+               <div class="market-price">
+                  <span>Valor:</span>
+                  <strong>€ 5.000.000</strong>
+               </div>
+               <button class="btn btn-primary btn-block" (click)="ficharAgenteLibre(j)">Fichar</button>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+   <div class="estado-mensaje vacio" *ngIf="!cargando && agentesLibres.length === 0">
+      <p>No hay agentes libres en el mercado actualmente.</p>
+   </div>
+
+   <!-- MODAL: CREAR JUGADOR (Recuperado del Dashboard Antiguo) -->
+   <div class="modal-overlay" *ngIf="mostrarModalFichaje">
+      <div class="modal-content">
+         <h3>Cazar Talento (Nuevo Registro)</h3>
+
+         <form (ngSubmit)="crearJugadorNuevo()">
+            <div class="grupo-input">
+               <label>Nombre del Jugador</label>
+               <input type="text" name="nombre" [(ngModel)]="nuevoJugador.nombre" required placeholder="Ej: Lionel Messi" />
+            </div>
+
+            <div class="grupo-input">
+               <label>Posición</label>
+               <!-- Utilizando el select como el usuario pidió originalmente (Issue de UI del Formulario) -->
+               <select class="input-select" name="pos" [(ngModel)]="nuevoJugador.pos">
+                  <option value="POR">Portero (POR)</option>
+                  <option value="DEF">Defensa (DEF)</option>
+                  <option value="MED">Centrocampista (MED)</option>
+                  <option value="DEL">Delantero (DEL)</option>
+               </select>
+            </div>
+
+            <div class="grupo-input">
+               <label>Nivel Medio (Media Física)</label>
+               <input type="number" name="media" [(ngModel)]="nuevoJugador.media" required max="99" min="40"/>
+            </div>
+            
+            <div class="grupo-input">
+               <label>Destino Inicial</label>
+               <select class="input-select" name="equipo" [(ngModel)]="nuevoJugador.equipo">
+                  <option value="null">Quedar Libre (Mercado)</option>
+                  <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+               </select>
+            </div>
+
+            <div class="modal-acciones">
+               <button type="button" class="btn" (click)="cerrarModal()">Cancelar</button>
+               <button type="submit" class="btn btn-primary">Fichar / Registrar</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>

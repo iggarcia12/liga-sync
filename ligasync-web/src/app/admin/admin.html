@@ -1,0 +1,69 @@
+<div class="admin-page">
+  <div class="header-section">
+    <h1 class="page-title">⚙️ Panel de Administración</h1>
+    <p class="page-subtitle">Gestión centralizada de usuarios y configuración de la API.</p>
+  </div>
+
+  <div class="alerta-seguridad">
+    <span class="icon">🛡️</span>
+    <p>Has accedido a una zona restringida con el rol <strong>ADMINISTRADOR</strong>. Las acciones aquí son irreversibles.</p>
+  </div>
+
+  <div class="admin-grid">
+    <!-- Métricas Globales -->
+    <div class="admin-metrics">
+      <div class="metric-card bg-primary-light">
+        <h4>Cuentas Activas</h4>
+        <div class="value">{{ metricas.totalUsuarios }}</div>
+      </div>
+      <div class="metric-card bg-success-light">
+        <h4>Partidos Jugados</h4>
+        <div class="value">{{ metricas.partidosJugados }}</div>
+      </div>
+      <div class="metric-card bg-warning-light">
+        <h4>Equipos en Liga</h4>
+        <div class="value">{{ metricas.equiposRegistrados }}</div>
+      </div>
+    </div>
+
+    <!-- Gestión de Usuarios -->
+    <div class="card panel-usuarios">
+      <div class="card-header">
+        <h3>Gestión de Usuarios Registrados</h3>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol (Permisos)</th>
+              <th>Último Acceso</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of usuarios">
+              <td>#{{ u.id }}</td>
+              <td><strong>{{ u.nombre }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'badge-admin': u.rol === 'ADMIN',
+                  'badge-user': u.rol === 'USER',
+                  'badge-banned': u.rol === 'BANNED'
+                }">{{ u.rol }}</span>
+              </td>
+              <td class="text-secondary">{{ u.lastLogin }}</td>
+              <td>
+                <button class="btn btn-small btn-danger" [disabled]="u.rol === 'ADMIN'" (click)="eliminarUsuario(u.id)">🗑️ Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

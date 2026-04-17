@@ -1,0 +1,92 @@
+<div class="estadisticas-page">
+  <div class="header-section">
+    <h1 class="page-title">Estadísticas de la Liga</h1>
+    <p class="page-subtitle">Rendimiento, goleadores y datos de los equipos en tiempo real.</p>
+  </div>
+
+  <div class="estado-mensaje" *ngIf="cargando">
+    <p>⏳ Analizando datos de la liga...</p>
+  </div>
+
+  <div class="stats-grid" *ngIf="!cargando">
+     <!-- Columna Gráficos (Izquierda) -->
+     <div class="stats-col-main">
+        <div class="card">
+           <div class="card-header">
+              <h3>Jugadores por Equipo (Plantillas Activas)</h3>
+           </div>
+           <div class="chart-container">
+              <canvas #chartEquipos></canvas>
+           </div>
+        </div>
+
+        <div class="card mt-4">
+           <div class="card-header">
+              <h3>🚨 Tarjetas y Sanciones (Top 5)</h3>
+           </div>
+           <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Jugador</th>
+                    <th>Equipo</th>
+                    <th>Amarillas</th>
+                    <th>Rojas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let j of sancionados">
+                    <td><strong>{{j.nombre}}</strong></td>
+                    <td><span class="badge">{{j.equipo?.nombre || 'Agente Libre'}}</span></td>
+                    <td class="text-amarilla font-weight-bold">{{j.tarjetasAmarillas || 0}}</td>
+                    <td class="text-roja font-weight-bold">{{j.tarjetasRojas || 0}}</td>
+                  </tr>
+                  <tr *ngIf="sancionados.length === 0">
+                    <td colspan="4" style="text-align: center; color: var(--text-secondary);">Juego limpio. No hay tarjetas registradas.</td>
+                  </tr>
+                </tbody>
+              </table>
+           </div>
+        </div>
+     </div>
+
+     <!-- Columna Tops (Derecha) -->
+     <div class="stats-col-side">
+        <!-- Pichichi -->
+        <div class="card">
+           <div class="card-header">
+              <h3>⚽ Top Goleadores</h3>
+           </div>
+           <div class="top-list">
+              <div class="top-item" *ngFor="let j of topGoleadores; let i = index">
+                 <div class="top-rank" [ngClass]="{'rank-gold': i===0, 'rank-silver': i===1, 'rank-bronze': i===2}">{{ i + 1 }}</div>
+                 <div class="top-info">
+                    <h4>{{j.nombre}}</h4>
+                    <span>{{j.equipo?.nombre || 'Libre'}}</span>
+                 </div>
+                 <div class="top-stat">{{j.goles || 0}} <span>G</span></div >
+              </div>
+              <div class="estado-vacio" *ngIf="topGoleadores.length === 0">Sin info de goles</div>
+           </div>
+        </div>
+
+        <!-- Asistencias -->
+        <div class="card mt-4">
+           <div class="card-header">
+              <h3>👟 Top Asistentes</h3>
+           </div>
+           <div class="top-list">
+              <div class="top-item" *ngFor="let j of topAsistencias; let i = index">
+                 <div class="top-rank" [ngClass]="{'rank-gold': i===0, 'rank-silver': i===1, 'rank-bronze': i===2}">{{ i + 1 }}</div>
+                 <div class="top-info">
+                    <h4>{{j.nombre}}</h4>
+                    <span>{{j.equipo?.nombre || 'Libre'}}</span>
+                 </div>
+                 <div class="top-stat">{{j.asistencias || 0}} <span>A</span></div >
+              </div>
+              <div class="estado-vacio" *ngIf="topAsistencias.length === 0">Sin info de asistencias</div>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>

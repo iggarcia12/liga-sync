@@ -1,0 +1,390 @@
+.equipos-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header-section {
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Filtros y Selector */
+.filtros-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selector-equipo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.selector-equipo label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.input-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 500;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.input-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.acciones-equipo {
+  display: flex;
+  gap: 1rem;
+}
+.acciones-equipo .btn {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.acciones-equipo .btn:hover {
+  background-color: var(--border-color);
+}
+
+/* Layout del Equipo (Pizarra + Lista) */
+.team-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .team-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- PIZARRA TÁCTICA (SOCCER PITCH) --- */
+.pitch-container {
+  padding: 0;
+  overflow: hidden;
+}
+
+.pitch-header {
+  padding: 1rem 1.5rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid var(--border-color);
+}
+[data-theme="dark"] .pitch-header {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+.pitch-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.soccer-pitch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  background-color: #2e7d32; /* Verde Típico Césped */
+  background-image: 
+    /* Líneas de Corte de Césped */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 10%,
+      rgba(255,255,255,0.05) 10%,
+      rgba(255,255,255,0.05) 20%
+    ),
+    /* Bordes Exteriores */
+    linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px),
+    linear-gradient(transparent calc(100% - 1px), rgba(255,255,255,0.6) calc(100% - 1px)),
+    linear-gradient(90deg, transparent calc(100% - 1px), rgba(255,255,255,0.6) calc(100% - 1px));
+  background-size: 100% 100%;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Medio Campo Linea */
+.soccer-pitch::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-50%);
+}
+
+/* Circulo Central */
+.soccer-pitch::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pitch-zone {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 2; /* Sobre las líneas blancas */
+  width: 100%;
+}
+
+/* Distribución de Zonas */
+.zone-del { height: 20%; align-items: flex-start; }
+.zone-med { height: 30%; }
+.zone-def { height: 30%; align-items: flex-end; }
+.zone-por { height: 15%; align-items: flex-end; justify-content: center; }
+
+/* Fichas de Jugador Tácticas */
+.player-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.player-dot:hover {
+  transform: scale(1.1);
+}
+
+.player-dot .p-dorsal {
+  width: 36px;
+  height: 36px;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid var(--accent-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.player-dot .p-dorsal.bg-gold {
+  border-color: #f59e0b;
+  background-color: #fef3c7;
+  color: #92400e;
+}
+[data-theme="dark"] .player-dot .p-dorsal.bg-gold { background-color: #78350f; color: #fef3c7; }
+
+.player-dot .p-name {
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* --- LATERAL: PLANTILLA --- */
+.plantilla-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.team-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+.escudo-large {
+  font-size: 4rem;
+  background-color: var(--border-color);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.team-summary h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+.team-summary p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0 0 1rem 0;
+}
+.summary-stat {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+}
+
+.players-checklist h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.grid-jugadores.mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.player-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+.player-avatar-bg {
+  width: 36px;
+  height: 36px;
+  background-color: var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.p-dorsal-text {
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+.player-info h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.p-pos {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.btn-vender {
+  padding: 0.4rem;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+
+/* Modales y Formularios */
+.estado-mensaje {
+  text-align: center;
+  padding: 3rem;
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 0.75rem;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.grupo-input {
+  margin-bottom: 1.25rem;
+}
+.grupo-input label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+.grupo-input input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+.grupo-input input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}

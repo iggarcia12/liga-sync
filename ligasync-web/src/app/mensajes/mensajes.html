@@ -1,0 +1,66 @@
+<div class="mensajes-page">
+   
+   <div class="chat-container card">
+      <!-- Columna Izquierda: Lista de Contactos -->
+      <div class="chat-sidebar">
+         <div class="sidebar-header">
+            <h3>Bandeja de Entrada</h3>
+         </div>
+         
+         <div class="contactos-lista">
+            <div class="contacto-item" 
+                 *ngFor="let c of contactos" 
+                 [class.activo]="contactoSeleccionado?.id === c.id"
+                 (click)="seleccionarContacto(c)">
+               
+               <div class="avatar-circle">{{ c.avatar }}</div>
+               <div class="contacto-info">
+                  <div class="contacto-header">
+                     <h4>{{ c.nombre }}</h4>
+                     <span class="badge" *ngIf="c.unread > 0">{{ c.unread }}</span>
+                  </div>
+                  <span class="contacto-equipo">{{ c.equipo }}</span>
+                  <p class="contacto-preview">{{ c.lastMsg || 'Nueva conversación' }}</p>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Columna Derecha: El Chat Activo -->
+      <div class="chat-main" *ngIf="contactoSeleccionado">
+         <div class="chat-header">
+            <div class="avatar-circle small">{{ contactoSeleccionado.avatar }}</div>
+            <div class="chat-header-info">
+               <h3>{{ contactoSeleccionado.nombre }}</h3>
+               <span>{{ contactoSeleccionado.equipo }}</span>
+            </div>
+         </div>
+
+         <div class="chat-history">
+            <div class="estado-vacio" *ngIf="mensajesActivos.length === 0">
+               <p>No hay mensajes todavía. ¡Envía el primero!</p>
+            </div>
+
+            <div class="mensaje-bubble" *ngFor="let msg of mensajesActivos" [ngClass]="msg.sender">
+               <div class="bubble-text">{{ msg.text }}</div>
+               <div class="bubble-time">{{ msg.time }}</div>
+            </div>
+         </div>
+
+         <div class="chat-input-area">
+            <form (ngSubmit)="enviarMensaje()">
+               <input type="text" name="nuevoMensaje" [(ngModel)]="nuevoMensaje" placeholder="Escribe un mensaje seguro..." autocomplete="off">
+               <button type="submit" class="btn btn-primary" [disabled]="!nuevoMensaje.trim()">Enviar</button>
+            </form>
+         </div>
+      </div>
+
+      <!-- Estado Vacío cuando no hay chat seleccionado -->
+      <div class="chat-main empty-state" *ngIf="!contactoSeleccionado">
+         <div class="empty-icon">💬</div>
+         <h3>Tus Mensajes</h3>
+         <p>Selecciona una conversación de tu bandeja de entrada o inicia un nuevo trato.</p>
+      </div>
+
+   </div>
+</div>
