@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin',
@@ -9,28 +10,80 @@ import { CommonModule } from '@angular/common';
   styleUrl: './admin.css'
 })
 export class AdminComponent implements OnInit {
-  
-  usuarios = [
-    { id: 1, email: 'admin@admin.com', nombre: 'Super Administrador', rol: 'ADMIN', lastLogin: 'Hace 5 min' },
-    { id: 2, email: 'jugador1@user.com', nombre: 'Juan Pérez', rol: 'USER', lastLogin: 'Hace 2 horas' },
-    { id: 3, email: 'mister@user.com', nombre: 'José Luis', rol: 'USER', lastLogin: 'Ayer' },
-    { id: 4, email: 'hacker@malicioso.com', nombre: 'Suspendido', rol: 'BANNED', lastLogin: 'Nunca' }
-  ];
+
+  readonly urlBase = 'http://localhost:8080/api';
+
+  usuarios: any[] = [];
+  cargandoUsuarios: boolean = true;
 
   metricas = {
-    totalUsuarios: 250,
-    partidosJugados: 124,
-    equiposRegistrados: 20
+    totalUsuarios: 0,
+    partidosJugados: 0,
+    equiposRegistrados: 0
   };
 
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
   ngOnInit() {
-    // Aquí cargaríamos datos del backend protegidos con 'hasRole(ADMIN)'
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    // 1. Cargar usuarios reales
+    this.http.get<any[]>(this.urlBase + '/usuarios').subscribe({
+      next: (datos) => {
+        this.usuarios = datos;
+        this.metricas.totalUsuarios = datos.length;
+        this.cargandoUsuarios = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.cargandoUsuarios = false;
+        this.cdr.detectChanges();
+      }
+    });
+
+    // 2. Cargar partidos reales
+    this.http.get<any[]>(this.urlBase + '/partidos').subscribe(datos => {
+      this.metricas.partidosJugados = datos.filter(
+        p => p.golesLocal !== null && p.golesLocal !== undefined
+      ).length;
+      this.cdr.detectChanges();
+    });
+
+    // 3. Cargar equipos reales
+    this.http.get<any[]>(this.urlBase + '/equipos').subscribe(datos => {
+      this.metricas.equiposRegistrados = datos.length;
+      this.cdr.detectChanges();
+    });
   }
 
   eliminarUsuario(id: number) {
-    if(confirm('ATENCIÓN: ¿Estás seguro de que deseas eliminar a este usuario permanentemente?')) {
-      this.usuarios = this.usuarios.filter(u => u.id !== id);
-      alert('Usuario eliminado correctamente (Simulado).');
+    if (confirm('ATENCIÓN: ¿Estás seguro de que deseas eliminar a este usuario permanentemente?')) {
+      this.http.delete(this.urlBase + '/usuarios/' + id).subscribe({
+        next: () => {
+          this.usuarios = this.usuarios.filter(u => u.id !== id);
+          this.metricas.totalUsuarios = this.usuarios.length;
+          this.cdr.detectChanges();
+          alert('Usuario eliminado correctamente.');
+        },
+        error: () => {
+          alert('Error al eliminar el usuario. Inténtalo de nuevo.');
+        }
+      });
     }
+  }
+
+  getRolClass(rol: string): string {
+    if (!rol) return 'badge-user';
+    const r = rol.toUpperCase();
+    if (r === 'ADMIN') return 'badge-admin';
+    if (r === 'BANNED') return 'badge-banned';
+    return 'badge-user';
+  }
+
+  getInitial(nombre: string): string {
+    return nombre ? nombre.charAt(0).toUpperCase() : '?';
   }
 }

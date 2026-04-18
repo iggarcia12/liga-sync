@@ -21,6 +21,7 @@ public class Partido {
     private String fecha;
 
     // Guardaremos los goleadores como texto plano por ahora (ej: "Lamine (12')")
+    @Column(columnDefinition = "TEXT")
     private String goleadores;
 
     // --- LA MAGIA: DOS RELACIONES AL MISMO TIEMPO ---

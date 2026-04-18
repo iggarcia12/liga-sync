@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-mensajes',
@@ -9,56 +11,219 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './mensajes.html',
   styleUrl: './mensajes.css'
 })
-export class MensajesComponent {
-  
-  contactos = [
-    { id: 1, nombre: 'Jürgen Klopp', equipo: 'Directiva FC', avatar: 'J', unread: 2, lastMsg: 'Tengo un par de defensas que quiero probar.' },
-    { id: 2, nombre: 'Pep Guardiola', equipo: 'Cityzen Club', avatar: 'P', unread: 0, lastMsg: '¿Tienes 200 millones? Jajaja' },
-    { id: 3, nombre: 'Carlo Ancelotti', equipo: 'Madrilista', avatar: 'C', unread: 0, lastMsg: 'Hola, buenas tardes.' }
-  ];
+export class MensajesComponent implements OnInit, AfterViewChecked {
 
+  @ViewChild('chatHistory') private chatHistoryEl!: ElementRef;
+
+  readonly urlBase = 'http://localhost:8080/api';
+
+  // Usuario actual
+  miId: number | null = null;
+  miNombre: string | null = null;
+
+  // Contactos activos (con historial de mensajes)
+  contactosActivos: any[] = [];
+
+  // Búsqueda de nuevos usuarios
+  textoBusqueda: string = '';
+  resultadosBusqueda: any[] = [];
+  todosUsuarios: any[] = [];
+  buscando: boolean = false;
+  mostrarBusqueda: boolean = false;
+
+  // Chat activo
   contactoSeleccionado: any = null;
-
-  historialConversaciones: { [key: number]: any[] } = {
-    1: [
-      { sender: 'them', text: 'Hey, vi que andas fichando libres. ¿Interesado en un amistoso?', time: '10:00' },
-      { sender: 'them', text: 'Tengo un par de defensas que quiero probar.', time: '10:02' }
-    ],
-    2: [
-      { sender: 'me', text: 'Hola Pep, ¿vendes a tu mejor mediocentro?', time: 'Ayer' },
-      { sender: 'them', text: '¿Tienes 200 millones? Jajaja', time: 'Ayer' }
-    ],
-    3: [
-      { sender: 'them', text: 'Hola, buenas tardes.', time: '12:00' }
-    ]
-  };
-
   mensajesActivos: any[] = [];
   nuevoMensaje: string = '';
 
-  seleccionarContacto(c: any) {
-    this.contactoSeleccionado = c;
-    c.unread = 0; // Marcar como leído
-    this.mensajesActivos = this.historialConversaciones[c.id];
+  cargandoContactos: boolean = false;
+  cargandoMensajes: boolean = false;
+  enviando: boolean = false;
+
+  private debeScrollear: boolean = false;
+
+  private http = inject(HttpClient);
+  private auth = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
+
+  ngOnInit() {
+    this.miId = this.auth.getUserId();
+    this.miNombre = this.auth.getNombre();
+    this.cargarContactosActivos();
+    this.cargarTodosUsuarios();
+  }
+
+  ngAfterViewChecked() {
+    if (this.debeScrollear) {
+      this.scrollAlFinal();
+      this.debeScrollear = false;
+    }
+  }
+
+  // Carga solo usuarios con chats activos
+  cargarContactosActivos() {
+    if (!this.miId) {
+      console.warn('No hay miId disponible. ¿Has iniciado sesión?');
+      this.cargandoContactos = false;
+      return;
+    }
+    this.cargandoContactos = true;
+
+    this.http.get<any[]>(`${this.urlBase}/mensajes/contactos/${this.miId}`).subscribe({
+      next: (usuarios) => {
+        // El endpoint devuelve todos si no hay historial; filtramos al propio usuario
+        // pero solo mostramos si hay historial real
+        this.contactosActivos = usuarios.filter(u => u.id !== this.miId);
+        this.cargandoContactos = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.contactosActivos = [];
+        this.cargandoContactos = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Pre-carga todos los usuarios para la búsqueda (sin mostrarlos)
+  cargarTodosUsuarios() {
+    this.http.get<any[]>(`${this.urlBase}/mensajes/usuarios`).subscribe({
+      next: (usuarios) => {
+        this.todosUsuarios = usuarios.filter(u => u.id !== this.miId);
+      },
+      error: () => { this.todosUsuarios = []; }
+    });
+  }
+
+  // Filtra usuarios en tiempo real según el texto
+  buscarUsuarios() {
+    const q = this.textoBusqueda.trim().toLowerCase();
+    if (!q) {
+      this.resultadosBusqueda = [];
+      this.mostrarBusqueda = false;
+      return;
+    }
+    this.mostrarBusqueda = true;
+    this.resultadosBusqueda = this.todosUsuarios.filter(u =>
+      u.nombre?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.role?.toLowerCase().includes(q)
+    ).slice(0, 8); // máximo 8 resultados
+  }
+
+  limpiarBusqueda() {
+    this.textoBusqueda = '';
+    this.resultadosBusqueda = [];
+    this.mostrarBusqueda = false;
+  }
+
+  seleccionarContacto(usuario: any) {
+    this.contactoSeleccionado = usuario;
+    this.mensajesActivos = [];
+    this.limpiarBusqueda();
+
+    // Si no estaba en contactos activos, añadirlo temporalmente al sidebar
+    const yaEstaEnActivos = this.contactosActivos.some(c => c.id === usuario.id);
+    if (!yaEstaEnActivos) {
+      this.contactosActivos = [usuario, ...this.contactosActivos];
+    }
+
+    this.cargarConversacion();
+  }
+
+  cargarConversacion() {
+    if (!this.miId || !this.contactoSeleccionado) return;
+    this.cargandoMensajes = true;
+
+    this.http.get<any[]>(
+      `${this.urlBase}/mensajes/conversacion?user1=${this.miId}&user2=${this.contactoSeleccionado.id}`
+    ).subscribe({
+      next: (msgs) => {
+        this.mensajesActivos = msgs;
+        this.cargandoMensajes = false;
+        this.debeScrollear = true;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.mensajesActivos = [];
+        this.cargandoMensajes = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   enviarMensaje() {
-    if (!this.nuevoMensaje.trim() || !this.contactoSeleccionado) return;
-    
-    // Nuestro mensaje
-    const hora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    this.mensajesActivos.push({ sender: 'me', text: this.nuevoMensaje, time: hora });
-    
-    // Actualizar resumen contacto
-    this.contactoSeleccionado.lastMsg = this.nuevoMensaje;
+    console.log('Intentando enviar mensaje...', {
+      miId: this.miId,
+      contacto: this.contactoSeleccionado?.nombre,
+      texto: this.nuevoMensaje
+    });
+
+    if (!this.nuevoMensaje.trim() || !this.contactoSeleccionado || !this.miId || this.enviando) {
+      console.warn('Envío cancelado: faltan datos o ya se está enviando.');
+      return;
+    }
+
+    this.enviando = true;
+    const texto = this.nuevoMensaje.trim();
     this.nuevoMensaje = '';
 
-    // Timeout para auto-respuesta
-    setTimeout(() => {
-      const respHora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const respuestaMsg = 'Recibido. Me pondré en contacto con mi directiva al respecto.';
-      this.mensajesActivos.push({ sender: 'them', text: respuestaMsg, time: respHora });
-      this.contactoSeleccionado.lastMsg = respuestaMsg;
-    }, 1500);
+    const payload = {
+      remitenteId: this.miId,
+      destinatarioId: this.contactoSeleccionado.id,
+      contenido: texto
+    };
+
+    this.http.post<any>(this.urlBase + '/mensajes', payload).subscribe({
+      next: (msgGuardado) => {
+        console.log('Mensaje enviado con éxito:', msgGuardado);
+        this.mensajesActivos.push(msgGuardado);
+        this.enviando = false;
+        this.debeScrollear = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al enviar mensaje:', err);
+        this.nuevoMensaje = texto;
+        this.enviando = false;
+        alert('Error al enviar el mensaje. Comprueba tu conexión.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  esMio(mensaje: any): boolean {
+    return mensaje.remitenteId === this.miId;
+  }
+
+  getInicial(nombre: string): string {
+    return nombre ? nombre.charAt(0).toUpperCase() : '?';
+  }
+
+  getRolLabel(role: string): string {
+    if (!role) return 'Usuario';
+    const r = role.toUpperCase();
+    if (r === 'ADMIN') return 'Administrador';
+    if (r === 'ENTRENADOR') return 'Entrenador';
+    if (r === 'JUGADOR') return 'Jugador';
+    return role;
+  }
+
+  formatearHora(fecha: string): string {
+    if (!fecha) return '';
+    try {
+      const d = new Date(fecha);
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return '';
+    }
+  }
+
+  private scrollAlFinal() {
+    if (this.chatHistoryEl) {
+      const el = this.chatHistoryEl.nativeElement;
+      el.scrollTop = el.scrollHeight;
+    }
   }
 }

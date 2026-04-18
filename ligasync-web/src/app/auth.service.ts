@@ -16,13 +16,21 @@ export class AuthService {
     return localStorage.getItem('rol');
   }
 
+  getUserId(): number | null {
+    const id = localStorage.getItem('userId');
+    return id ? parseInt(id, 10) : null;
+  }
+
+  getNombre(): string | null {
+    return localStorage.getItem('nombre');
+  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
 
   isAdmin(): boolean {
     const rol = this.getRol();
-    // Accept both uppercase and lowercase role values
     const normalized = rol ? rol.toUpperCase() : '';
     return normalized === 'ADMIN' || normalized === 'ROLE_ADMIN';
   }
@@ -30,6 +38,8 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('rol');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('nombre');
     this.router.navigate(['/login']);
   }
 }

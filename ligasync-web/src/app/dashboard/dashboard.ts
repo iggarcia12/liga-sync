@@ -13,49 +13,83 @@ export class DashboardComponent implements OnInit {
   jugadores: any[] = [];
   equipos: any[] = [];
   partidos: any[] = [];
+  noticias: any[] = [];
 
   // Variables para las tarjetas de estadísticas
   totalJugadores: number = 0;
   totalEquipos: number = 0;
   partidosJugados: number = 0;
-
-  // Mock de Noticias para el feed
-  noticiasRecientes = [
-    { id: 1, tipo: 'fichaje', texto: 'Lamine Yamal ficha por el FC Barcelona por 15M€.', fecha: 'Hace 2 horas', icono: '🤝' },
-    { id: 2, tipo: 'partido', texto: 'Real Madrid 2 - 1 Atlético de Madrid.', fecha: 'Hace 5 horas', icono: '⚽' },
-    { id: 3, tipo: 'alerta', texto: 'Se ha abierto el Mercado de Fichajes de Invierno.', fecha: 'Ayer', icono: '🚨' }
-  ];
+  cargandoNoticias: boolean = true;
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
+  readonly urlBase = 'http://localhost:8080/api';
+
   ngOnInit() {
     this.cargarEstadisticas();
+    this.cargarNoticias();
   }
 
   cargarEstadisticas() {
-    // 🚨 PON AQUÍ TU URL REAL (Solo la parte hasta /api)
-    const urlBase = 'http://localhost:8080/api'; 
-
-    // 1. Pedimos Jugadores
-    this.http.get<any[]>(urlBase + '/jugadores').subscribe(datos => {
+    // 1. Jugadores
+    this.http.get<any[]>(this.urlBase + '/jugadores').subscribe(datos => {
       this.jugadores = datos;
       this.totalJugadores = datos.length;
       this.cdr.detectChanges();
     });
 
-    // 2. Pedimos Equipos
-    this.http.get<any[]>(urlBase + '/equipos').subscribe(datos => {
+    // 2. Equipos
+    this.http.get<any[]>(this.urlBase + '/equipos').subscribe(datos => {
       this.equipos = datos;
       this.totalEquipos = datos.length;
       this.cdr.detectChanges();
     });
 
-    // 3. Pedimos Partidos
-    this.http.get<any[]>(urlBase + '/partidos').subscribe(datos => {
+    // 3. Partidos
+    this.http.get<any[]>(this.urlBase + '/partidos').subscribe(datos => {
       this.partidos = datos;
-      this.partidosJugados = datos.filter(p => p.golesLocal !== null).length;
+      this.partidosJugados = datos.filter(p => p.golesLocal !== null && p.golesLocal !== undefined).length;
       this.cdr.detectChanges();
     });
+  }
+
+  cargarNoticias() {
+    this.cargandoNoticias = true;
+    this.http.get<any[]>(this.urlBase + '/noticias').subscribe({
+      next: (datos) => {
+        // Mostrar las últimas 8 noticias
+        this.noticias = datos.slice(0, 8);
+        this.cargandoNoticias = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.noticias = [];
+        this.cargandoNoticias = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Devuelve el icono según el tipo de noticia (detectado por título)
+  getIconoNoticia(noticia: any): string {
+    const titulo = (noticia.titulo || '').toLowerCase();
+    if (titulo.includes('resultado') || titulo.includes('gol') || titulo.includes(' - ')) return '⚽';
+    if (titulo.includes('fichaje') || titulo.includes('ficha') || titulo.includes('mercado')) return '🤝';
+    if (titulo.includes('alerta') || titulo.includes('sanción') || titulo.includes('tarjeta')) return '🚨';
+    if (titulo.includes('jornada') || titulo.includes('partido')) return '📅';
+    return '📰';
+  }
+
+  // Formatea la fecha de la noticia de manera legible
+  formatearFecha(fecha: string): string {
+    if (!fecha) return '';
+    try {
+      const d = new Date(fecha);
+      if (isNaN(d.getTime())) return fecha;
+      return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch {
+      return fecha;
+    }
   }
 }

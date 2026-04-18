@@ -27,9 +27,11 @@ export class LoginComponent {
 
     this.http.post<any>(urlBackend, datosEnvio).subscribe({
       next: (respuesta) => {
-        // Guardamos el token y el rol de usuario
+        // Guardamos el token, el rol, el id y el nombre del usuario
         localStorage.setItem('token', respuesta.token);
         localStorage.setItem('rol', respuesta.rol);
+        localStorage.setItem('userId', respuesta.userId?.toString() ?? '');
+        localStorage.setItem('nombre', respuesta.usuario);
         
         // 3. ¡Mágia! Cambiamos de página automáticamente al Dashboard
         this.router.navigate(['/dashboard']); 

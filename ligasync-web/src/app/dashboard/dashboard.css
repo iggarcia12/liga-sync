@@ -196,7 +196,15 @@
 .news-text {
   margin: 0;
   font-size: 0.9rem;
+  font-weight: 600;
   color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.news-body {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 

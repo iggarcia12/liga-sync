@@ -1,65 +1,135 @@
 <div class="mensajes-page">
    
    <div class="chat-container card">
-      <!-- Columna Izquierda: Lista de Contactos -->
+      <!-- Columna Izquierda: Sidebar -->
       <div class="chat-sidebar">
          <div class="sidebar-header">
-            <h3>Bandeja de Entrada</h3>
+            <h3>Mensajes</h3>
+            <span class="badge badge-nombre" *ngIf="miNombre">{{ miNombre }}</span>
          </div>
-         
-         <div class="contactos-lista">
-            <div class="contacto-item" 
-                 *ngFor="let c of contactos" 
-                 [class.activo]="contactoSeleccionado?.id === c.id"
-                 (click)="seleccionarContacto(c)">
-               
-               <div class="avatar-circle">{{ c.avatar }}</div>
-               <div class="contacto-info">
-                  <div class="contacto-header">
-                     <h4>{{ c.nombre }}</h4>
-                     <span class="badge" *ngIf="c.unread > 0">{{ c.unread }}</span>
+
+         <!-- Barra de búsqueda para nuevos chats -->
+         <div class="search-bar-wrapper">
+            <div class="search-input-container">
+               <span class="search-icon">🔍</span>
+               <input
+                  type="text"
+                  class="search-input"
+                  placeholder="Buscar usuario..."
+                  [(ngModel)]="textoBusqueda"
+                  (ngModelChange)="buscarUsuarios()"
+                  autocomplete="off">
+               <button class="search-clear" *ngIf="textoBusqueda" (click)="limpiarBusqueda()">✕</button>
+            </div>
+
+            <!-- Resultados de búsqueda (dropdown) -->
+            <div class="search-results" *ngIf="mostrarBusqueda">
+               <div class="search-empty" *ngIf="resultadosBusqueda.length === 0">
+                  <p>No se encontraron usuarios.</p>
+               </div>
+               <div class="search-result-item"
+                    *ngFor="let u of resultadosBusqueda"
+                    (click)="seleccionarContacto(u)">
+                  <div class="avatar-circle mini">{{ getInicial(u.nombre) }}</div>
+                  <div class="result-info">
+                     <span class="result-nombre">{{ u.nombre }}</span>
+                     <span class="result-rol">{{ getRolLabel(u.role) }}</span>
                   </div>
-                  <span class="contacto-equipo">{{ c.equipo }}</span>
-                  <p class="contacto-preview">{{ c.lastMsg || 'Nueva conversación' }}</p>
                </div>
             </div>
          </div>
+
+         <!-- Lista de chats activos -->
+         <div class="contactos-lista">
+
+            <!-- Cargando (solo si la lista está vacía) -->
+            <div class="estado-vacio" *ngIf="cargandoContactos && contactosActivos.length === 0">
+               <p>⏳ Cargando...</p>
+            </div>
+
+            <!-- Sin chats activos -->
+            <div class="estado-vacio sin-chats" *ngIf="!cargandoContactos && contactosActivos.length === 0">
+               <span>💬</span>
+               <p>No tienes conversaciones activas.</p>
+               <p class="hint">Usa el buscador para iniciar un chat.</p>
+            </div>
+
+            <!-- Chats activos -->
+            <div class="contacto-item" 
+                 *ngFor="let u of contactosActivos" 
+                 [class.activo]="contactoSeleccionado?.id === u.id"
+                 (click)="seleccionarContacto(u)">
+               
+               <div class="avatar-circle">{{ getInicial(u.nombre) }}</div>
+               <div class="contacto-info">
+                  <div class="contacto-header">
+                     <h4>{{ u.nombre }}</h4>
+                     <span class="badge badge-rol" [ngClass]="{
+                       'badge-admin': (u.role || '').toUpperCase() === 'ADMIN',
+                       'badge-user': (u.role || '').toUpperCase() !== 'ADMIN'
+                     }">{{ getRolLabel(u.role) }}</span>
+                  </div>
+                  <p class="contacto-preview">{{ u.email }}</p>
+               </div>
+            </div>
+
+         </div>
       </div>
 
-      <!-- Columna Derecha: El Chat Activo -->
+      <!-- Columna Derecha: Chat activo -->
       <div class="chat-main" *ngIf="contactoSeleccionado">
          <div class="chat-header">
-            <div class="avatar-circle small">{{ contactoSeleccionado.avatar }}</div>
+            <div class="avatar-circle small">{{ getInicial(contactoSeleccionado.nombre) }}</div>
             <div class="chat-header-info">
                <h3>{{ contactoSeleccionado.nombre }}</h3>
-               <span>{{ contactoSeleccionado.equipo }}</span>
+               <span>{{ getRolLabel(contactoSeleccionado.role) }}</span>
             </div>
          </div>
 
-         <div class="chat-history">
-            <div class="estado-vacio" *ngIf="mensajesActivos.length === 0">
-               <p>No hay mensajes todavía. ¡Envía el primero!</p>
+         <div class="chat-history" #chatHistory>
+            <!-- Cargando mensajes -->
+            <div class="estado-vacio" *ngIf="cargandoMensajes">
+               <p>⏳ Cargando mensajes...</p>
             </div>
 
-            <div class="mensaje-bubble" *ngFor="let msg of mensajesActivos" [ngClass]="msg.sender">
-               <div class="bubble-text">{{ msg.text }}</div>
-               <div class="bubble-time">{{ msg.time }}</div>
+            <!-- Sin mensajes todavía -->
+            <div class="estado-vacio" *ngIf="!cargandoMensajes && mensajesActivos.length === 0">
+               <p>💬 Sin mensajes todavía. ¡Envía el primero!</p>
+            </div>
+
+            <!-- Burbujas de mensajes -->
+            <div class="mensaje-bubble" 
+                 *ngFor="let msg of mensajesActivos" 
+                 [ngClass]="esMio(msg) ? 'me' : 'them'">
+               <div class="bubble-text">{{ msg.contenido }}</div>
+               <div class="bubble-time">{{ formatearHora(msg.fechaEnvio) }}</div>
             </div>
          </div>
 
          <div class="chat-input-area">
             <form (ngSubmit)="enviarMensaje()">
-               <input type="text" name="nuevoMensaje" [(ngModel)]="nuevoMensaje" placeholder="Escribe un mensaje seguro..." autocomplete="off">
-               <button type="submit" class="btn btn-primary" [disabled]="!nuevoMensaje.trim()">Enviar</button>
+               <input 
+                  type="text" 
+                  name="nuevoMensaje" 
+                  [(ngModel)]="nuevoMensaje" 
+                  placeholder="Escribe un mensaje..." 
+                  autocomplete="off"
+                  [disabled]="enviando">
+               <button 
+                  type="submit" 
+                  class="btn btn-primary" 
+                  [disabled]="!nuevoMensaje.trim() || enviando">
+                  {{ enviando ? '...' : 'Enviar' }}
+               </button>
             </form>
          </div>
       </div>
 
-      <!-- Estado Vacío cuando no hay chat seleccionado -->
+      <!-- Estado vacío: ningún chat seleccionado -->
       <div class="chat-main empty-state" *ngIf="!contactoSeleccionado">
          <div class="empty-icon">💬</div>
          <h3>Tus Mensajes</h3>
-         <p>Selecciona una conversación de tu bandeja de entrada o inicia un nuevo trato.</p>
+         <p>Selecciona una conversación o busca un usuario para iniciar un chat.</p>
       </div>
 
    </div>

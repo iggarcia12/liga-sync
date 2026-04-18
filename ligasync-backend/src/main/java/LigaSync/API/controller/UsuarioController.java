@@ -3,7 +3,8 @@ package LigaSync.API.controller;
 import LigaSync.API.model.Usuario;
 import LigaSync.API.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder; // <-- Importación nueva
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,23 +17,37 @@ public class UsuarioController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // <-- Inyectamos el encriptador
+    private PasswordEncoder passwordEncoder;
 
+    // Obtener todos los usuarios
     @GetMapping
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
     }
 
+    // Obtener un usuario por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> obtenerPorId(@PathVariable Long id) {
+        return usuarioRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Crear un nuevo usuario
     @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario nuevoUsuario) {
-        // ENCRIPTAR LA CONTRASEÑA
-        // Cogemos la contraseña en texto plano ("123456") y la convertimos en un Hash
-        // ininteligible
         String hashPassword = passwordEncoder.encode(nuevoUsuario.getPass());
-
-        // Se la volvemos a poner al usuario antes de guardarlo
         nuevoUsuario.setPass(hashPassword);
-
         return usuarioRepository.save(nuevoUsuario);
+    }
+
+    // Eliminar un usuario (solo admin)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        usuarioRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

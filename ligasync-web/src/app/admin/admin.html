@@ -1,7 +1,7 @@
 <div class="admin-page">
   <div class="header-section">
     <h1 class="page-title">⚙️ Panel de Administración</h1>
-    <p class="page-subtitle">Gestión centralizada de usuarios y configuración de la API.</p>
+    <p class="page-subtitle">Gestión centralizada de usuarios y estadísticas reales de la liga.</p>
   </div>
 
   <div class="alerta-seguridad">
@@ -10,10 +10,10 @@
   </div>
 
   <div class="admin-grid">
-    <!-- Métricas Globales -->
+    <!-- Métricas Reales -->
     <div class="admin-metrics">
       <div class="metric-card bg-primary-light">
-        <h4>Cuentas Activas</h4>
+        <h4>Usuarios Registrados</h4>
         <div class="value">{{ metricas.totalUsuarios }}</div>
       </div>
       <div class="metric-card bg-success-light">
@@ -26,39 +26,58 @@
       </div>
     </div>
 
-    <!-- Gestión de Usuarios -->
+    <!-- Gestión de Usuarios Reales -->
     <div class="card panel-usuarios">
       <div class="card-header">
         <h3>Gestión de Usuarios Registrados</h3>
+        <span class="badge">{{ usuarios.length }} usuarios</span>
       </div>
       
-      <div class="table-responsive">
+      <!-- Cargando -->
+      <div class="estado-vacio" *ngIf="cargandoUsuarios">
+        <p>⏳ Cargando usuarios...</p>
+      </div>
+
+      <!-- Sin usuarios -->
+      <div class="estado-vacio" *ngIf="!cargandoUsuarios && usuarios.length === 0">
+        <p>📭 No hay usuarios registrados.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!cargandoUsuarios && usuarios.length > 0">
         <table class="table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Nombre</th>
               <th>Email</th>
-              <th>Rol (Permisos)</th>
-              <th>Último Acceso</th>
+              <th>Rol</th>
+              <th>Equipo ID</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let u of usuarios">
               <td>#{{ u.id }}</td>
-              <td><strong>{{ u.nombre }}</strong></td>
+              <td>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div style="width:32px; height:32px; border-radius:50%; background:var(--accent-blue); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; color:#fff; flex-shrink:0;">
+                    {{ getInitial(u.nombre) }}
+                  </div>
+                  <strong>{{ u.nombre }}</strong>
+                </div>
+              </td>
               <td>{{ u.email }}</td>
               <td>
-                <span class="badge" [ngClass]="{
-                  'badge-admin': u.rol === 'ADMIN',
-                  'badge-user': u.rol === 'USER',
-                  'badge-banned': u.rol === 'BANNED'
-                }">{{ u.rol }}</span>
+                <span class="badge" [ngClass]="getRolClass(u.role)">{{ u.role || 'USER' }}</span>
               </td>
-              <td class="text-secondary">{{ u.lastLogin }}</td>
+              <td class="text-secondary">{{ u.teamId || '—' }}</td>
               <td>
-                <button class="btn btn-small btn-danger" [disabled]="u.rol === 'ADMIN'" (click)="eliminarUsuario(u.id)">🗑️ Eliminar</button>
+                <button 
+                  class="btn btn-small btn-danger" 
+                  [disabled]="(u.role || '').toUpperCase() === 'ADMIN'" 
+                  (click)="eliminarUsuario(u.id)">
+                  🗑️ Eliminar
+                </button>
               </td>
             </tr>
           </tbody>

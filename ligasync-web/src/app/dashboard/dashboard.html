@@ -67,12 +67,27 @@
         <div class="card-header-simple border-bottom">
           <h3>Últimas Noticias</h3>
         </div>
-        <div class="news-feed">
-          <div class="news-item" *ngFor="let noticia of noticiasRecientes">
-            <div class="news-icon">{{ noticia.icono }}</div>
+
+        <!-- Cargando -->
+        <div class="estado-vacio" *ngIf="cargandoNoticias">
+          <span class="icon-vacio">⏳</span>
+          <p>Cargando noticias...</p>
+        </div>
+
+        <!-- Sin noticias -->
+        <div class="estado-vacio" *ngIf="!cargandoNoticias && noticias.length === 0">
+          <span class="icon-vacio">📭</span>
+          <p>No hay noticias todavía. Los resultados de partidos aparecerán aquí.</p>
+        </div>
+
+        <!-- Feed de noticias reales -->
+        <div class="news-feed" *ngIf="!cargandoNoticias && noticias.length > 0">
+          <div class="news-item" *ngFor="let noticia of noticias">
+            <div class="news-icon">{{ getIconoNoticia(noticia) }}</div>
             <div class="news-content">
-              <p class="news-text">{{ noticia.texto }}</p>
-              <span class="news-time">{{ noticia.fecha }}</span>
+              <p class="news-text">{{ noticia.titulo }}</p>
+              <p class="news-body" *ngIf="noticia.contenido">{{ noticia.contenido }}</p>
+              <span class="news-time">{{ formatearFecha(noticia.fecha) }}</span>
             </div>
           </div>
         </div>

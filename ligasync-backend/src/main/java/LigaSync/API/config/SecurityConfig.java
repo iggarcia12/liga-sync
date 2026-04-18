@@ -38,20 +38,24 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas (no necesitan token)
-                        .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+                        // 1. Rutas públicas y pre-flight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/login", "/api/usuarios").permitAll()
 
-                        // Cualquier GET autenticado está permitido (leer datos)
+                        // 2. Mensajes (POST y GET) - Cualquier autenticado
+                        .requestMatchers(HttpMethod.POST, "/api/mensajes").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/mensajes/**").authenticated()
+                        .requestMatchers("/api/mensajes", "/api/mensajes/**").authenticated()
+
+                        // 3. GET generales - Cualquier autenticado
                         .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
 
-                        // Solo ADMIN puede crear, editar o borrar. Si tu rol en BD es "ADMIN",
-                        // Spring lo verá como "ROLE_ADMIN" (el JwtFilter añade el prefijo)
+                        // 4. Acciones restringidas a ADMIN (POST/PUT/DELETE)
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
-                        // Cualquier otra petición necesita simplemente estar autenticado
+                        // 5. Por defecto
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
