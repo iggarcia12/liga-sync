@@ -1,49 +1,24 @@
-<div class="admin-page">
+<div class="admin-page" [class.editing-mode]="editorActivo">
+  <div class="main-admin-content" *ngIf="!editorActivo">
   <div class="header-section">
     <h1 class="page-title">⚙️ Panel de Administración</h1>
-    <p class="page-subtitle">Gestión centralizada de usuarios y estadísticas reales de la liga.</p>
+    <p class="page-subtitle">Gestión centralizada de la liga y control total del calendario.</p>
   </div>
 
-  <div class="alerta-seguridad">
-    <span class="icon">🛡️</span>
-    <p>Has accedido a una zona restringida con el rol <strong>ADMINISTRADOR</strong>. Las acciones aquí son irreversibles.</p>
+  <div class="admin-tabs">
+    <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥 Usuarios</button>
+    <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">⚽ Partidos y Calendario</button>
   </div>
 
   <div class="admin-grid">
-    <!-- Métricas Reales -->
-    <div class="admin-metrics">
-      <div class="metric-card bg-primary-light">
-        <h4>Usuarios Registrados</h4>
-        <div class="value">{{ metricas.totalUsuarios }}</div>
-      </div>
-      <div class="metric-card bg-success-light">
-        <h4>Partidos Jugados</h4>
-        <div class="value">{{ metricas.partidosJugados }}</div>
-      </div>
-      <div class="metric-card bg-warning-light">
-        <h4>Equipos en Liga</h4>
-        <div class="value">{{ metricas.equiposRegistrados }}</div>
-      </div>
-    </div>
-
-    <!-- Gestión de Usuarios Reales -->
-    <div class="card panel-usuarios">
+    <!-- SECCIÓN USUARIOS -->
+    <div class="card panel-usuarios" *ngIf="tabActiva === 'usuarios'">
       <div class="card-header">
-        <h3>Gestión de Usuarios Registrados</h3>
+        <h3>Gestión de Usuarios</h3>
         <span class="badge">{{ usuarios.length }} usuarios</span>
       </div>
       
-      <!-- Cargando -->
-      <div class="estado-vacio" *ngIf="cargandoUsuarios">
-        <p>⏳ Cargando usuarios...</p>
-      </div>
-
-      <!-- Sin usuarios -->
-      <div class="estado-vacio" *ngIf="!cargandoUsuarios && usuarios.length === 0">
-        <p>📭 No hay usuarios registrados.</p>
-      </div>
-
-      <div class="table-responsive" *ngIf="!cargandoUsuarios && usuarios.length > 0">
+      <div class="table-responsive" *ngIf="!cargandoUsuarios">
         <table class="table">
           <thead>
             <tr>
@@ -51,33 +26,67 @@
               <th>Nombre</th>
               <th>Email</th>
               <th>Rol</th>
-              <th>Equipo ID</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let u of usuarios">
               <td>#{{ u.id }}</td>
+              <td><strong>{{ u.nombre }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td><span class="badge" [ngClass]="getRolClass(u.role)">{{ u.role || 'USER' }}</span></td>
               <td>
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <div style="width:32px; height:32px; border-radius:50%; background:var(--accent-blue); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; color:#fff; flex-shrink:0;">
-                    {{ getInitial(u.nombre) }}
-                  </div>
-                  <strong>{{ u.nombre }}</strong>
+                <button class="btn btn-small btn-danger" [disabled]="(u.role || '').toUpperCase() === 'ADMIN'" (click)="eliminarUsuario(u.id)">🗑️ Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECCIÓN PARTIDOS -->
+    <div class="card panel-partidos" *ngIf="tabActiva === 'partidos'">
+      <div class="card-header" style="justify-content: space-between; display: flex; align-items: center;">
+        <h3>Calendario de Temporada</h3>
+        <button class="btn btn-primary" (click)="generarCalendario()">🗓️ Generar Calendario Completo</button>
+      </div>
+
+      <div class="estado-vacio" *ngIf="cargandoPartidos">
+        <p>⏳ Cargando partidos...</p>
+      </div>
+
+      <div class="estado-vacio" *ngIf="!cargandoPartidos && partidos.length === 0">
+        <p>📭 No hay partidos programados. Usa el botón superior para generar el calendario.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!cargandoPartidos && partidos.length > 0">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Jornada</th>
+              <th>Local</th>
+              <th>Resultado</th>
+              <th>Visitante</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of partidos">
+              <td><strong>J{{ p.jornada }}</strong></td>
+              <td>{{ p.local?.nombre || '?' }}</td>
+              <td>
+                <div class="score-display">
+                  {{ p.golesLocal !== null ? p.golesLocal : '-' }} : {{ p.golesVisitante !== null ? p.golesVisitante : '-' }}
                 </div>
               </td>
-              <td>{{ u.email }}</td>
+              <td>{{ p.visitante?.nombre || '?' }}</td>
+              <td>{{ p.fecha }}</td>
               <td>
-                <span class="badge" [ngClass]="getRolClass(u.role)">{{ u.role || 'USER' }}</span>
-              </td>
-              <td class="text-secondary">{{ u.teamId || '—' }}</td>
-              <td>
-                <button 
-                  class="btn btn-small btn-danger" 
-                  [disabled]="(u.role || '').toUpperCase() === 'ADMIN'" 
-                  (click)="eliminarUsuario(u.id)">
-                  🗑️ Eliminar
-                </button>
+                <div style="display:flex; gap: 5px;">
+                  <button class="btn btn-small btn-success" (click)="abrirModalResultado(p)">⚽ Resultado</button>
+                  <button class="btn btn-small btn-danger" (click)="eliminarPartido(p.id)">🗑️</button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -85,4 +94,120 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- EDITOR DE RESULTADOS FULL-SCREEN -->
+<div class="match-editor-screen" *ngIf="editorActivo">
+  <div class="editor-header">
+    <button class="back-btn" (click)="cerrarModal()">
+      <span class="icon">⬅️</span> Volver al Panel
+    </button>
+    <div class="match-info-top">
+      <span class="jornada-badge">Jornada {{ partidoEditando?.jornada }}</span>
+      <span class="fecha-badge">{{ partidoEditando?.fecha }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary btn-save" (click)="guardarResultado()">
+        💾 Guardar Cambios
+      </button>
+    </div>
+  </div>
+
+  <div class="editor-container">
+    <!-- Marcador Principal -->
+    <div class="scoreboard-section">
+      <div class="team-card local">
+        <div class="team-identity">
+          <div class="team-logo">{{ partidoEditando?.local?.escudo || '🏠' }}</div>
+          <h2 class="team-name">{{ partidoEditando?.local?.nombre }}</h2>
+        </div>
+        <div class="score-input-wrapper">
+          <button class="score-btn" (click)="golesLocal = (golesLocal > 0 ? golesLocal - 1 : 0)">-</button>
+          <input type="number" [(ngModel)]="golesLocal" class="score-input">
+          <button class="score-btn" (click)="golesLocal = golesLocal + 1">+</button>
+        </div>
+      </div>
+
+      <div class="vs-divider">
+        <div class="divider-line"></div>
+        <span class="vs-text">VS</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="team-card visitante">
+        <div class="team-identity">
+          <div class="team-logo">{{ partidoEditando?.visitante?.escudo || '🚌' }}</div>
+          <h2 class="team-name">{{ partidoEditando?.visitante?.nombre }}</h2>
+        </div>
+        <div class="score-input-wrapper">
+          <button class="score-btn" (click)="golesVisitante = (golesVisitante > 0 ? golesVisitante - 1 : 0)">-</button>
+          <input type="number" [(ngModel)]="golesVisitante" class="score-input">
+          <button class="score-btn" (click)="golesVisitante = golesVisitante + 1">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gestión de Incidencias -->
+    <div class="incidents-section">
+      <div class="section-title">
+        <h3>⚡ Incidencias del Partido</h3>
+        <p>Registra goles, asistencias y tarjetas en tiempo real.</p>
+      </div>
+
+      <div class="incidents-grid">
+        <!-- Formulario de nueva incidencia -->
+        <div class="add-incident-card">
+          <h4>Agregar Incidencia</h4>
+          <div class="incident-row">
+            <div class="form-group">
+              <label>Jugador</label>
+              <select #jugadorSel class="modern-select">
+                <option value="">Seleccionar Jugador...</option>
+                <optgroup [label]="partidoEditando?.local?.nombre">
+                  <option *ngFor="let j of jugadoresLocal" [value]="j.id">{{ j.nombre }} ({{ j.pos }})</option>
+                </optgroup>
+                <optgroup [label]="partidoEditando?.visitante?.nombre">
+                  <option *ngFor="let j of jugadoresVisitante" [value]="j.id">{{ j.nombre }} ({{ j.pos }})</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Tipo</label>
+              <select #tipoSel class="modern-select">
+                <option value="GOL">GOL ⚽</option>
+                <option value="ASIST">ASISTENCIA 👟</option>
+                <option value="AMARILLA">AMARILLA 🟨</option>
+                <option value="ROJA">ROJA 🟥</option>
+              </select>
+            </div>
+
+            <button class="btn btn-add" (click)="agregarIncidencia(jugadorSel.value, tipoSel.value)">
+              <span>➕</span> Añadir
+            </button>
+          </div>
+        </div>
+
+        <!-- Listado de incidencias -->
+        <div class="incidents-log">
+          <div class="empty-log" *ngIf="incidencias.length === 0">
+            <div class="icon">📋</div>
+            <p>No hay incidencias registradas aún.</p>
+          </div>
+
+          <div class="incident-list-item" *ngFor="let inc of incidencias; let i = index">
+            <div class="incident-icon" [ngClass]="inc.tipo.toLowerCase()">
+              {{ inc.tipo === 'GOL' ? '⚽' : inc.tipo === 'ASIST' ? '👟' : inc.tipo === 'AMARILLA' ? '🟨' : '🟥' }}
+            </div>
+            <div class="incident-details">
+              <span class="player-name">{{ getNombreJugador(inc.jugadorId) }}</span>
+              <span class="event-type">{{ inc.tipo }}</span>
+            </div>
+            <button class="remove-btn" (click)="quitarIncidencia(i)">×</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
