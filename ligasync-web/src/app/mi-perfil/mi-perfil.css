@@ -61,6 +61,67 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* --- Badge variante espectador ----------------------------- */
+.perfil-badge--espectador {
+  background-color: rgba(150, 150, 150, 0.12);
+  color: var(--text-secondary);
+  border-color: rgba(150, 150, 150, 0.25);
+}
+
+/* --- Ficha datos generales --------------------------------- */
+.seccion-ficha {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.ficha-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.25rem;
+}
+
+.ficha-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ficha-dato__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.ficha-dato__valor {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ficha-dato__valor--pos {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+.ficha-dato__valor--media {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--accent-color);
+}
+
+.seccion-stats {
+  margin-bottom: 2rem;
+}
+
 /* --- Sección de estadísticas ------------------------------- */
 .seccion-titulo {
   font-family: 'Montserrat', sans-serif;

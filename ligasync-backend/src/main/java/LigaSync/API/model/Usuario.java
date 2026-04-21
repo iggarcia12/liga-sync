@@ -24,6 +24,9 @@ public class Usuario {
     @Column(name = "team_id")
     private Integer teamId;
 
+    @Column(name = "jugador_id")
+    private Long jugadorId;
+
     private String avatar;
 
     // --- GETTERS Y SETTERS ---
@@ -76,6 +79,14 @@ public class Usuario {
 
     public void setTeamId(Integer teamId) {
         this.teamId = teamId;
+    }
+
+    public Long getJugadorId() {
+        return jugadorId;
+    }
+
+    public void setJugadorId(Long jugadorId) {
+        this.jugadorId = jugadorId;
     }
 
     public String getAvatar() {

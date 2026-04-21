@@ -27,7 +27,8 @@ export class AdminComponent implements OnInit {
   };
 
   rolesDisponibles = ['espectador', 'jugador', 'entrenador', 'admin'];
-  rangosPendientes: { [userId: number]: { role: string; teamId: number | null } } = {};
+  rangosPendientes: { [userId: number]: { role: string; teamId: number | null; jugadorId: number | null } } = {};
+  jugadoresSinUsuario: any[] = [];
   mensajeRango = '';
   mensajeRangoError = '';
 
@@ -58,7 +59,8 @@ export class AdminComponent implements OnInit {
         datos.forEach(u => {
           this.rangosPendientes[u.id] = {
             role: u.role ?? 'espectador',
-            teamId: u.teamId ?? null
+            teamId: u.teamId ?? null,
+            jugadorId: u.jugadorId ?? null
           };
         });
         this.cdr.detectChanges();
@@ -84,6 +86,15 @@ export class AdminComponent implements OnInit {
       this.equipos = datos;
       this.metricas.equiposRegistrados = datos.length;
       this.cdr.detectChanges();
+    });
+
+    // 4. Cargar jugadores disponibles (sin usuario vinculado)
+    this.http.get<any[]>(this.urlBase + '/jugadores/sin-usuario').subscribe({
+      next: (datos) => {
+        this.jugadoresSinUsuario = datos;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar jugadores sin usuario:', err)
     });
   }
 
@@ -188,7 +199,11 @@ export class AdminComponent implements OnInit {
   }
 
   requiereEquipo(role: string): boolean {
-    return role === 'jugador' || role === 'entrenador';
+    return role === 'entrenador';
+  }
+
+  requiereJugador(role: string): boolean {
+    return role === 'jugador';
   }
 
   guardarRango(usuario: any) {
@@ -197,7 +212,8 @@ export class AdminComponent implements OnInit {
 
     const body = {
       role: rango.role,
-      teamId: this.requiereEquipo(rango.role) ? rango.teamId : null
+      teamId: this.requiereEquipo(rango.role) ? rango.teamId : null,
+      jugadorId: rango.role === 'jugador' ? rango.jugadorId : null
     };
 
     this.http.put<any>(`${this.urlBase}/usuarios/${usuario.id}/rango`, body).subscribe({
@@ -229,5 +245,25 @@ export class AdminComponent implements OnInit {
 
   getInitial(nombre: string): string {
     return nombre ? nombre.charAt(0).toUpperCase() : '?';
+  }
+
+  esUrl(texto: string): boolean {
+    if (!texto) return false;
+    // Es URL si empieza por http, contiene barras o tiene una extensión de imagen común
+    const regexImagen = /\.(jpg|jpeg|png|gif|svg|webp|avif)(?:\?.*)?$/i;
+    return texto.startsWith('http') || 
+           texto.startsWith('https') || 
+           texto.includes('/') || 
+           texto.includes('data:image') ||
+           regexImagen.test(texto);
+  }
+
+  onImageError(event: any) {
+    // Si la imagen falla, la ocultamos y mostramos el span de respaldo
+    event.target.style.display = 'none';
+    const fallback = event.target.nextElementSibling;
+    if (fallback) {
+      fallback.style.display = 'inline-block';
+    }
   }
 }

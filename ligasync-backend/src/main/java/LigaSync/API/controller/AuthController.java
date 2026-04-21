@@ -53,7 +53,8 @@ public class AuthController {
         response.put("token", token);
         response.put("usuario", usuarioDB.getNombre());
         response.put("rol", usuarioDB.getRole());
-        response.put("userId", usuarioDB.getId()); // <-- ID necesario para mensajería
+        response.put("userId", usuarioDB.getId());
+        response.put("jugadorId", usuarioDB.getJugadorId());
 
         return ResponseEntity.ok(response);
     }

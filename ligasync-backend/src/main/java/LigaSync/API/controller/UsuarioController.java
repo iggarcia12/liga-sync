@@ -42,13 +42,14 @@ public class UsuarioController {
         return usuarioRepository.save(nuevoUsuario);
     }
 
-    // Cambiar rol y equipo de un usuario (solo admin)
+    // Cambiar rol, equipo y jugador vinculado de un usuario (solo admin)
     @PutMapping("/{id}/rango")
     public ResponseEntity<Usuario> cambiarRango(@PathVariable Long id, @RequestBody RangoRequest request) {
         return usuarioRepository.findById(id)
                 .map(usuario -> {
                     usuario.setRole(request.getRole());
                     usuario.setTeamId(request.getTeamId());
+                    usuario.setJugadorId(request.getJugadorId());
                     return ResponseEntity.ok(usuarioRepository.save(usuario));
                 })
                 .orElse(ResponseEntity.notFound().build());

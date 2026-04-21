@@ -38,9 +38,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Rutas públicas y pre-flight
+                        // 1. Rutas públicas y pre-flight (IMPORTANTE: Orden descendente de especificidad)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/login", "/api/usuarios", "/api/auth/registro").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/registro").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Por si se usa para registro alternativo
 
                         // 2. Mensajes (POST y GET) - Cualquier autenticado
                         .requestMatchers(HttpMethod.POST, "/api/mensajes").authenticated()
@@ -55,11 +57,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/jugadores/**").hasAnyRole("ADMIN", "ENTRENADOR")
 
                         // 5. Acciones restringidas a ADMIN (POST/PUT/DELETE)
+                        // IMPORTANTE: Estas reglas solo se aplican si no han matched con las de arriba
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
-                        // 5. Por defecto
+                        // 6. Por defecto
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -25,6 +25,11 @@ export class AuthService {
     return localStorage.getItem('nombre');
   }
 
+  getJugadorId(): number | null {
+    const id = localStorage.getItem('jugadorId');
+    return id ? parseInt(id, 10) : null;
+  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
@@ -55,6 +60,7 @@ export class AuthService {
     localStorage.removeItem('rol');
     localStorage.removeItem('userId');
     localStorage.removeItem('nombre');
+    localStorage.removeItem('jugadorId');
     this.router.navigate(['/login']);
   }
 }

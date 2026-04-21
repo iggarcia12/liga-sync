@@ -1,15 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
-
-interface EstadisticasJugador {
-  goles: number;
-  asistencias: number;
-  tarjetasAmarillas: number;
-  tarjetasRojas: number;
-  partidosJugados: number;
-}
 
 @Component({
   selector: 'app-mi-perfil',
@@ -20,42 +12,52 @@ interface EstadisticasJugador {
 })
 export class MiPerfilComponent implements OnInit {
   private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
   public authService = inject(AuthService);
+
+  readonly urlBase = 'http://localhost:8080/api';
 
   nombre = this.authService.getNombre() ?? '';
   email = '';
-  stats: EstadisticasJugador | null = null;
+  jugador: any = null;
   cargando = true;
 
   ngOnInit() {
     const userId = this.authService.getUserId();
-    if (!userId) return;
 
-    this.http.get<any>(`http://localhost:8080/api/usuarios/${userId}`).subscribe({
+    if (!userId) {
+      this.cargando = false;
+      return;
+    }
+
+    // Primero cargamos el usuario para obtener su jugadorId actualizado desde el servidor
+    this.http.get<any>(`${this.urlBase}/usuarios/${userId}`).subscribe({
       next: (usuario) => {
         this.nombre = usuario.nombre;
         this.email = usuario.email;
-      },
-      error: (err) => console.error('Error al cargar perfil:', err)
-    });
 
-    this.http.get<any[]>('http://localhost:8080/api/jugadores').subscribe({
-      next: (jugadores) => {
-        const jugador = jugadores.find(j => j.usuarioId === userId);
-        if (jugador) {
-          this.stats = {
-            goles: jugador.goles ?? 0,
-            asistencias: jugador.asistencias ?? 0,
-            tarjetasAmarillas: jugador.tarjetasAmarillas ?? 0,
-            tarjetasRojas: jugador.tarjetasRojas ?? 0,
-            partidosJugados: jugador.partidosJugados ?? 0
-          };
+        if (usuario.jugadorId) {
+          this.http.get<any>(`${this.urlBase}/jugadores/${usuario.jugadorId}`).subscribe({
+            next: (j) => {
+              this.jugador = j;
+              this.cargando = false;
+              this.cdr.detectChanges();
+            },
+            error: (err) => {
+              console.error('Error al cargar ficha del jugador:', err);
+              this.cargando = false;
+              this.cdr.detectChanges();
+            }
+          });
+        } else {
+          this.cargando = false;
+          this.cdr.detectChanges();
         }
-        this.cargando = false;
       },
       error: (err) => {
-        console.error('Error al cargar estadísticas del jugador:', err);
+        console.error('Error al cargar datos del usuario:', err);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -1,56 +1,84 @@
 <div class="perfil-page">
 
+  <!-- CABECERA DE IDENTIDAD -->
   <div class="perfil-header">
     <div class="perfil-avatar">
       <span>👤</span>
     </div>
     <div class="perfil-identidad">
       <h1 class="perfil-nombre">{{ nombre }}</h1>
-      <span class="perfil-badge">Jugador</span>
+      <span class="perfil-badge" *ngIf="jugador">Jugador · {{ jugador.pos }}</span>
+      <span class="perfil-badge perfil-badge--espectador" *ngIf="!jugador && !cargando">Espectador</span>
       <p class="perfil-email">{{ email }}</p>
     </div>
   </div>
 
+  <!-- CARGANDO -->
   <div *ngIf="cargando" class="estado-carga">
     <div class="spinner"></div>
-    <p>Cargando estadísticas...</p>
+    <p>Cargando ficha...</p>
   </div>
 
-  <section *ngIf="!cargando && stats" class="seccion-stats">
-    <h2 class="seccion-titulo">Mis Estadísticas</h2>
+  <!-- FICHA DEL JUGADOR -->
+  <ng-container *ngIf="!cargando && jugador">
 
-    <div class="stats-grid">
-      <div class="stat-card stat-card--goles">
-        <span class="stat-card__icono">⚽</span>
-        <span class="stat-card__numero">{{ stats.goles }}</span>
-        <span class="stat-card__label">Goles</span>
+    <!-- Datos generales del jugador -->
+    <section class="seccion-ficha">
+      <div class="ficha-grid">
+        <div class="ficha-dato">
+          <span class="ficha-dato__label">Equipo</span>
+          <span class="ficha-dato__valor">{{ jugador.equipo?.nombre ?? '—' }}</span>
+        </div>
+        <div class="ficha-dato">
+          <span class="ficha-dato__label">Posición</span>
+          <span class="ficha-dato__valor ficha-dato__valor--pos">{{ jugador.pos ?? '—' }}</span>
+        </div>
+        <div class="ficha-dato">
+          <span class="ficha-dato__label">Media</span>
+          <span class="ficha-dato__valor ficha-dato__valor--media">{{ jugador.media ?? '—' }}</span>
+        </div>
+        <div class="ficha-dato">
+          <span class="ficha-dato__label">Valor</span>
+          <span class="ficha-dato__valor">
+            {{ jugador.valor != null ? (jugador.valor | number) + ' €' : '—' }}
+          </span>
+        </div>
       </div>
-      <div class="stat-card stat-card--asist">
-        <span class="stat-card__icono">🎯</span>
-        <span class="stat-card__numero">{{ stats.asistencias }}</span>
-        <span class="stat-card__label">Asistencias</span>
-      </div>
-      <div class="stat-card stat-card--partidos">
-        <span class="stat-card__icono">🏟️</span>
-        <span class="stat-card__numero">{{ stats.partidosJugados }}</span>
-        <span class="stat-card__label">Partidos</span>
-      </div>
-      <div class="stat-card stat-card--amarilla">
-        <span class="stat-card__icono">🟨</span>
-        <span class="stat-card__numero">{{ stats.tarjetasAmarillas }}</span>
-        <span class="stat-card__label">Amarillas</span>
-      </div>
-      <div class="stat-card stat-card--roja">
-        <span class="stat-card__icono">🟥</span>
-        <span class="stat-card__numero">{{ stats.tarjetasRojas }}</span>
-        <span class="stat-card__label">Rojas</span>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <div *ngIf="!cargando && !stats" class="estado-vacio">
+    <!-- Estadísticas de temporada -->
+    <section class="seccion-stats">
+      <h2 class="seccion-titulo">Estadísticas de Temporada</h2>
+      <div class="stats-grid">
+        <div class="stat-card stat-card--goles">
+          <span class="stat-card__icono">⚽</span>
+          <span class="stat-card__numero">{{ jugador.goles ?? 0 }}</span>
+          <span class="stat-card__label">Goles</span>
+        </div>
+        <div class="stat-card stat-card--asist">
+          <span class="stat-card__icono">🎯</span>
+          <span class="stat-card__numero">{{ jugador.asist ?? 0 }}</span>
+          <span class="stat-card__label">Asistencias</span>
+        </div>
+        <div class="stat-card stat-card--amarilla">
+          <span class="stat-card__icono">🟨</span>
+          <span class="stat-card__numero">{{ jugador.amarillas ?? 0 }}</span>
+          <span class="stat-card__label">Amarillas</span>
+        </div>
+        <div class="stat-card stat-card--roja">
+          <span class="stat-card__icono">🟥</span>
+          <span class="stat-card__numero">{{ jugador.rojas ?? 0 }}</span>
+          <span class="stat-card__label">Rojas</span>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+
+  <!-- SIN VINCULACIÓN -->
+  <div *ngIf="!cargando && !jugador" class="estado-vacio">
     <span>📋</span>
-    <p>Aún no tienes estadísticas registradas en ningún equipo.</p>
+    <p>Tu cuenta no tiene ningún jugador vinculado todavía.<br>Contacta con el administrador de la liga.</p>
   </div>
 
 </div>

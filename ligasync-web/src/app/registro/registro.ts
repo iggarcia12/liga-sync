@@ -47,7 +47,15 @@ export class RegistroComponent {
       },
       error: (err) => {
         console.error('Error en registro:', err);
-        this.mensajeError = err.error ?? 'Error al registrar. Inténtalo de nuevo.';
+        if (typeof err.error === 'string') {
+          this.mensajeError = err.error;
+        } else if (err.error && err.error.mensaje) {
+          this.mensajeError = err.error.mensaje;
+        } else if (err.status === 403) {
+          this.mensajeError = 'Error de permisos (403). Contacta con el administrador.';
+        } else {
+          this.mensajeError = 'Error al conectar con el servidor. Inténtalo de nuevo.';
+        }
         this.cargando = false;
       }
     });

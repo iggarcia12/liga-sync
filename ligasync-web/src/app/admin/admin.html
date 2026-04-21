@@ -31,7 +31,7 @@
               <th>Email</th>
               <th>Rol actual</th>
               <th>Asignar rol</th>
-              <th>Equipo</th>
+              <th>Vinculación</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -56,13 +56,33 @@
                   <option *ngFor="let r of rolesDisponibles" [value]="r">{{ r }}</option>
                 </select>
               </td>
-              <td>
-                <select class="select-equipo"
-                  [(ngModel)]="rangosPendientes[u.id].teamId"
-                  [disabled]="!requiereEquipo(rangosPendientes[u.id].role)">
+              <td class="celda-vinculacion">
+                <!-- Entrenador: selector de equipo -->
+                <select *ngIf="requiereEquipo(rangosPendientes[u.id].role)"
+                  class="select-equipo"
+                  [(ngModel)]="rangosPendientes[u.id].teamId">
                   <option [ngValue]="null">— Sin equipo —</option>
                   <option *ngFor="let e of equipos" [ngValue]="e.id">{{ e.nombre }}</option>
                 </select>
+
+                <!-- Jugador: selector de jugador -->
+                <select *ngIf="requiereJugador(rangosPendientes[u.id].role)"
+                  class="select-equipo"
+                  [(ngModel)]="rangosPendientes[u.id].jugadorId">
+                  <option [ngValue]="null">— Sin jugador —</option>
+                  <!-- Mostrar el jugador ya vinculado aunque no esté en "sin-usuario" -->
+                  <option *ngIf="u.jugadorId && !jugadoresSinUsuario.find(j => j.id === u.jugadorId)"
+                    [ngValue]="u.jugadorId">
+                    [Vinculado actual]
+                  </option>
+                  <option *ngFor="let j of jugadoresSinUsuario" [ngValue]="j.id">
+                    {{ j.nombre }} ({{ j.pos }})
+                  </option>
+                </select>
+
+                <!-- Espectador/Admin: sin vinculación -->
+                <span *ngIf="!requiereEquipo(rangosPendientes[u.id].role) && !requiereJugador(rangosPendientes[u.id].role)"
+                  class="sin-vinculacion">—</span>
               </td>
               <td>
                 <div class="acciones-celda">
@@ -163,7 +183,15 @@
         <div class="equipo-cabecera">
           <span class="equipo-rol-tag">Local</span>
           <div class="equipo-identity-display">
-            <span class="equipo-escudo">{{ partidoEditando?.local?.escudo || '🏠' }}</span>
+            <span class="equipo-escudo" [title]="partidoEditando?.local?.escudo || 'Sin escudo'">
+              <img *ngIf="esUrl(partidoEditando?.local?.escudo)" 
+                   [src]="partidoEditando.local.escudo" 
+                   class="img-escudo-acta"
+                   (error)="onImageError($event)">
+              <span [style.display]="esUrl(partidoEditando?.local?.escudo) ? 'none' : 'inline-block'">
+                {{ (partidoEditando?.local?.escudo && !esUrl(partidoEditando.local.escudo)) ? partidoEditando.local.escudo : '🏠' }}
+              </span>
+            </span>
             <h2 class="equipo-nombre-acta">{{ partidoEditando?.local?.nombre }}</h2>
           </div>
         </div>
@@ -210,7 +238,15 @@
         <div class="equipo-cabecera equipo-cabecera--der">
           <span class="equipo-rol-tag">Visitante</span>
           <div class="equipo-identity-display">
-            <span class="equipo-escudo">{{ partidoEditando?.visitante?.escudo || '🚌' }}</span>
+            <span class="equipo-escudo" [title]="partidoEditando?.visitante?.escudo || 'Sin escudo'">
+              <img *ngIf="esUrl(partidoEditando?.visitante?.escudo)" 
+                   [src]="partidoEditando.visitante.escudo" 
+                   class="img-escudo-acta"
+                   (error)="onImageError($event)">
+              <span [style.display]="esUrl(partidoEditando?.visitante?.escudo) ? 'none' : 'inline-block'">
+                {{ (partidoEditando?.visitante?.escudo && !esUrl(partidoEditando.visitante.escudo)) ? partidoEditando.visitante.escudo : '🚌' }}
+              </span>
+            </span>
             <h2 class="equipo-nombre-acta">{{ partidoEditando?.visitante?.nombre }}</h2>
           </div>
         </div>

@@ -32,6 +32,7 @@ export class LoginComponent {
         localStorage.setItem('rol', respuesta.rol);
         localStorage.setItem('userId', respuesta.userId?.toString() ?? '');
         localStorage.setItem('nombre', respuesta.usuario);
+        localStorage.setItem('jugadorId', respuesta.jugadorId?.toString() ?? '');
         
         // 3. ¡Mágia! Cambiamos de página automáticamente al Dashboard
         this.router.navigate(['/dashboard']); 
