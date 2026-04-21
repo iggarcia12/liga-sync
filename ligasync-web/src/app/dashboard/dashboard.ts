@@ -92,4 +92,19 @@ export class DashboardComponent implements OnInit {
       return fecha;
     }
   }
+
+  get equiposOrdenados(): any[] {
+    return [...this.equipos].sort((a, b) => (b.puntos || 0) - (a.puntos || 0));
+  }
+
+  get ultimoPartido(): any | null {
+    const jugados = this.partidos.filter(p => p.golesLocal !== null && p.golesLocal !== undefined);
+    return jugados.length > 0 ? jugados[jugados.length - 1] : null;
+  }
+
+  get topGoleadores(): any[] {
+    return [...this.jugadores]
+      .sort((a, b) => (b.goles || 0) - (a.goles || 0))
+      .slice(0, 3);
+  }
 }

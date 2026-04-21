@@ -46,7 +46,7 @@
 
     <!-- SECCIÓN PARTIDOS -->
     <div class="card panel-partidos" *ngIf="tabActiva === 'partidos'">
-      <div class="card-header" style="justify-content: space-between; display: flex; align-items: center;">
+      <div class="card-header">
         <h3>Calendario de Temporada</h3>
         <button class="btn btn-primary" (click)="generarCalendario()">🗓️ Generar Calendario Completo</button>
       </div>
@@ -83,7 +83,7 @@
               <td>{{ p.visitante?.nombre || '?' }}</td>
               <td>{{ p.fecha }}</td>
               <td>
-                <div style="display:flex; gap: 5px;">
+                <div class="acciones-celda">
                   <button class="btn btn-small btn-success" (click)="abrirModalResultado(p)">⚽ Resultado</button>
                   <button class="btn btn-small btn-danger" (click)="eliminarPartido(p.id)">🗑️</button>
                 </div>
@@ -100,7 +100,7 @@
 <div class="match-editor-screen" *ngIf="editorActivo">
   <div class="editor-header">
     <button class="back-btn" (click)="cerrarModal()">
-      <span class="icon">⬅️</span> Volver al Panel
+      <span class="icon">⬅️</span> Volver
     </button>
     <div class="match-info-top">
       <span class="jornada-badge">Jornada {{ partidoEditando?.jornada }}</span>
@@ -114,100 +114,107 @@
   </div>
 
   <div class="editor-container">
-    <!-- Marcador Principal -->
-    <div class="scoreboard-section">
-      <div class="team-card local">
-        <div class="team-identity">
-          <div class="team-logo">{{ partidoEditando?.local?.escudo || '🏠' }}</div>
-          <h2 class="team-name">{{ partidoEditando?.local?.nombre }}</h2>
+
+    <!-- ── GRID TRIPLE COLUMNA ─────────────────────────────── -->
+    <div class="editor-acta-grid">
+
+      <!-- COLUMNA LOCAL -->
+      <div class="columna-equipo">
+        <div class="equipo-cabecera">
+          <span class="equipo-rol-tag">Local</span>
+          <div class="equipo-identity-display">
+            <span class="equipo-escudo">{{ partidoEditando?.local?.escudo || '🏠' }}</span>
+            <h2 class="equipo-nombre-acta">{{ partidoEditando?.local?.nombre }}</h2>
+          </div>
         </div>
-        <div class="score-input-wrapper">
-          <button class="score-btn" (click)="golesLocal = (golesLocal > 0 ? golesLocal - 1 : 0)">-</button>
-          <input type="number" [(ngModel)]="golesLocal" class="score-input">
-          <button class="score-btn" (click)="golesLocal = golesLocal + 1">+</button>
+
+        <div class="lista-jugadores-editor" *ngIf="jugadoresLocal.length > 0; else sinLocal">
+          <div class="fila-jugador-editor" *ngFor="let j of jugadoresLocal">
+            <span class="jugador-nombre-editor">{{ j.nombre }}</span>
+            <button class="btn-stat btn-stat--gol"      title="Gol"        (click)="agregarIncidencia(j.id, 'GOL')">⚽</button>
+            <button class="btn-stat btn-stat--asist"    title="Asistencia" (click)="agregarIncidencia(j.id, 'ASIST')">👟</button>
+            <button class="btn-stat btn-stat--amarilla" title="Amarilla"   (click)="agregarIncidencia(j.id, 'AMARILLA')">🟨</button>
+            <button class="btn-stat btn-stat--roja"     title="Roja"       (click)="agregarIncidencia(j.id, 'ROJA')">🟥</button>
+          </div>
+        </div>
+        <ng-template #sinLocal>
+          <p class="sin-jugadores-msg">Sin jugadores en este equipo.</p>
+        </ng-template>
+      </div>
+
+      <!-- COLUMNA CENTRAL: MARCADOR -->
+      <div class="columna-central">
+        <div class="score-grupo">
+          <span class="score-label">Local</span>
+          <input type="number" [(ngModel)]="golesLocal" class="score-input-vs" min="0">
+          <div class="score-controls">
+            <button class="score-btn" (click)="golesLocal = (golesLocal > 0 ? golesLocal - 1 : 0)">−</button>
+            <button class="score-btn" (click)="golesLocal = golesLocal + 1">+</button>
+          </div>
+        </div>
+
+        <div class="vs-central">VS</div>
+
+        <div class="score-grupo">
+          <span class="score-label">Visitante</span>
+          <input type="number" [(ngModel)]="golesVisitante" class="score-input-vs" min="0">
+          <div class="score-controls">
+            <button class="score-btn" (click)="golesVisitante = (golesVisitante > 0 ? golesVisitante - 1 : 0)">−</button>
+            <button class="score-btn" (click)="golesVisitante = golesVisitante + 1">+</button>
+          </div>
         </div>
       </div>
 
-      <div class="vs-divider">
-        <div class="divider-line"></div>
-        <span class="vs-text">VS</span>
-        <div class="divider-line"></div>
+      <!-- COLUMNA VISITANTE -->
+      <div class="columna-equipo">
+        <div class="equipo-cabecera equipo-cabecera--der">
+          <span class="equipo-rol-tag">Visitante</span>
+          <div class="equipo-identity-display">
+            <span class="equipo-escudo">{{ partidoEditando?.visitante?.escudo || '🚌' }}</span>
+            <h2 class="equipo-nombre-acta">{{ partidoEditando?.visitante?.nombre }}</h2>
+          </div>
+        </div>
+
+        <div class="lista-jugadores-editor" *ngIf="jugadoresVisitante.length > 0; else sinVisitante">
+          <div class="fila-jugador-editor fila-jugador-editor--der" *ngFor="let j of jugadoresVisitante">
+            <button class="btn-stat btn-stat--gol"      title="Gol"        (click)="agregarIncidencia(j.id, 'GOL')">⚽</button>
+            <button class="btn-stat btn-stat--asist"    title="Asistencia" (click)="agregarIncidencia(j.id, 'ASIST')">👟</button>
+            <button class="btn-stat btn-stat--amarilla" title="Amarilla"   (click)="agregarIncidencia(j.id, 'AMARILLA')">🟨</button>
+            <button class="btn-stat btn-stat--roja"     title="Roja"       (click)="agregarIncidencia(j.id, 'ROJA')">🟥</button>
+            <span class="jugador-nombre-editor">{{ j.nombre }}</span>
+          </div>
+        </div>
+        <ng-template #sinVisitante>
+          <p class="sin-jugadores-msg">Sin jugadores en este equipo.</p>
+        </ng-template>
       </div>
 
-      <div class="team-card visitante">
-        <div class="team-identity">
-          <div class="team-logo">{{ partidoEditando?.visitante?.escudo || '🚌' }}</div>
-          <h2 class="team-name">{{ partidoEditando?.visitante?.nombre }}</h2>
-        </div>
-        <div class="score-input-wrapper">
-          <button class="score-btn" (click)="golesVisitante = (golesVisitante > 0 ? golesVisitante - 1 : 0)">-</button>
-          <input type="number" [(ngModel)]="golesVisitante" class="score-input">
-          <button class="score-btn" (click)="golesVisitante = golesVisitante + 1">+</button>
-        </div>
-      </div>
     </div>
 
-    <!-- Gestión de Incidencias -->
-    <div class="incidents-section">
+    <!-- ── LOG DE INCIDENCIAS ──────────────────────────────── -->
+    <div class="incidencias-seccion">
       <div class="section-title">
         <h3>⚡ Incidencias del Partido</h3>
-        <p>Registra goles, asistencias y tarjetas en tiempo real.</p>
+        <p>Historial de eventos registrados en el acta.</p>
       </div>
-
-      <div class="incidents-grid">
-        <!-- Formulario de nueva incidencia -->
-        <div class="add-incident-card">
-          <h4>Agregar Incidencia</h4>
-          <div class="incident-row">
-            <div class="form-group">
-              <label>Jugador</label>
-              <select #jugadorSel class="modern-select">
-                <option value="">Seleccionar Jugador...</option>
-                <optgroup [label]="partidoEditando?.local?.nombre">
-                  <option *ngFor="let j of jugadoresLocal" [value]="j.id">{{ j.nombre }} ({{ j.pos }})</option>
-                </optgroup>
-                <optgroup [label]="partidoEditando?.visitante?.nombre">
-                  <option *ngFor="let j of jugadoresVisitante" [value]="j.id">{{ j.nombre }} ({{ j.pos }})</option>
-                </optgroup>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Tipo</label>
-              <select #tipoSel class="modern-select">
-                <option value="GOL">GOL ⚽</option>
-                <option value="ASIST">ASISTENCIA 👟</option>
-                <option value="AMARILLA">AMARILLA 🟨</option>
-                <option value="ROJA">ROJA 🟥</option>
-              </select>
-            </div>
-
-            <button class="btn btn-add" (click)="agregarIncidencia(jugadorSel.value, tipoSel.value)">
-              <span>➕</span> Añadir
-            </button>
-          </div>
+      <div class="incidents-log">
+        <div class="empty-log" *ngIf="incidencias.length === 0">
+          <div class="icon">📋</div>
+          <p>Usa los botones de los jugadores para registrar goles y tarjetas.</p>
         </div>
-
-        <!-- Listado de incidencias -->
-        <div class="incidents-log">
-          <div class="empty-log" *ngIf="incidencias.length === 0">
-            <div class="icon">📋</div>
-            <p>No hay incidencias registradas aún.</p>
+        <div class="incident-list-item" *ngFor="let inc of incidencias; let i = index">
+          <div class="incident-icon" [ngClass]="inc.tipo.toLowerCase()">
+            {{ inc.tipo === 'GOL' ? '⚽' : inc.tipo === 'ASIST' ? '👟' : inc.tipo === 'AMARILLA' ? '🟨' : '🟥' }}
           </div>
-
-          <div class="incident-list-item" *ngFor="let inc of incidencias; let i = index">
-            <div class="incident-icon" [ngClass]="inc.tipo.toLowerCase()">
-              {{ inc.tipo === 'GOL' ? '⚽' : inc.tipo === 'ASIST' ? '👟' : inc.tipo === 'AMARILLA' ? '🟨' : '🟥' }}
-            </div>
-            <div class="incident-details">
-              <span class="player-name">{{ getNombreJugador(inc.jugadorId) }}</span>
-              <span class="event-type">{{ inc.tipo }}</span>
-            </div>
-            <button class="remove-btn" (click)="quitarIncidencia(i)">×</button>
+          <div class="incident-details">
+            <span class="player-name">{{ getNombreJugador(inc.jugadorId) }}</span>
+            <span class="event-type">{{ inc.tipo }}</span>
           </div>
+          <button class="remove-btn" (click)="quitarIncidencia(i)">×</button>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 </div>

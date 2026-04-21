@@ -1,69 +1,129 @@
-/* Estilos Globales y Variables CSS - LigaSync PRO */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* ============================================================
+   LigaSync PRO — Sistema de Diseño Global
+   Dirección: "Editorial Deportivo Moderno / Alto Rendimiento"
+   ============================================================ */
 
 :root {
-  /* Tema Claro (Por defecto) */
-  --bg-color: #f1f5f9;
+  /* === TEMA CLARO: Editorial Limpio === */
+  --bg-color: #f0f4f9;
+  --bg-surface: #e8eef6;
   --card-bg: #ffffff;
-  --text-primary: #334155;
-  --text-secondary: #64748b;
-  --accent-color: #2563eb;
-  --accent-hover: #1d4ed8;
-  --success-color: #10b981;
-  --danger-color: #ef4444;
-  --border-color: #e2e8f0;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --header-bg: rgba(255, 255, 255, 0.85);
+  --text-primary: #0d1b2e;
+  --text-secondary: #5a6e87;
+  --accent-color: #1a56db;
+  --accent-hover: #1345c0;
+  --accent-glow: rgba(26, 86, 219, 0.18);
+  --success-color: #0f9d58;
+  --danger-color: #dc2626;
+  --warning-color: #d97706;
+  --border-color: #dce5f0;
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(13, 27, 46, 0.06);
+  --shadow-md: 0 4px 16px rgba(13, 27, 46, 0.09);
+  --shadow-lg: 0 12px 36px rgba(13, 27, 46, 0.13);
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --accent-blue: #1a56db;
+
+  /* Tipografía */
+  --font-display: 'Bebas Neue', 'Montserrat', sans-serif;
+  --font-ui: 'Montserrat', 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
 }
 
 [data-theme="dark"] {
-  /* Tema Oscuro */
-  --bg-color: #020617;
-  --card-bg: #0f172a;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --accent-color: #3b82f6; /* Azul ajustado para mejor contraste oscuro */
+  /* === TEMA OSCURO: Panel de Alto Rendimiento === */
+  --bg-color: #060d1a;
+  --bg-surface: #0a1628;
+  --card-bg: #0e1e33;
+  --text-primary: #e4eeff;
+  --text-secondary: #6e8fad;
+  --accent-color: #4b9fff;
   --accent-hover: #60a5fa;
+  --accent-glow: rgba(75, 159, 255, 0.22);
   --success-color: #10b981;
-  --danger-color: #ef4444;
-  --border-color: #1e293b;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-  --header-bg: rgba(15, 23, 42, 0.85);
+  --danger-color: #f87171;
+  --warning-color: #fbbf24;
+  --border-color: rgba(75, 159, 255, 0.1);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.65);
+  --header-bg: rgba(6, 13, 26, 0.95);
+  --accent-blue: #4b9fff;
 }
 
-* {
+/* ============================================================
+   RESET Y BASE
+   ============================================================ */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   background-color: var(--bg-color);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
-  line-height: 1.5;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Clases Utilitarias Globales --- */
+/* ============================================================
+   TIPOGRAFÍA
+   ============================================================ */
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  line-height: 0.95;
+  margin: 0;
+}
 
-/* Contenedores tipo Tarjeta */
+.page-subtitle {
+  color: var(--text-secondary);
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+.header-section {
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
 .card {
   background-color: var(--card-bg);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   padding: 1.5rem;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 
-/* Tablas Responsivas con Scroll */
+/* ============================================================
+   TABLAS
+   ============================================================ */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
 
@@ -72,53 +132,285 @@ body {
   border-collapse: collapse;
 }
 
-.table-responsive th, 
+.table-responsive th,
 .table-responsive td {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1.25rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
 }
 
 .table-responsive th {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--bg-surface);
   color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+}
+
+.table-responsive td {
+  color: var(--text-primary);
+  font-size: 0.93rem;
 }
 
 [data-theme="dark"] .table-responsive th {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* Botones Base */
+/* ============================================================
+   BOTONES
+   ============================================================ */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: var(--font-ui);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, transform 0.1s;
-  border: none;
-  gap: 0.5rem;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s, border-color 0.2s;
+  border: 1.5px solid var(--border-color);
+  gap: 0.35rem;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
 }
 
-.btn:active {
-  transform: scale(0.98);
+.btn:hover {
+  background-color: var(--bg-surface);
 }
+
+.btn:active { transform: scale(0.97); }
 
 .btn-primary {
   background-color: var(--accent-color);
   color: white;
+  border-color: var(--accent-color);
 }
 .btn-primary:hover {
   background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 4px 14px var(--accent-glow);
 }
 
 .btn-danger {
   background-color: var(--danger-color);
   color: white;
+  border-color: var(--danger-color);
 }
+.btn-danger:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+}
+.btn-danger:disabled {
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+.btn-success:hover {
+  background-color: #059669;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.btn-small {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.75rem;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-family: var(--font-ui);
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.badge-admin {
+  background-color: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+  border-color: rgba(139, 92, 246, 0.25);
+}
+
+.badge-user {
+  background-color: rgba(75, 159, 255, 0.1);
+  color: var(--accent-color);
+  border-color: rgba(75, 159, 255, 0.2);
+}
+
+/* ============================================================
+   FORMULARIOS
+   ============================================================ */
+.grupo-input {
+  margin-bottom: 1.25rem;
+}
+
+.grupo-input label {
+  display: block;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 0.45rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-ui);
+}
+
+.grupo-input input,
+.grupo-input select,
+.input-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.grupo-input input:focus,
+.grupo-input select:focus,
+.input-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: modal-fade 0.2s ease;
+}
+
+@keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-up { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  width: 90%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  animation: modal-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 1.75rem;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================================================
+   CARD HEADER
+   ============================================================ */
+.card-header {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-ui);
+}
+
+/* ============================================================
+   ESTADO VACÍO Y MENSAJES
+   ============================================================ */
+.estado-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.icon-vacio {
+  font-size: 2.5rem;
+  opacity: 0.35;
+}
+
+.estado-mensaje {
+  text-align: center;
+  padding: 3rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.estado-mensaje.vacio {
+  border-style: dashed;
+  background: transparent;
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.mt-4 { margin-top: 1.5rem; }
+.text-center { text-align: center; }
+.font-weight-bold { font-weight: 700; }

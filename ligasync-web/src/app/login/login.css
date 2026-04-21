@@ -1,0 +1,205 @@
+/* ============================================================
+   LigaSync PRO — Pantalla de Login
+   ============================================================ */
+
+.pagina-login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* --- Panel Lateral Visual ----------------------------------- */
+.login-lateral {
+  background: linear-gradient(145deg, #060d1a 0%, #0d2347 55%, #071430 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-lateral::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(75, 159, 255, 0.18) 0%, transparent 55%),
+    radial-gradient(circle at 75% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+}
+
+.login-lateral__contenido {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+  padding: 3rem 2.5rem;
+  max-width: 420px;
+}
+
+.login-lateral__icono {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 2rem;
+  filter: drop-shadow(0 0 24px rgba(75, 159, 255, 0.6));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.login-lateral__marca {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 10vw, 9rem);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: 0.06em;
+  margin: 0 0 1.75rem 0;
+  color: #e4eeff;
+}
+
+.login-lateral__marca span {
+  color: #4b9fff;
+  display: block;
+}
+
+.login-lateral__lema {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.7;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+/* Círculos decorativos de fondo */
+.login-lateral__deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.deco-circulo {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(75, 159, 255, 0.1);
+}
+
+.deco-circulo:nth-child(1) {
+  width: 300px; height: 300px;
+  bottom: -80px; right: -80px;
+}
+.deco-circulo--2 {
+  width: 500px; height: 500px;
+  bottom: -200px; right: -200px;
+  border-color: rgba(75, 159, 255, 0.05);
+}
+.deco-circulo--3 {
+  width: 180px; height: 180px;
+  top: 10%; left: -60px;
+  border-color: rgba(16, 185, 129, 0.08);
+}
+
+/* --- Panel del Formulario ----------------------------------- */
+.login-formulario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  background-color: var(--bg-color);
+}
+
+.tarjeta-login {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Badge marca en móvil */
+.login-brand-movil {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-color);
+}
+
+.tarjeta-login h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  line-height: 1.1;
+}
+
+.login-descripcion {
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Mensaje de error */
+.caja-error {
+  background-color: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-left: 3px solid var(--danger-color);
+  color: var(--danger-color);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Botón principal */
+.btn-entrar {
+  width: 100%;
+  padding: 0.95rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.btn-entrar:hover {
+  background-color: var(--accent-hover);
+  box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+.btn-entrar:active {
+  transform: scale(0.98);
+}
+
+/* --- Responsivo -------------------------------------------- */
+@media (max-width: 900px) {
+  .pagina-login {
+    grid-template-columns: 1fr;
+  }
+
+  .login-lateral {
+    min-height: 38vh;
+    padding: 2.5rem 2rem;
+  }
+
+  .login-lateral__marca {
+    font-size: 5rem;
+  }
+
+  .login-brand-movil {
+    display: flex;
+  }
+}

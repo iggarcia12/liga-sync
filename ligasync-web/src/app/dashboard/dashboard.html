@@ -2,9 +2,10 @@
 
   <div class="header-section">
     <h1 class="page-title">Panorama General</h1>
-    <p class="page-subtitle">Revisa el estado de la liga, las estadísticas globales y las últimas noticias.</p>
+    <p class="page-subtitle">Estado de la liga, clasificación y estadísticas en tiempo real.</p>
   </div>
 
+  <!-- ── 3 TARJETAS KPI ──────────────────────────────────────── -->
   <div class="panel-estadisticas">
     <div class="card stat-card metric-azul">
       <div class="stat-info">
@@ -31,67 +32,122 @@
     </div>
   </div>
 
+  <!-- ── GRID PRINCIPAL 2fr / 1fr ──────────────────────────── -->
   <div class="dashboard-grid">
-    <!-- Columna Principal -->
+
+    <!-- ── COLUMNA IZQUIERDA: Clasificación ─────────────────── -->
     <div class="main-column">
-      <div class="card">
-        <div class="card-header-simple">
-          <h3>Liga Global</h3>
-          <span class="badge">Todos los jugadores</span>
-        </div>
-        
-        <div class="grid-jugadores" *ngIf="jugadores.length > 0; else sinJugadores">
-          <div class="card player-mini-card" *ngFor="let jugador of jugadores">
-             <div class="player-avatar-bg">
-                <span class="p-dorsal">{{ jugador.media || '-' }}</span>
-             </div>
-             <div class="player-info">
-               <h4>{{ jugador.nombre }}</h4>
-               <span class="p-pos" [ngClass]="jugador.pos">{{ jugador.pos || 'N/A' }}</span>
-             </div>
-          </div>
+      <div class="card card-clasificacion">
+        <div class="card-header-kpi">
+          <span class="card-tag">🏆</span>
+          <h3>Clasificación General</h3>
+          <span class="badge">Top 5</span>
         </div>
 
-        <ng-template #sinJugadores>
+        <div *ngIf="equipos.length > 0; else sinEquipos">
+          <table class="tabla-clasificacion">
+            <thead>
+              <tr>
+                <th class="th-pos">#</th>
+                <th class="th-equipo">Equipo</th>
+                <th class="th-pj">PJ</th>
+                <th class="th-pts">Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let equipo of equiposOrdenados.slice(0, 5); let i = index"
+                [class.fila-lider]="i === 0"
+                [class.fila-ascenso]="i === 1 || i === 2"
+              >
+                <td class="col-pos">
+                  <span class="pos-badge" [class.pos-oro]="i === 0" [class.pos-plata]="i === 1" [class.pos-bronce]="i === 2">
+                    {{ i + 1 }}
+                  </span>
+                </td>
+                <td class="col-equipo">{{ equipo.nombre }}</td>
+                <td class="col-pj">{{ equipo.partidosJugados || 0 }}</td>
+                <td class="col-pts">{{ equipo.puntos || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #sinEquipos>
           <div class="estado-vacio">
-            <span class="icon-vacio">📭</span>
-            <p>No hay jugadores en la base de datos o están cargando...</p>
+            <span class="icon-vacio">🏟️</span>
+            <p>No hay equipos registrados aún.</p>
           </div>
         </ng-template>
       </div>
     </div>
 
-    <!-- Columna Lateral Feed -->
+    <!-- ── COLUMNA DERECHA: Resultado + Goleadores ──────────── -->
     <aside class="side-column">
-      <div class="card news-card">
-        <div class="card-header-simple border-bottom">
-          <h3>Últimas Noticias</h3>
+
+      <!-- Mini-card: Último Resultado -->
+      <div class="card card-resultado">
+        <div class="card-header-kpi">
+          <span class="card-tag">⚽</span>
+          <h3>Último Resultado</h3>
         </div>
 
-        <!-- Cargando -->
-        <div class="estado-vacio" *ngIf="cargandoNoticias">
-          <span class="icon-vacio">⏳</span>
-          <p>Cargando noticias...</p>
-        </div>
-
-        <!-- Sin noticias -->
-        <div class="estado-vacio" *ngIf="!cargandoNoticias && noticias.length === 0">
-          <span class="icon-vacio">📭</span>
-          <p>No hay noticias todavía. Los resultados de partidos aparecerán aquí.</p>
-        </div>
-
-        <!-- Feed de noticias reales -->
-        <div class="news-feed" *ngIf="!cargandoNoticias && noticias.length > 0">
-          <div class="news-item" *ngFor="let noticia of noticias">
-            <div class="news-icon">{{ getIconoNoticia(noticia) }}</div>
-            <div class="news-content">
-              <p class="news-text">{{ noticia.titulo }}</p>
-              <p class="news-body" *ngIf="noticia.contenido">{{ noticia.contenido }}</p>
-              <span class="news-time">{{ formatearFecha(noticia.fecha) }}</span>
+        <div *ngIf="ultimoPartido; else sinResultado">
+          <div class="marcador-vs">
+            <div class="marcador-lado">
+              <span class="marcador-equipo-nombre">{{ ultimoPartido.local?.nombre }}</span>
+              <span class="marcador-numero">{{ ultimoPartido.golesLocal }}</span>
+            </div>
+            <span class="marcador-separador">:</span>
+            <div class="marcador-lado marcador-lado--der">
+              <span class="marcador-equipo-nombre">{{ ultimoPartido.visitante?.nombre }}</span>
+              <span class="marcador-numero">{{ ultimoPartido.golesVisitante }}</span>
             </div>
           </div>
+          <div class="resultado-jornada" *ngIf="ultimoPartido.jornada">
+            Jornada {{ ultimoPartido.jornada }}
+          </div>
         </div>
+
+        <ng-template #sinResultado>
+          <div class="estado-vacio-mini">
+            <span class="icon-vacio">📋</span>
+            <p>Sin resultados disponibles</p>
+          </div>
+        </ng-template>
       </div>
+
+      <!-- Mini-card: Top Goleadores -->
+      <div class="card card-goleadores">
+        <div class="card-header-kpi">
+          <span class="card-tag">🔥</span>
+          <h3>Top Goleadores</h3>
+        </div>
+
+        <div class="lista-goleadores" *ngIf="topGoleadores.length > 0; else sinGoleadores">
+          <div class="fila-goleador" *ngFor="let jugador of topGoleadores; let i = index">
+            <span
+              class="goleador-rank"
+              [class.rank-oro]="i === 0"
+              [class.rank-plata]="i === 1"
+              [class.rank-bronce]="i === 2"
+            >#{{ i + 1 }}</span>
+            <span class="goleador-nombre">{{ jugador.nombre }}</span>
+            <span class="goleador-goles">
+              {{ jugador.goles || 0 }}<small>G</small>
+            </span>
+          </div>
+        </div>
+
+        <ng-template #sinGoleadores>
+          <div class="estado-vacio-mini">
+            <span class="icon-vacio">📊</span>
+            <p>Sin estadísticas de goles</p>
+          </div>
+        </ng-template>
+      </div>
+
     </aside>
   </div>
+
 </div>

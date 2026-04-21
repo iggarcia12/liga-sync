@@ -1,148 +1,214 @@
+/* ============================================================
+   LigaSync PRO — Navegación Global
+   ============================================================ */
+
 .app-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
+/* --- Navbar ------------------------------------------------- */
 .global-navbar {
   position: sticky;
   top: 0;
   z-index: 50;
   background-color: var(--header-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+.global-navbar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-color), transparent 60%);
+  opacity: 0.6;
+}
+
 .navbar-container {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 1rem;
-  height: 4.5rem;
+  padding: 0 1.5rem;
+  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.5rem;
 }
 
+/* --- Brand -------------------------------------------------- */
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.25rem;
-  color: var(--text-primary);
-}
-.brand-name {
-  font-weight: 500;
-}
-.brand-name strong {
-  color: var(--accent-color);
-  font-weight: 700;
+  gap: 0.6rem;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
+.brand-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.brand-name {
+  font-family: 'Bebas Neue', 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.brand-name strong {
+  color: var(--accent-color);
+  font-weight: 400;
+}
+
+/* --- Links de navegación ------------------------------------ */
 .navbar-links {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 }
 
 .navbar-links a {
   text-decoration: none;
   color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.8rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
+  gap: 0.35rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.navbar-links a .icon {
+  font-size: 0.9rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
 }
 
 .navbar-links a:hover {
   color: var(--text-primary);
-  background-color: var(--border-color);
+  background-color: var(--border-subtle);
+}
+
+.navbar-links a:hover .icon {
+  opacity: 1;
 }
 
 .navbar-links a.active-link {
   color: var(--accent-color);
-  background-color: rgba(37, 99, 235, 0.1); 
+  background-color: var(--accent-glow);
+  font-weight: 700;
+}
+
+.navbar-links a.active-link .icon {
+  opacity: 1;
 }
 
 [data-theme="dark"] .navbar-links a.active-link {
-  background-color: rgba(59, 130, 246, 0.15);
+  background-color: rgba(75, 159, 255, 0.12);
 }
 
+/* --- Acciones ----------------------------------------------- */
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .btn-icon {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  font-size: 1.15rem;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   text-decoration: none;
 }
 
 .btn-icon:hover {
-  background-color: var(--border-color);
+  background-color: var(--bg-surface);
   color: var(--text-primary);
+}
+
+.profile-link {
+  border: 1.5px solid var(--border-color);
+}
+
+.profile-link:hover {
+  border-color: var(--accent-color);
 }
 
 .btn-logout {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   background-color: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  padding: 0.4rem 1rem;
+  border: 1.5px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.35rem 0.9rem;
   border-radius: 9999px;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 0.78rem;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-left: 0.5rem;
 }
 
 .btn-logout:hover {
   background-color: var(--danger-color);
   color: white;
   border-color: var(--danger-color);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
+/* --- Main content ------------------------------------------- */
 .main-content {
   flex: 1;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.5rem;
 }
 
-/* Responsiveness Básica */
+/* --- Responsivo -------------------------------------------- */
 @media (max-width: 1024px) {
-  .navbar-links {
-    display: none; /* En móvil se podría implementar un menú hamburguesa posteriormente */
-  }
-  .logout-text {
-    display: none;
-  }
+  .navbar-links { display: none; }
+
+  .logout-text { display: none; }
+
   .btn-logout {
     padding: 0.5rem;
     border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     justify-content: center;
   }
-}
+}

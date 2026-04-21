@@ -1,30 +1,55 @@
-<div class="pantalla-centrada">
-  <div class="tarjeta-login">
-    <h2>🏆 LigaSync</h2>
-    <p>Inicia sesión para gestionar tu equipo</p>
+<div class="pagina-login">
 
-    <div class="caja-error" *ngIf="mensajeError">
-      {{ mensajeError }}
+  <!-- Panel lateral visual -->
+  <div class="login-lateral">
+    <div class="login-lateral__contenido">
+      <span class="login-lateral__icono">⚽</span>
+      <h1 class="login-lateral__marca">LIGA<span>SYNC</span></h1>
+      <p class="login-lateral__lema">El panel de alto rendimiento para la gestión deportiva profesional.</p>
+      <div class="login-lateral__deco">
+        <div class="deco-circulo"></div>
+        <div class="deco-circulo deco-circulo--2"></div>
+        <div class="deco-circulo deco-circulo--3"></div>
+      </div>
     </div>
-
-    <form (ngSubmit)="hacerLogin()">
-      <div class="grupo-input">
-        <label>Email</label>
-        <input
-          type="email"
-          name="email"
-          [(ngModel)]="email"
-          required
-          placeholder="entrenador@ligasync.com"
-        />
-      </div>
-
-      <div class="grupo-input">
-        <label>Contraseña</label>
-        <input type="password" name="pass" [(ngModel)]="pass" required placeholder="******" />
-      </div>
-
-      <button type="submit" class="btn-entrar">Entrar al panel</button>
-    </form>
   </div>
+
+  <!-- Panel del formulario -->
+  <div class="login-formulario">
+    <div class="tarjeta-login">
+
+      <div class="login-brand-movil">
+        <span>⚽</span>
+        <strong>LigaSync</strong>
+      </div>
+
+      <h2>Bienvenido de vuelta</h2>
+      <p class="login-descripcion">Introduce tus credenciales para acceder al panel.</p>
+
+      <div class="caja-error" *ngIf="mensajeError">
+        {{ mensajeError }}
+      </div>
+
+      <form (ngSubmit)="hacerLogin()">
+        <div class="grupo-input">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            placeholder="entrenador@ligasync.com"
+          />
+        </div>
+
+        <div class="grupo-input">
+          <label>Contraseña</label>
+          <input type="password" name="pass" [(ngModel)]="pass" required placeholder="••••••••" />
+        </div>
+
+        <button type="submit" class="btn-entrar">Entrar al Panel</button>
+      </form>
+    </div>
+  </div>
+
 </div>

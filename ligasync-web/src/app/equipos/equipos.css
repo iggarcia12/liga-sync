@@ -1,32 +1,19 @@
+/* ============================================================
+   LigaSync PRO — Gestión de Equipos / Plantillas
+   ============================================================ */
+
 .equipos-page {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.header-section {
-  margin-bottom: 1rem;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.page-subtitle {
-  color: var(--text-secondary);
-  margin-top: 0.5rem;
-  font-size: 1rem;
-}
-
-/* Filtros y Selector */
+/* --- Filtros y Selector ------------------------------------ */
 .filtros-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.25rem 1.5rem;
+  padding: 1.25rem 1.75rem;
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -34,44 +21,45 @@
 .selector-equipo {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.875rem;
 }
+
 .selector-equipo label {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.75rem;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: 'Montserrat', sans-serif;
+  white-space: nowrap;
 }
+
 .input-select {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
   background-color: var(--card-bg);
   color: var(--text-primary);
-  font-size: 1rem;
-  font-family: inherit;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   min-width: 200px;
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .input-select:focus {
   outline: none;
   border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .acciones-equipo {
   display: flex;
-  gap: 1rem;
-}
-.acciones-equipo .btn {
-  background-color: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-}
-.acciones-equipo .btn:hover {
-  background-color: var(--border-color);
+  gap: 0.75rem;
 }
 
-/* Layout del Equipo (Pizarra + Lista) */
+/* --- Layout Principal --------------------------------------- */
 .team-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -79,79 +67,78 @@
   align-items: start;
 }
 
-@media (max-width: 1024px) {
-  .team-layout {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 1100px) {
+  .team-layout { grid-template-columns: 1fr; }
 }
 
-/* --- PIZARRA TÁCTICA (SOCCER PITCH) --- */
+/* ============================================================
+   PIZARRA TÁCTICA (SOCCER PITCH)
+   ============================================================ */
 .pitch-container {
   padding: 0;
   overflow: hidden;
+  border-radius: var(--radius-lg);
 }
 
 .pitch-header {
   padding: 1rem 1.5rem;
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--bg-surface);
   border-bottom: 1px solid var(--border-color);
 }
-[data-theme="dark"] .pitch-header {
-  background-color: rgba(255, 255, 255, 0.02);
-}
+
 .pitch-header h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .soccer-pitch {
   position: relative;
   width: 100%;
   aspect-ratio: 4/5;
-  background-color: #2e7d32; /* Verde Típico Césped */
-  background-image: 
-    /* Líneas de Corte de Césped */
+  background-color: #1b5e20;
+  background-image:
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 10%,
-      rgba(255,255,255,0.05) 10%,
-      rgba(255,255,255,0.05) 20%
+      rgba(255,255,255,0.04) 10%,
+      rgba(255,255,255,0.04) 20%
     ),
-    /* Bordes Exteriores */
-    linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px),
-    linear-gradient(transparent calc(100% - 1px), rgba(255,255,255,0.6) calc(100% - 1px)),
-    linear-gradient(90deg, transparent calc(100% - 1px), rgba(255,255,255,0.6) calc(100% - 1px));
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(transparent calc(100% - 1px), rgba(255,255,255,0.5) calc(100% - 1px)),
+    linear-gradient(90deg, transparent calc(100% - 1px), rgba(255,255,255,0.5) calc(100% - 1px));
   background-size: 100% 100%;
-  padding: 2rem 1rem;
+  padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-/* Medio Campo Linea */
 .soccer-pitch::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: rgba(255, 255, 255, 0.6);
+  left: 5%;
+  width: 90%;
+  height: 1.5px;
+  background-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-50%);
 }
 
-/* Circulo Central */
 .soccer-pitch::after {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 120px;
-  height: 120px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
+  width: 110px;
+  height: 110px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -160,17 +147,15 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  z-index: 2; /* Sobre las líneas blancas */
+  z-index: 2;
   width: 100%;
 }
 
-/* Distribución de Zonas */
 .zone-del { height: 20%; align-items: flex-start; }
 .zone-med { height: 30%; }
 .zone-def { height: 30%; align-items: flex-end; }
 .zone-por { height: 15%; align-items: flex-end; justify-content: center; }
 
-/* Fichas de Jugador Tácticas */
 .player-dot {
   display: flex;
   flex-direction: column;
@@ -179,13 +164,12 @@
   cursor: pointer;
   transition: transform 0.2s;
 }
-.player-dot:hover {
-  transform: scale(1.1);
-}
+
+.player-dot:hover { transform: scale(1.12); }
 
 .player-dot .p-dorsal {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   background-color: var(--card-bg);
   color: var(--text-primary);
   border: 2px solid var(--accent-color);
@@ -193,9 +177,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .player-dot .p-dorsal.bg-gold {
@@ -203,23 +188,30 @@
   background-color: #fef3c7;
   color: #92400e;
 }
-[data-theme="dark"] .player-dot .p-dorsal.bg-gold { background-color: #78350f; color: #fef3c7; }
 
-.player-dot .p-name {
-  background-color: rgba(0,0,0,0.6);
-  color: white;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
+[data-theme="dark"] .player-dot .p-dorsal.bg-gold {
+  background-color: #78350f;
+  color: #fde68a;
 }
 
-/* --- LATERAL: PLANTILLA --- */
+.player-dot .p-name {
+  background-color: rgba(0,0,0,0.7);
+  color: white;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ============================================================
+   LATERAL: PLANTILLA
+   ============================================================ */
 .plantilla-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .team-summary {
@@ -228,69 +220,99 @@
   align-items: center;
   text-align: center;
   padding: 2rem 1.5rem;
+  gap: 0.5rem;
 }
+
 .escudo-large {
-  font-size: 4rem;
-  background-color: var(--border-color);
-  width: 100px;
-  height: 100px;
+  font-size: 3.5rem;
+  background: linear-gradient(135deg, var(--accent-glow), var(--bg-surface));
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  border: 2px solid var(--border-color);
 }
+
 .team-summary h2 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1.5rem;
+  margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
   color: var(--text-primary);
 }
+
 .team-summary p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin: 0 0 1rem 0;
-}
-.summary-stat {
-  background-color: rgba(37, 99, 235, 0.1);
-  color: var(--accent-color);
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
   font-size: 0.85rem;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.summary-stat {
+  background-color: var(--accent-glow);
+  color: var(--accent-color);
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(75, 159, 255, 0.2);
 }
 
 .players-checklist h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.1rem;
-  color: var(--text-primary);
+  margin: 0 0 0.875rem 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .grid-jugadores.mini {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .player-mini-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.875rem;
   padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+  background: var(--card-bg);
   box-shadow: none;
+  transition: border-color 0.2s, transform 0.2s;
 }
+
+.player-mini-card:hover {
+  border-color: var(--accent-color);
+  transform: translateX(3px);
+}
+
 .player-avatar-bg {
   width: 36px;
   height: 36px;
-  background-color: var(--border-color);
+  background: linear-gradient(135deg, var(--accent-color), #8b5cf6);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
 }
-.p-dorsal-text {
-  font-weight: 700;
-  font-size: 0.875rem;
+
+.p-dorsal {
+  font-weight: 800;
+  color: white;
+  font-size: 0.78rem;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .player-info {
@@ -299,92 +321,33 @@
   flex: 1;
   overflow: hidden;
 }
+
 .player-info h4 {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
 }
+
 .p-pos {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.15rem;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .btn-vender {
-  padding: 0.4rem;
+  padding: 0.35rem;
   border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
-}
-
-/* Modales y Formularios */
-.estado-mensaje {
-  text-align: center;
-  padding: 3rem;
-  background: var(--card-bg);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 0.75rem;
-  width: 90%;
-  max-width: 450px;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
-}
-
-.modal-content h3 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-}
-
-.grupo-input {
-  margin-bottom: 1.25rem;
-}
-.grupo-input label {
-  display: block;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-.grupo-input input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  background: var(--bg-color);
-  color: var(--text-primary);
-  box-sizing: border-box;
-}
-.grupo-input input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-}
-.modal-acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
+  font-size: 0.85rem;
 }
