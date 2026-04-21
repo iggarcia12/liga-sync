@@ -30,9 +30,24 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    const rol = this.getRol();
-    const normalized = rol ? rol.toUpperCase() : '';
-    return normalized === 'ADMIN' || normalized === 'ROLE_ADMIN';
+    return this._rolNormalizado() === 'ADMIN';
+  }
+
+  isEntrenador(): boolean {
+    return this._rolNormalizado() === 'ENTRENADOR';
+  }
+
+  isJugador(): boolean {
+    return this._rolNormalizado() === 'JUGADOR';
+  }
+
+  isEspectador(): boolean {
+    return this._rolNormalizado() === 'ESPECTADOR';
+  }
+
+  private _rolNormalizado(): string {
+    const rol = this.getRol() ?? '';
+    return rol.replace('ROLE_', '').toUpperCase();
   }
 
   logout() {

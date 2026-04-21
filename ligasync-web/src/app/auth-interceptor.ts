@@ -10,8 +10,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let peticionFinal = req;
 
-  // 1. Si hay token, lo pegamos en la cabecera
-  if (miToken) {
+  // 1. Si hay token y no es una petición de login, lo pegamos en la cabecera
+  const esLogin = req.url.includes('/api/login') || req.url.includes('/api/auth/registro');
+  if (miToken && !esLogin) {
     peticionFinal = req.clone({
       setHeaders: {
         Authorization: 'Bearer ' + miToken

@@ -1,7 +1,7 @@
 <div class="seccion-container">
   <div class="cabecera-seccion">
     <h2>📅 Calendario de Partidos</h2>
-    <button class="btn-nuevo">+ Nuevo Partido</button>
+    <button class="btn-nuevo" *ngIf="esAdmin">+ Nuevo Partido</button>
   </div>
 
   <div class="estado-mensaje" *ngIf="cargando">
@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="card-footer">
+      <div class="card-footer" *ngIf="esAdmin">
         <button class="btn-editar">✏️ Actualizar Resultado</button>
       </div>
     </div>

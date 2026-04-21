@@ -184,6 +184,26 @@
   transform: scale(0.98);
 }
 
+.link-registro {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+}
+
+.link-registro a {
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link-registro a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
 /* --- Responsivo -------------------------------------------- */
 @media (max-width: 900px) {
   .pagina-login {

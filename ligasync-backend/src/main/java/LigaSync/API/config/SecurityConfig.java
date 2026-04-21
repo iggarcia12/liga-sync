@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 1. Rutas públicas y pre-flight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/login", "/api/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/login", "/api/usuarios", "/api/auth/registro").permitAll()
 
                         // 2. Mensajes (POST y GET) - Cualquier autenticado
                         .requestMatchers(HttpMethod.POST, "/api/mensajes").authenticated()
@@ -50,7 +50,11 @@ public class SecurityConfig {
                         // 3. GET generales - Cualquier autenticado
                         .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
 
-                        // 4. Acciones restringidas a ADMIN (POST/PUT/DELETE)
+                        // 4. Entrenador puede actualizar su equipo y fichar jugadores
+                        .requestMatchers(HttpMethod.PUT, "/api/equipos/**").hasAnyRole("ADMIN", "ENTRENADOR")
+                        .requestMatchers(HttpMethod.PUT, "/api/jugadores/**").hasAnyRole("ADMIN", "ENTRENADOR")
+
+                        // 5. Acciones restringidas a ADMIN (POST/PUT/DELETE)
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")

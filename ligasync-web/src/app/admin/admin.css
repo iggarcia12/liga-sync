@@ -105,10 +105,104 @@
   color: #8b5cf6;
   border: 1px solid rgba(139,92,246,0.25);
 }
-.badge-user {
+.badge-entrenador {
+  background-color: rgba(16,185,129,0.1);
+  color: #10b981;
+  border: 1px solid rgba(16,185,129,0.25);
+}
+.badge-jugador {
   background-color: rgba(75,159,255,0.1);
   color: var(--accent-color);
   border: 1px solid rgba(75,159,255,0.2);
+}
+.badge-espectador {
+  background-color: rgba(100,116,139,0.1);
+  color: var(--text-secondary);
+  border: 1px solid rgba(100,116,139,0.2);
+}
+
+/* ── Celda de usuario con avatar ──────────────────────────── */
+.usuario-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.usuario-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  font-family: var(--font-ui);
+  flex-shrink: 0;
+}
+
+.email-cell {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+/* ── Selectores de rango y equipo ─────────────────────────── */
+.select-rango,
+.select-equipo {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  min-width: 130px;
+}
+
+.select-rango:focus,
+.select-equipo:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.select-rango:disabled,
+.select-equipo:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Mensajes de feedback de rango ───────────────────────── */
+.caja-exito-rango {
+  background-color: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-left: 3px solid #10b981;
+  color: #10b981;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-ui);
+}
+
+.caja-error-rango {
+  background-color: rgba(220,38,38,0.08);
+  border: 1px solid rgba(220,38,38,0.3);
+  border-left: 3px solid var(--danger-color);
+  color: var(--danger-color);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-ui);
 }
 
 /* ── Score Display (tabla de partidos) ────────────────────── */

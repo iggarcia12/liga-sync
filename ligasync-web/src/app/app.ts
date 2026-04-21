@@ -40,7 +40,8 @@ export class App implements OnInit {
   }
 
   mostrarMenu(): boolean {
-    return this.router.url !== '/login' && this.router.url !== '/';
+    const rutasSinMenu = ['/login', '/registro', '/'];
+    return !rutasSinMenu.includes(this.router.url);
   }
 
   salir() {

@@ -8,22 +8,23 @@
       <p>⏳ Buscando talentos...</p>
    </div>
 
-   <!-- Panel de Presupuesto / Control -->
-   <div class="presupuesto-panel card" *ngIf="!cargando">
+   <!-- Panel de Presupuesto / Control (solo para admin y entrenador) -->
+   <div class="presupuesto-panel card" *ngIf="!cargando && (esAdmin || esEntrenador)">
       <div class="presupuesto-info">
-         <h3>Tu Equipo (Simulado):
+         <h3 *ngIf="esAdmin">Tu Equipo (Simulado):
             <select [(ngModel)]="miEquipoId" class="team-selector-inline">
                <option [ngValue]="null">--- Selecciona un Equipo ---</option>
                <option *ngFor="let eq of equipos" [value]="eq.id">{{eq.nombre}}</option>
             </select>
          </h3>
+         <h3 *ngIf="esEntrenador">Tu Equipo: <strong>{{ miEquipoNombre || 'Sin equipo asignado' }}</strong></h3>
          <div class="saldo">
             <span class="currency">€</span>
             <span class="amount">124.500.000</span>
          </div>
          <p class="text-sm">Presupuesto para Fichajes</p>
       </div>
-      <div class="presupuesto-acciones">
+      <div class="presupuesto-acciones" *ngIf="esAdmin">
          <button class="btn btn-primary" (click)="abrirModal()">+ Crear Nuevo Jugador</button>
       </div>
    </div>
@@ -44,7 +45,7 @@
                   <span>Valor:</span>
                   <strong>€ 5.000.000</strong>
                </div>
-               <button class="btn btn-primary btn-block" (click)="ficharAgenteLibre(j)">Fichar</button>
+               <button class="btn btn-primary btn-block" *ngIf="esAdmin || esEntrenador" (click)="ficharAgenteLibre(j)">Fichar</button>
             </div>
          </div>
 

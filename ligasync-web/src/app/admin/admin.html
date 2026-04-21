@@ -15,28 +15,68 @@
     <div class="card panel-usuarios" *ngIf="tabActiva === 'usuarios'">
       <div class="card-header">
         <h3>Gestión de Usuarios</h3>
-        <span class="badge">{{ usuarios.length }} usuarios</span>
+        <span class="badge badge-espectador">{{ usuarios.length }} usuarios</span>
       </div>
-      
+
+      <div class="caja-exito-rango" *ngIf="mensajeRango">{{ mensajeRango }}</div>
+      <div class="caja-error-rango" *ngIf="mensajeRangoError">{{ mensajeRangoError }}</div>
+
+      <div class="estado-vacio" *ngIf="cargandoUsuarios"><p>⏳ Cargando usuarios...</p></div>
+
       <div class="table-responsive" *ngIf="!cargandoUsuarios">
         <table class="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
+              <th>Usuario</th>
               <th>Email</th>
-              <th>Rol</th>
+              <th>Rol actual</th>
+              <th>Asignar rol</th>
+              <th>Equipo</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let u of usuarios">
-              <td>#{{ u.id }}</td>
-              <td><strong>{{ u.nombre }}</strong></td>
-              <td>{{ u.email }}</td>
-              <td><span class="badge" [ngClass]="getRolClass(u.role)">{{ u.role || 'USER' }}</span></td>
               <td>
-                <button class="btn btn-small btn-danger" [disabled]="(u.role || '').toUpperCase() === 'ADMIN'" (click)="eliminarUsuario(u.id)">🗑️ Eliminar</button>
+                <div class="usuario-cell">
+                  <div class="usuario-avatar">{{ getInitial(u.nombre) }}</div>
+                  <strong>{{ u.nombre }}</strong>
+                </div>
+              </td>
+              <td class="email-cell">{{ u.email }}</td>
+              <td>
+                <span class="badge" [ngClass]="getRolClass(u.role)">
+                  {{ u.role || 'espectador' }}
+                </span>
+              </td>
+              <td>
+                <select class="select-rango"
+                  [(ngModel)]="rangosPendientes[u.id].role"
+                  [disabled]="(u.role || '').toUpperCase() === 'ADMIN'">
+                  <option *ngFor="let r of rolesDisponibles" [value]="r">{{ r }}</option>
+                </select>
+              </td>
+              <td>
+                <select class="select-equipo"
+                  [(ngModel)]="rangosPendientes[u.id].teamId"
+                  [disabled]="!requiereEquipo(rangosPendientes[u.id].role)">
+                  <option [ngValue]="null">— Sin equipo —</option>
+                  <option *ngFor="let e of equipos" [ngValue]="e.id">{{ e.nombre }}</option>
+                </select>
+              </td>
+              <td>
+                <div class="acciones-celda">
+                  <button class="btn btn-small btn-primary"
+                    [disabled]="(u.role || '').toUpperCase() === 'ADMIN'"
+                    (click)="guardarRango(u)">
+                    💾 Guardar
+                  </button>
+                  <button class="btn btn-small btn-danger"
+                    [disabled]="(u.role || '').toUpperCase() === 'ADMIN'"
+                    (click)="eliminarUsuario(u.id)">
+                    🗑️
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>

@@ -26,6 +26,11 @@ export class AdminComponent implements OnInit {
     equiposRegistrados: 0
   };
 
+  rolesDisponibles = ['espectador', 'jugador', 'entrenador', 'admin'];
+  rangosPendientes: { [userId: number]: { role: string; teamId: number | null } } = {};
+  mensajeRango = '';
+  mensajeRangoError = '';
+
   // Estado del editor de resultados (pantalla completa)
   editorActivo: boolean = false;
   partidoEditando: any = null;
@@ -49,6 +54,13 @@ export class AdminComponent implements OnInit {
         this.usuarios = datos;
         this.metricas.totalUsuarios = datos.length;
         this.cargandoUsuarios = false;
+        // Inicializar estado editable por usuario
+        datos.forEach(u => {
+          this.rangosPendientes[u.id] = {
+            role: u.role ?? 'espectador',
+            teamId: u.teamId ?? null
+          };
+        });
         this.cdr.detectChanges();
       },
       error: () => {
@@ -175,12 +187,44 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  requiereEquipo(role: string): boolean {
+    return role === 'jugador' || role === 'entrenador';
+  }
+
+  guardarRango(usuario: any) {
+    const rango = this.rangosPendientes[usuario.id];
+    if (!rango) return;
+
+    const body = {
+      role: rango.role,
+      teamId: this.requiereEquipo(rango.role) ? rango.teamId : null
+    };
+
+    this.http.put<any>(`${this.urlBase}/usuarios/${usuario.id}/rango`, body).subscribe({
+      next: (actualizado) => {
+        const idx = this.usuarios.findIndex(u => u.id === usuario.id);
+        if (idx !== -1) this.usuarios[idx] = actualizado;
+        this.mensajeRango = `Rango de "${usuario.nombre}" actualizado correctamente.`;
+        this.mensajeRangoError = '';
+        setTimeout(() => this.mensajeRango = '', 3500);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al cambiar rango:', err);
+        this.mensajeRangoError = 'Error al actualizar el rango. Inténtalo de nuevo.';
+        this.mensajeRango = '';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   getRolClass(rol: string): string {
-    if (!rol) return 'badge-user';
+    if (!rol) return 'badge-espectador';
     const r = rol.toUpperCase();
-    if (r === 'ADMIN') return 'badge-admin';
-    if (r === 'BANNED') return 'badge-banned';
-    return 'badge-user';
+    if (r === 'ADMIN')      return 'badge-admin';
+    if (r === 'ENTRENADOR') return 'badge-entrenador';
+    if (r === 'JUGADOR')    return 'badge-jugador';
+    return 'badge-espectador';
   }
 
   getInitial(nombre: string): string {

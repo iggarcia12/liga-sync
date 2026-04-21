@@ -11,7 +11,7 @@
 
   <div class="estado-mensaje vacio" *ngIf="!cargando && equipos.length === 0">
     <p>Aún no hay equipos registrados en la liga. ¡Crea el primero!</p>
-    <button class="btn btn-primary" (click)="abrirFormulario()" style="margin-top: 1rem;">+ Crear Equipo</button>
+    <button class="btn btn-primary" *ngIf="esAdmin" (click)="abrirFormulario()" style="margin-top: 1rem;">+ Crear Equipo</button>
   </div>
 
   <!-- Controles y Selector -->
@@ -22,8 +22,7 @@
         <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
       </select>
     </div>
-    <div class="acciones-equipo">
-      <!-- Mostramos editar/borrar de la lógica base anterior de equipos -->
+    <div class="acciones-equipo" *ngIf="esAdmin">
       <button class="btn" (click)="abrirFormulario()">+ Nuevo Equipo</button>
       <button class="btn" (click)="abrirFormulario(equipoActualDetalles)" *ngIf="equipoActualDetalles">✏️ Editar Configuración</button>
     </div>
@@ -94,8 +93,7 @@
                <h4>{{ j.nombre }}</h4>
                <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
              </div>
-             <!-- Botón Vender si asumimos el rol de Entrenador -->
-             <button class="btn btn-danger btn-vender" (click)="venderJugador(j)" title="Vender al Mercado">💰</button>
+             <button class="btn btn-danger btn-vender" *ngIf="esAdmin" (click)="venderJugador(j)" title="Vender al Mercado">💰</button>
           </div>
         </div>
         

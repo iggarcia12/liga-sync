@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-partidos',
@@ -15,6 +16,9 @@ export class PartidosComponent implements OnInit {
   
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
+
+  get esAdmin(): boolean { return this.authService.isAdmin(); }
 
   ngOnInit() {
     this.cargarPartidos();

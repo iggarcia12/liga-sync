@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-equipos',
@@ -36,6 +37,9 @@ export class EquiposComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
+
+  get esAdmin(): boolean { return this.authService.isAdmin(); }
 
   ngOnInit() {
     this.cargarDatosGenerales();

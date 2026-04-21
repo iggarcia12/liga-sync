@@ -8,38 +8,52 @@
       </div>
 
       <nav class="navbar-links">
+        <!-- Todos los roles ven estas secciones (solo lectura para no-admin) -->
         <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
           <span class="icon">📊</span> Inicio
-        </a>
-        <a routerLink="/equipos" routerLinkActive="active-link">
-          <span class="icon">🛡️</span> Plantillas
         </a>
         <a routerLink="/estadisticas" routerLinkActive="active-link">
           <span class="icon">📈</span> Estadísticas
         </a>
+        <a routerLink="/equipos" routerLinkActive="active-link">
+          <span class="icon">🛡️</span> Plantillas
+        </a>
+        <a routerLink="/partidos" routerLinkActive="active-link">
+          <span class="icon">⚽</span> Partidos
+        </a>
         <a routerLink="/mercado" routerLinkActive="active-link">
           <span class="icon">🤝</span> Mercado
         </a>
-        <a routerLink="/mensajes" routerLinkActive="active-link">
+
+        <!-- Jugador: Mi Perfil -->
+        <a *ngIf="authService.isJugador()" routerLink="/mi-perfil" routerLinkActive="active-link">
+          <span class="icon">👤</span> Mi Perfil
+        </a>
+
+        <!-- Entrenador: Mi Equipo (gestión de su plantilla) -->
+        <a *ngIf="authService.isEntrenador()" routerLink="/mi-equipo" routerLinkActive="active-link">
+          <span class="icon">🏟️</span> Mi Equipo
+        </a>
+
+        <!-- Jugadores, entrenadores y admin ven Mensajes -->
+        <a *ngIf="authService.isJugador() || authService.isEntrenador() || authService.isAdmin()" routerLink="/mensajes" routerLinkActive="active-link">
           <span class="icon">✉️</span> Mensajes
         </a>
-        <!-- Este enlace se puede ocultar según el rol más adelante -->
-        <a *ngIf="authService.isAdmin()" routerLink="/admin" routerLinkActive="active-link">
-          <span class="icon">⚙️</span> Admin
-        </a>
+
+        <!-- Admin: panel de administración -->
+        <ng-container *ngIf="authService.isAdmin()">
+
+          <a routerLink="/admin" routerLinkActive="active-link">
+            <span class="icon">⚙️</span> Admin
+          </a>
+        </ng-container>
       </nav>
 
       <div class="navbar-actions">
-        <!-- Modo Oscuro Toggle -->
         <button class="btn-icon theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
           <span *ngIf="isDarkMode">☀️</span>
           <span *ngIf="!isDarkMode">🌙</span>
         </button>
-        
-        <!-- Perfil y Cierre -->
-        <a routerLink="/perfil" class="btn-icon profile-link" title="Perfil">
-          <span>👤</span>
-        </a>
         <button (click)="salir()" class="btn-logout" title="Cerrar Sesión">
           <span>🚪</span> <span class="logout-text">Salir</span>
         </button>

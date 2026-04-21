@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-mercado',
@@ -23,6 +24,14 @@ export class MercadoComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
+
+  get esAdmin(): boolean { return this.authService.isAdmin(); }
+  get esEntrenador(): boolean { return this.authService.isEntrenador(); }
+
+  get miEquipoNombre(): string {
+    return this.equipos.find(e => e.id === this.miEquipoId)?.nombre ?? '';
+  }
 
   ngOnInit() {
     this.cargarMercado();
@@ -47,11 +56,19 @@ export class MercadoComponent implements OnInit {
       if (eResult && (eResult as any)._embedded) eResult = (eResult as any)._embedded.equipos || [];
 
       this.equipos = eResult;
-
-      // Un Agente Libre es aquel que no tiene un equipo asignado o su llave de equipo está vacía
       this.agentesLibres = jResult.filter((j: any) => !j.equipo || !j.equipo.id);
-      
       this.cargando = false;
+
+      if (this.authService.isEntrenador()) {
+        const userId = this.authService.getUserId();
+        if (userId) {
+          this.http.get<any>(`${urlBase}/usuarios/${userId}`).subscribe({
+            next: (u) => { this.miEquipoId = u.teamId ?? null; this.cdr.detectChanges(); },
+            error: (err) => console.error('Error al cargar equipo del entrenador:', err)
+          });
+        }
+      }
+
       this.cdr.detectChanges();
     });
   }

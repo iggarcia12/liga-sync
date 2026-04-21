@@ -1,0 +1,306 @@
+.pagina-registro {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* --- Panel del Formulario (izquierda) ---------------------- */
+.registro-formulario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  background-color: var(--bg-color);
+  order: 1;
+}
+
+.tarjeta-registro {
+  width: 100%;
+  max-width: 420px;
+}
+
+.registro-brand-movil {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-color);
+}
+
+.tarjeta-registro h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  line-height: 1.1;
+}
+
+.registro-descripcion {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.grupo-input label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.grupo-input input {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.grupo-input input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.grupo-input input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.caja-error {
+  background-color: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-left: 3px solid var(--danger-color);
+  color: var(--danger-color);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.caja-exito {
+  background-color: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-left: 3px solid #10b981;
+  color: #10b981;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-registrar {
+  width: 100%;
+  padding: 0.95rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.btn-registrar:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+  box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+.btn-registrar:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-registrar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-login {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+}
+
+.link-login a {
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link-login a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* --- Panel Visual (derecha) -------------------------------- */
+.registro-lateral {
+  background: linear-gradient(145deg, #071430 0%, #0d2347 55%, #060d1a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  order: 2;
+}
+
+.registro-lateral::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 30% 75%, rgba(75, 159, 255, 0.12) 0%, transparent 55%);
+}
+
+.registro-lateral__contenido {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+  padding: 3rem 2.5rem;
+  max-width: 420px;
+}
+
+.registro-lateral__icono {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 24px rgba(16, 185, 129, 0.5));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.registro-lateral__marca {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 10vw, 9rem);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: 0.06em;
+  margin: 0 0 1.5rem 0;
+  color: #e4eeff;
+}
+
+.registro-lateral__marca span {
+  color: #10b981;
+  display: block;
+}
+
+.registro-lateral__lema {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.7;
+  max-width: 280px;
+  margin: 0 auto 2rem auto;
+}
+
+.registro-lateral__beneficios {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.registro-lateral__beneficios li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.beneficio-icono {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* Círculos decorativos */
+.registro-lateral__deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.deco-circulo {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+.deco-circulo:nth-child(1) {
+  width: 300px; height: 300px;
+  top: -80px; left: -80px;
+}
+.deco-circulo--2 {
+  width: 500px; height: 500px;
+  top: -200px; left: -200px;
+  border-color: rgba(16, 185, 129, 0.05);
+}
+.deco-circulo--3 {
+  width: 180px; height: 180px;
+  bottom: 10%; right: -60px;
+  border-color: rgba(75, 159, 255, 0.08);
+}
+
+/* --- Responsivo -------------------------------------------- */
+@media (max-width: 900px) {
+  .pagina-registro {
+    grid-template-columns: 1fr;
+  }
+
+  .registro-lateral {
+    min-height: 38vh;
+    order: 1;
+  }
+
+  .registro-formulario {
+    order: 2;
+  }
+
+  .registro-lateral__marca {
+    font-size: 5rem;
+  }
+
+  .registro-brand-movil {
+    display: none;
+  }
+}

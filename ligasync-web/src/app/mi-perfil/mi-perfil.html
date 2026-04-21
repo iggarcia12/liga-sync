@@ -1,0 +1,56 @@
+<div class="perfil-page">
+
+  <div class="perfil-header">
+    <div class="perfil-avatar">
+      <span>👤</span>
+    </div>
+    <div class="perfil-identidad">
+      <h1 class="perfil-nombre">{{ nombre }}</h1>
+      <span class="perfil-badge">Jugador</span>
+      <p class="perfil-email">{{ email }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="estado-carga">
+    <div class="spinner"></div>
+    <p>Cargando estadísticas...</p>
+  </div>
+
+  <section *ngIf="!cargando && stats" class="seccion-stats">
+    <h2 class="seccion-titulo">Mis Estadísticas</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card stat-card--goles">
+        <span class="stat-card__icono">⚽</span>
+        <span class="stat-card__numero">{{ stats.goles }}</span>
+        <span class="stat-card__label">Goles</span>
+      </div>
+      <div class="stat-card stat-card--asist">
+        <span class="stat-card__icono">🎯</span>
+        <span class="stat-card__numero">{{ stats.asistencias }}</span>
+        <span class="stat-card__label">Asistencias</span>
+      </div>
+      <div class="stat-card stat-card--partidos">
+        <span class="stat-card__icono">🏟️</span>
+        <span class="stat-card__numero">{{ stats.partidosJugados }}</span>
+        <span class="stat-card__label">Partidos</span>
+      </div>
+      <div class="stat-card stat-card--amarilla">
+        <span class="stat-card__icono">🟨</span>
+        <span class="stat-card__numero">{{ stats.tarjetasAmarillas }}</span>
+        <span class="stat-card__label">Amarillas</span>
+      </div>
+      <div class="stat-card stat-card--roja">
+        <span class="stat-card__icono">🟥</span>
+        <span class="stat-card__numero">{{ stats.tarjetasRojas }}</span>
+        <span class="stat-card__label">Rojas</span>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="!cargando && !stats" class="estado-vacio">
+    <span>📋</span>
+    <p>Aún no tienes estadísticas registradas en ningún equipo.</p>
+  </div>
+
+</div>

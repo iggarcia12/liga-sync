@@ -1,5 +1,6 @@
 package LigaSync.API.controller;
 
+import LigaSync.API.dto.RangoRequest;
 import LigaSync.API.model.Usuario;
 import LigaSync.API.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,18 @@ public class UsuarioController {
         String hashPassword = passwordEncoder.encode(nuevoUsuario.getPass());
         nuevoUsuario.setPass(hashPassword);
         return usuarioRepository.save(nuevoUsuario);
+    }
+
+    // Cambiar rol y equipo de un usuario (solo admin)
+    @PutMapping("/{id}/rango")
+    public ResponseEntity<Usuario> cambiarRango(@PathVariable Long id, @RequestBody RangoRequest request) {
+        return usuarioRepository.findById(id)
+                .map(usuario -> {
+                    usuario.setRole(request.getRole());
+                    usuario.setTeamId(request.getTeamId());
+                    return ResponseEntity.ok(usuarioRepository.save(usuario));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Eliminar un usuario (solo admin)

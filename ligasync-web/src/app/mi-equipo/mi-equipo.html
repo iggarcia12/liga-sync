@@ -1,0 +1,85 @@
+<div class="miequipo-page">
+
+  <div *ngIf="cargando" class="estado-carga">
+    <div class="spinner"></div>
+    <p>Cargando tu equipo...</p>
+  </div>
+
+  <div *ngIf="!cargando && !equipo" class="estado-vacio">
+    <span>🛡️</span>
+    <h2>Sin equipo asignado</h2>
+    <p>El administrador aún no te ha asignado un equipo. Contacta con él para que lo configure.</p>
+  </div>
+
+  <ng-container *ngIf="!cargando && equipo">
+
+    <!-- Cabecera del equipo -->
+    <div class="equipo-header">
+      <div class="equipo-escudo">
+        <img *ngIf="equipo.escudo" [src]="equipo.escudo" [alt]="equipo.nombre" />
+        <span *ngIf="!equipo.escudo">🛡️</span>
+      </div>
+      <div class="equipo-info">
+        <span class="equipo-badge">Tu Equipo</span>
+        <h1 class="equipo-nombre">{{ equipo.nombre }}</h1>
+        <p class="equipo-jugadores-count">{{ jugadores.length }} jugadores en plantilla</p>
+      </div>
+      <button class="btn-editar" (click)="abrirEdicion()">✏️ Editar equipo</button>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div class="caja-exito" *ngIf="mensajeGuardado">{{ mensajeGuardado }}</div>
+
+    <!-- Modal de edición -->
+    <div class="modal-overlay" *ngIf="editando" (click)="cancelarEdicion()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <h3 class="modal-titulo">Editar datos del equipo</h3>
+
+        <div class="grupo-input">
+          <label>Nombre del equipo</label>
+          <input type="text" [(ngModel)]="nombreEdicion" placeholder="Nombre del equipo" />
+        </div>
+
+        <div class="grupo-input">
+          <label>URL del escudo</label>
+          <input type="text" [(ngModel)]="escudoEdicion" placeholder="https://..." />
+        </div>
+
+        <div class="modal-acciones">
+          <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+          <button class="btn-guardar" (click)="guardarCambios()">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plantilla de jugadores -->
+    <section class="seccion-plantilla">
+      <h2 class="seccion-titulo">Plantilla</h2>
+
+      <div *ngIf="jugadores.length === 0" class="plantilla-vacia">
+        <p>No hay jugadores registrados en este equipo todavía.</p>
+      </div>
+
+      <div class="plantilla-tabla" *ngIf="jugadores.length > 0">
+        <div class="tabla-header">
+          <span>Jugador</span>
+          <span>Posición</span>
+          <span>Goles</span>
+          <span>Asist.</span>
+          <span>Amarillas</span>
+          <span>Rojas</span>
+        </div>
+        <div class="tabla-fila" *ngFor="let j of jugadores">
+          <span class="jugador-nombre">{{ j.nombre }}</span>
+          <span class="jugador-posicion">{{ j.pos ?? '—' }}</span>
+          <span class="jugador-stat">{{ j.goles ?? 0 }}</span>
+          <span class="jugador-stat">{{ j.asist ?? 0 }}</span>
+          <span class="jugador-stat jugador-stat--amarilla">{{ j.amarillas ?? 0 }}</span>
+          <span class="jugador-stat jugador-stat--roja">{{ j.rojas ?? 0 }}</span>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+
+</div>

@@ -1,6 +1,7 @@
 package LigaSync.API.controller;
 
 import LigaSync.API.dto.LoginRequest;
+import LigaSync.API.dto.RegistroRequest;
 import LigaSync.API.model.Usuario;
 import LigaSync.API.repository.UsuarioRepository;
 import LigaSync.API.security.JwtUtil;
@@ -55,5 +56,24 @@ public class AuthController {
         response.put("userId", usuarioDB.getId()); // <-- ID necesario para mensajería
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/auth/registro")
+    public ResponseEntity<?> registro(@RequestBody RegistroRequest request) {
+        if (usuarioRepository.findByEmail(request.getEmail()) != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El email ya está registrado");
+        }
+
+        Usuario nuevo = new Usuario();
+        nuevo.setNombre(request.getNombre());
+        nuevo.setEmail(request.getEmail());
+        nuevo.setPass(passwordEncoder.encode(request.getPass()));
+        nuevo.setRole("espectador");
+
+        usuarioRepository.save(nuevo);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Usuario registrado correctamente");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
