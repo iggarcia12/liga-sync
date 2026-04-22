@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,25 +34,21 @@ public class PartidoController {
     @Autowired
     private JugadorRepository jugadorRepository;
 
-    // Ver todos los partidos (El calendario completo)
     @GetMapping
     public List<Partido> obtenerPartidos() {
         return partidoRepository.findAll();
     }
 
-    // Ver partidos de una jornada específica
     @GetMapping("/jornada/{numJornada}")
     public List<Partido> obtenerPorJornada(@PathVariable Integer numJornada) {
         return partidoRepository.findByJornada(numJornada);
     }
 
-    // Registrar un nuevo partido (Manual)
     @PostMapping
     public Partido registrarPartido(@RequestBody Partido partido) {
         return partidoRepository.save(partido);
     }
 
-    // Generar calendario automático (Round Robin Ida y Vuelta)
     @PostMapping("/generar-calendario")
     public ResponseEntity<List<Partido>> generarCalendario() {
         List<Equipo> equipos = equipoRepository.findAll();
@@ -61,7 +56,6 @@ public class PartidoController {
             return ResponseEntity.badRequest().build();
         }
 
-        // Limpiar calendario anterior
         partidoRepository.deleteAll();
 
         List<Partido> partidosGenerados = new ArrayList<>();
@@ -69,13 +63,13 @@ public class PartidoController {
         boolean esImpar = (numEquipos % 2 != 0);
 
         if (esImpar) {
-            numEquipos++; // Añadimos un "Fantasma" para el descanso
+            // El truco del equipo "fantasma" para que cuadren las jornadas en ligas impares
+            numEquipos++; 
         }
 
         int jornadas = numEquipos - 1;
         int partidosPorJornada = numEquipos / 2;
 
-        // Algoritmo Round Robin
         for (int j = 0; j < jornadas; j++) {
             for (int p = 0; p < partidosPorJornada; p++) {
                 int localIdx = (j + p) % (numEquipos - 1);
@@ -85,12 +79,10 @@ public class PartidoController {
                     visitanteIdx = numEquipos - 1;
                 }
 
-                // Si no es el equipo fantasma
                 if ((!esImpar) || (localIdx < equipos.size() && visitanteIdx < equipos.size())) {
                     Equipo local = equipos.get(localIdx);
                     Equipo visitante = equipos.get(visitanteIdx);
 
-                    // IDA
                     Partido ida = new Partido();
                     ida.setLocal(local);
                     ida.setVisitante(visitante);
@@ -98,7 +90,7 @@ public class PartidoController {
                     ida.setFecha(LocalDate.now().plusDays(j * 7).toString());
                     partidosGenerados.add(ida);
 
-                    // VUELTA (en la segunda mitad de la temporada)
+                    // Generamos ida y vuelta del tirón para tener la liga completa
                     Partido vuelta = new Partido();
                     vuelta.setLocal(visitante);
                     vuelta.setVisitante(local);
@@ -112,17 +104,16 @@ public class PartidoController {
         return ResponseEntity.ok(partidoRepository.saveAll(partidosGenerados));
     }
 
-    // Registrar resultado y actualizar estadísticas de jugadores
     @PutMapping("/{id}/resultado")
     public ResponseEntity<Partido> actualizarResultado(@PathVariable Long id, @RequestBody MatchResultRequest request) {
         Optional<Partido> partidoOpt = partidoRepository.findById(id);
-        if (partidoOpt.isEmpty()) return ResponseEntity.notFound().build();
+        if (partidoOpt.isEmpty())
+            return ResponseEntity.notFound().build();
 
         Partido partido = partidoOpt.get();
         partido.setGolesLocal(request.getGolesLocal());
         partido.setGolesVisitante(request.getGolesVisitante());
 
-        // Procesar incidencias (goles, asistencias, tarjetas)
         StringBuilder resumenGoleadores = new StringBuilder();
         if (request.getIncidencias() != null) {
             for (MatchResultRequest.IncidenciaDTO inc : request.getIncidencias()) {
@@ -148,12 +139,13 @@ public class PartidoController {
                 }
             }
         }
-        
+
         if (resumenGoleadores.length() > 2) {
+            // Limpieza de la última coma del acumulado
             partido.setGoleadores(resumenGoleadores.substring(0, resumenGoleadores.length() - 2));
         }
 
-        // Actualizar estadísticas de los equipos
+        // Al meter el resultado, recalculamos stats de los dos equipos
         Equipo local = partido.getLocal();
         Equipo visitante = partido.getVisitante();
         int gL = request.getGolesLocal();
@@ -193,13 +185,14 @@ public class PartidoController {
 
         Partido guardado = partidoRepository.save(partido);
 
-        // Crear noticia automática
         String nombreLocal = guardado.getLocal() != null ? guardado.getLocal().getNombre() : "Equipo Local";
-        String nombreVisitante = guardado.getVisitante() != null ? guardado.getVisitante().getNombre() : "Equipo Visitante";
+        String nombreVisitante = guardado.getVisitante() != null ? guardado.getVisitante().getNombre()
+                : "Equipo Visitante";
 
-        String titulo = "Resultado: " + nombreLocal + " " + guardado.getGolesLocal() + " - " + guardado.getGolesVisitante() + " " + nombreVisitante;
-        String contenido = "Jornada " + guardado.getJornada() + ". Final del partido en " + nombreLocal + ". " + 
-                          titulo + (guardado.getGoleadores() != null ? ". Goles: " + guardado.getGoleadores() : "");
+        String titulo = "Resultado: " + nombreLocal + " " + guardado.getGolesLocal() + " - "
+                + guardado.getGolesVisitante() + " " + nombreVisitante;
+        String contenido = "Jornada " + guardado.getJornada() + ". Final del partido en " + nombreLocal + ". " +
+                titulo + (guardado.getGoleadores() != null ? ". Goles: " + guardado.getGoleadores() : "");
 
         Noticia noticia = new Noticia();
         noticia.setTitulo(titulo);
@@ -210,9 +203,6 @@ public class PartidoController {
         return ResponseEntity.ok(guardado);
     }
 
-
-
-    // Eliminar un partido
     @DeleteMapping("/{id}")
     public void eliminarPartido(@PathVariable Long id) {
         partidoRepository.deleteById(id);

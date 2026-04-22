@@ -17,27 +17,23 @@ export class LoginComponent {
   mensajeError: string = '';
 
   private http = inject(HttpClient);
-  private router = inject(Router); // <-- 2. Inyectar el Router
+  private router = inject(Router);
 
   hacerLogin() {
-    // 🚨 RECUERDA PONER TU URL REAL DE IDX AQUÍ
     const urlBackend = 'http://localhost:8080/api/login'; 
-    
     const datosEnvio = { email: this.email, pass: this.pass };
 
     this.http.post<any>(urlBackend, datosEnvio).subscribe({
       next: (respuesta) => {
-        // Guardamos el token, el rol, el id y el nombre del usuario
         localStorage.setItem('token', respuesta.token);
         localStorage.setItem('rol', respuesta.rol);
         localStorage.setItem('userId', respuesta.userId?.toString() ?? '');
         localStorage.setItem('nombre', respuesta.usuario);
         localStorage.setItem('jugadorId', respuesta.jugadorId?.toString() ?? '');
         
-        // 3. ¡Mágia! Cambiamos de página automáticamente al Dashboard
         this.router.navigate(['/dashboard']); 
       },
-      error: (err) => {
+      error: () => {
         this.mensajeError = 'Credenciales incorrectas. Inténtalo de nuevo.';
       }
     });

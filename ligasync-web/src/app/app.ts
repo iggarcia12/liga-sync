@@ -12,14 +12,13 @@ import { AuthService } from './auth.service';
 })
 export class App implements OnInit {
   private router = inject(Router);
-  public authService = inject(AuthService); // Hacerlo público para usarlo en el HTML
+  public authService = inject(AuthService); 
   isDarkMode = false;
 
   ngOnInit() {
     this.initTheme();
   }
 
-  // Inicializa el tema leyendo del localStorage o de las preferencias del sistema
   initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -31,7 +30,6 @@ export class App implements OnInit {
     }
   }
 
-  // Alterna entre modo oscuro y claro y lo guarda
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     const theme = this.isDarkMode ? 'dark' : 'light';

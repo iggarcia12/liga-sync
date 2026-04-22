@@ -20,13 +20,11 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Obtener todos los usuarios
     @GetMapping
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    // Obtener un usuario por ID
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerPorId(@PathVariable Long id) {
         return usuarioRepository.findById(id)
@@ -34,7 +32,6 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Crear un nuevo usuario
     @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario nuevoUsuario) {
         String hashPassword = passwordEncoder.encode(nuevoUsuario.getPass());
@@ -42,7 +39,6 @@ public class UsuarioController {
         return usuarioRepository.save(nuevoUsuario);
     }
 
-    // Cambiar rol, equipo y jugador vinculado de un usuario (solo admin)
     @PutMapping("/{id}/rango")
     public ResponseEntity<Usuario> cambiarRango(@PathVariable Long id, @RequestBody RangoRequest request) {
         return usuarioRepository.findById(id)
@@ -55,7 +51,6 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Eliminar un usuario (solo admin)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         if (!usuarioRepository.existsById(id)) {

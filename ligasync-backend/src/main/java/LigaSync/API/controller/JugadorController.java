@@ -27,13 +27,11 @@ public class JugadorController {
     @Autowired
     private EquipoRepository equipoRepository;
 
-    // Obtener todos los jugadores
     @GetMapping
     public List<Jugador> obtenerJugadores() {
         return jugadorRepository.findAll();
     }
 
-    // Obtener un jugador por ID
     @GetMapping("/{id}")
     public ResponseEntity<Jugador> obtenerPorId(@PathVariable Long id) {
         return jugadorRepository.findById(id)
@@ -41,7 +39,6 @@ public class JugadorController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener jugadores que aún no tienen usuario vinculado
     @GetMapping("/sin-usuario")
     public List<Jugador> obtenerSinUsuario() {
         Set<Long> usados = usuarioRepository.findAll().stream()
@@ -53,13 +50,11 @@ public class JugadorController {
                 .collect(Collectors.toList());
     }
 
-    // Obtener la plantilla de un equipo en concreto
     @GetMapping("/equipo/{equipoId}")
     public List<Jugador> obtenerPorEquipo(@PathVariable Long equipoId) {
         return jugadorRepository.findByEquipoId(equipoId);
     }
 
-    // Fichar / Crear jugador
     @PostMapping
     public ResponseEntity<?> crearJugador(@RequestBody Jugador nuevoJugador) {
         if (nuevoJugador.getEquipo() != null && nuevoJugador.getEquipo().getId() != null) {
@@ -67,19 +62,19 @@ public class JugadorController {
             if (equipoOpt.isPresent()) {
                 Equipo e = equipoOpt.get();
                 int precio = nuevoJugador.getValor() != null ? nuevoJugador.getValor() : 0;
+                
+                // Validación de presupuesto al crear/fichar
                 if (e.getPresupuesto() < precio) {
                     return ResponseEntity.badRequest().body("Presupuesto insuficiente para realizar el fichaje.");
                 }
                 e.setPresupuesto(e.getPresupuesto() - precio);
                 equipoRepository.save(e);
-                // Aseguramos que se guarde el objeto completo del equipo
                 nuevoJugador.setEquipo(e);
             }
         }
         return ResponseEntity.ok(jugadorRepository.save(nuevoJugador));
     }
 
-    // Liberar jugador (lo convierte en Agente Libre)
     @PutMapping("/{id}/liberar")
     public ResponseEntity<?> liberarJugador(@PathVariable Long id) {
         return jugadorRepository.findById(id).map(jugador -> {
@@ -89,7 +84,6 @@ public class JugadorController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // Guardar titulares y formación de un equipo (pizarra táctica)
     @PutMapping("/equipo/{equipoId}/titulares")
     public ResponseEntity<?> actualizarTitulares(
             @PathVariable Long equipoId,
@@ -119,7 +113,6 @@ public class JugadorController {
         return ResponseEntity.ok().build();
     }
 
-    // Actualizar jugador (Traspasos, Modificar media, etc)
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarJugador(@PathVariable Long id, @RequestBody Jugador jugadorActualizado) {
         Optional<Jugador> jugadorExistenteOpt = jugadorRepository.findById(id);
@@ -127,11 +120,10 @@ public class JugadorController {
         if (jugadorExistenteOpt.isPresent()) {
             Jugador jugadorAActualizar = jugadorExistenteOpt.get();
             
-            // Lógica de presupuesto para traspasos
             Equipo equipoViejo = jugadorAActualizar.getEquipo();
             Equipo equipoNuevo = jugadorActualizado.getEquipo();
             
-            // Si el equipo ha cambiado
+            // Lógica de compensación económica si hay cambio de equipo
             if (equipoNuevo != null && (equipoViejo == null || !equipoViejo.getId().equals(equipoNuevo.getId()))) {
                 Optional<Equipo> eqNuevoOpt = equipoRepository.findById(equipoNuevo.getId());
                 if (eqNuevoOpt.isPresent()) {
@@ -142,11 +134,9 @@ public class JugadorController {
                         return ResponseEntity.badRequest().body("Presupuesto insuficiente en el equipo destino.");
                     }
                     
-                    // Restar al nuevo
                     eqN.setPresupuesto(eqN.getPresupuesto() - precio);
                     equipoRepository.save(eqN);
                     
-                    // Sumar al viejo (si existía)
                     if (equipoViejo != null) {
                         Optional<Equipo> eqViejoOpt = equipoRepository.findById(equipoViejo.getId());
                         if (eqViejoOpt.isPresent()) {
@@ -158,7 +148,6 @@ public class JugadorController {
                 }
             }
 
-            // Actualizamos los campos
             jugadorAActualizar.setNombre(jugadorActualizado.getNombre());
             jugadorAActualizar.setPos(jugadorActualizado.getPos());
             jugadorAActualizar.setMedia(jugadorActualizado.getMedia());

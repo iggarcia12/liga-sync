@@ -21,19 +21,16 @@ public class OfertaController {
     @Autowired private JugadorRepository jugadorRepository;
     @Autowired private EquipoRepository equipoRepository;
 
-    // Ofertas recibidas por un equipo (bandeja de entrada del entrenador)
     @GetMapping("/recibidas/{equipoId}")
     public List<Oferta> ofertasRecibidas(@PathVariable Long equipoId) {
         return ofertaRepository.findByEquipoDestinoId(equipoId);
     }
 
-    // Ofertas enviadas por un equipo
     @GetMapping("/enviadas/{equipoId}")
     public List<Oferta> ofertasEnviadas(@PathVariable Long equipoId) {
         return ofertaRepository.findByEquipoOrigenId(equipoId);
     }
 
-    // Crear una nueva oferta
     @PostMapping
     public ResponseEntity<?> crearOferta(@RequestBody Oferta oferta) {
         Optional<Jugador> jugadorOpt = jugadorRepository.findById(oferta.getJugadorId());
@@ -44,12 +41,10 @@ public class OfertaController {
         Jugador jugador = jugadorOpt.get();
         Long equipoActualId = jugador.getEquipo() != null ? jugador.getEquipo().getId() : null;
 
-        // Validar que el equipo destino sea el equipo actual del jugador
         if (!oferta.getEquipoDestinoId().equals(equipoActualId)) {
             return ResponseEntity.badRequest().body("El equipo destino no coincide con el equipo actual del jugador.");
         }
 
-        // Validar que el equipo origen tenga presupuesto suficiente
         Optional<Equipo> origenOpt = equipoRepository.findById(oferta.getEquipoOrigenId());
         if (origenOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Equipo origen no encontrado.");
@@ -62,7 +57,6 @@ public class OfertaController {
         return ResponseEntity.ok(ofertaRepository.save(oferta));
     }
 
-    // Aceptar oferta: transfiere al jugador y mueve el dinero
     @PutMapping("/{id}/aceptar")
     public ResponseEntity<?> aceptarOferta(@PathVariable Long id) {
         Optional<Oferta> ofertaOpt = ofertaRepository.findById(id);
@@ -88,23 +82,22 @@ public class OfertaController {
             return ResponseEntity.badRequest().body("El equipo comprador ya no tiene presupuesto suficiente.");
         }
 
-        // Mover dinero
+        // Transacción económica entre clubes
         origen.setPresupuesto(origen.getPresupuesto() - oferta.getMonto());
         destino.setPresupuesto(destino.getPresupuesto() + oferta.getMonto());
         equipoRepository.save(origen);
         equipoRepository.save(destino);
 
-        // Transferir jugador al equipo origen (comprador)
+        // Cambio de equipo y estado del jugador
         Jugador jugador = jugadorOpt.get();
         jugador.setEquipo(origen);
         jugador.setTitular(false);
         jugadorRepository.save(jugador);
 
-        // Marcar esta oferta como ACEPTADA
         oferta.setEstado(Oferta.Estado.ACEPTADA);
         ofertaRepository.save(oferta);
 
-        // Rechazar automáticamente el resto de ofertas pendientes por el mismo jugador
+        // Rechazo automático de otras ofertas por el mismo jugador
         List<Oferta> pendientes = ofertaRepository.findByJugadorIdAndEstado(
                 oferta.getJugadorId(), Oferta.Estado.PENDIENTE);
         for (Oferta otra : pendientes) {
@@ -115,7 +108,6 @@ public class OfertaController {
         return ResponseEntity.ok(jugador);
     }
 
-    // Rechazar oferta manualmente
     @PutMapping("/{id}/rechazar")
     public ResponseEntity<?> rechazarOferta(@PathVariable Long id) {
         Optional<Oferta> ofertaOpt = ofertaRepository.findById(id);

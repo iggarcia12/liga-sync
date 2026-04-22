@@ -22,15 +22,12 @@ export class MiEquipoComponent implements OnInit {
   editando = false;
   mensajeGuardado = '';
 
-  // --- Ordenación de la tabla
   sortField: string = 'pos';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   nombreEdicion = '';
   escudoEdicion = '';
 
-  // --- FASE 2: Pestañas, Ofertas y Despidos
-  // --- FASE 3: Pizarra Táctica
   pestanaActiva: 'plantilla' | 'ofertas' | 'tactica' = 'plantilla';
   formaciones = ['4-4-2', '4-3-3', '3-4-3', '3-5-2', '5-3-2', '4-5-1', '5-4-1', '4-2-3-1', '4-1-4-1'];
   jugadorSeleccionado: any = null;
@@ -76,7 +73,6 @@ export class MiEquipoComponent implements OnInit {
       }
     });
 
-    // Cargar todos los equipos para resolver nombres en las ofertas
     this.http.get<any[]>('http://localhost:8080/api/equipos').subscribe({
       next: (equipos) => this.equiposTodos = equipos,
       error: (err) => console.error('Error al cargar lista de equipos:', err)
@@ -111,8 +107,6 @@ export class MiEquipoComponent implements OnInit {
   private aplicarOrdenacion() {
     const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
     this.jugadores.sort((a, b) => {
-      // Si estamos en la pestaña de táctica, el orden base DEBE ser por posición para encajar en los slots
-      // Pero solo si no estamos en medio de un proceso de ordenación por otro campo
       if (this.sortField === 'pos') {
         let valA = posOrder[a.pos] || 99;
         let valB = posOrder[b.pos] || 99;
@@ -151,16 +145,14 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  // --- FASE 2 y 3: Gestión de pestañas
   cambiarPestana(p: 'plantilla' | 'ofertas' | 'tactica') {
     this.pestanaActiva = p;
-    this.jugadorSeleccionado = null; // Limpiar selección al cambiar de pestaña
+    this.jugadorSeleccionado = null; 
     if (p === 'ofertas' && this.equipo) {
       this.cargarOfertas(this.equipo.id);
     }
   }
 
-  // --- FASE 2: Ofertas recibidas
   cargarOfertas(equipoId: number) {
     this.cargandoOfertas = true;
     this.http.get<any[]>(`http://localhost:8080/api/ofertas/recibidas/${equipoId}`).subscribe({
@@ -190,7 +182,6 @@ export class MiEquipoComponent implements OnInit {
         if (this.equipo) {
           this.cargarOfertas(this.equipo.id);
           this.cargarJugadores(this.equipo.id);
-          // Refrescar presupuesto del equipo
           this.http.get<any>(`http://localhost:8080/api/equipos/${this.equipo.id}`).subscribe({
             next: (eq) => { this.equipo = eq; this.cdr.detectChanges(); },
             error: () => {}
@@ -211,7 +202,6 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  // --- FASE 2: Despidos
   despedirJugador(jugador: any) {
     if (!confirm(`¿Liberar a ${jugador.nombre}? Pasará a ser Agente Libre en el mercado.`)) return;
     this.http.put<any>(`http://localhost:8080/api/jugadores/${jugador.id}/liberar`, {}).subscribe({
@@ -222,7 +212,6 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  // --- FASE 3: Pizarra Táctica Logic
   get titulares() {
     return this.jugadores.filter(j => j.titular);
   }
@@ -237,23 +226,17 @@ export class MiEquipoComponent implements OnInit {
     } else if (this.jugadorSeleccionado.id === j.id) {
       this.jugadorSeleccionado = null;
     } else {
-      // Intercambio
+      // Intercambio lógico: permuta si ambos son titulares, swap si uno es suplente
       const j1 = this.jugadorSeleccionado;
       const j2 = j;
 
       if (j1.titular && j2.titular) {
-        // Intercambio de posiciones visuales (en este MVP simplemente permutamos en el array si fuera necesario, 
-        // pero como se posicionan por 'pos', no hay mucho que "intercambiar" visualmente salvo que guardemos el orden)
-        // Para que el usuario vea un cambio real, podríamos intercambiar sus 'ids' en un array de "on-field positions"
-        // Pero el requerimiento dice "según su posición (POR, DEF, MED, DEL)".
-        // Si ambos son DEF, simplemente se "notará" si cambiamos su orden en la lista de titulares.
         const idx1 = this.jugadores.findIndex(p => p.id === j1.id);
         const idx2 = this.jugadores.findIndex(p => p.id === j2.id);
         const temp = this.jugadores[idx1];
         this.jugadores[idx1] = this.jugadores[idx2];
         this.jugadores[idx2] = temp;
       } else {
-        // Intercambio Titular <-> Suplente
         const titular = j1.titular ? j1 : j2;
         const suplente = j1.titular ? j2 : j1;
 
@@ -286,13 +269,12 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  // --- FASE 3: Lógica de Slots Fijos
+  // Distribución dinámica de slots en el campo según la formación elegida
   getSlots(formacionStr: string) {
     if (!formacionStr) return [];
     const parts = formacionStr.split('-').map(Number);
     const slots: any[] = [];
     
-    // Portero (siempre slot 0)
     slots.push({ type: 'POR', x: 50, y: 7 });
 
     const yRange = 63;
@@ -300,7 +282,6 @@ export class MiEquipoComponent implements OnInit {
     const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
 
     parts.forEach((count, lineIdx) => {
-      // Determinamos el tipo de posición según la línea
       let type = 'MED';
       if (lineIdx === 0) type = 'DEF';
       else if (lineIdx === parts.length - 1) type = 'DEL';
@@ -324,23 +305,17 @@ export class MiEquipoComponent implements OnInit {
     const slot = slots[index];
     if (!slot) return false;
 
-    // POR solo puede ir en slot POR
     if (slot.type === 'POR') return jugador.pos !== 'POR';
-    // Si el slot es DEF/MED/DEL, el jugador debe coincidir
     return jugador.pos !== slot.type;
   }
 
-  // Helper para posicionar jugadores en el campo
   getPosicionEstilo(jugador: any, index: number) {
     if (!this.equipo) return {};
     const formacion = this.equipo.formacion || '4-4-2';
     const slots = this.getSlots(formacion);
     const slot = slots[index];
 
-    if (!slot) {
-      // Si hay más de 11, los amontonamos fuera o los ocultamos
-      return { display: 'none' };
-    }
+    if (!slot) return { display: 'none' };
 
     return { 
       bottom: `${slot.y}%`, 

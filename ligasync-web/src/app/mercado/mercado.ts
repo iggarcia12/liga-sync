@@ -19,11 +19,9 @@ export class MercadoComponent implements OnInit {
   jugadoresConEquipo: any[] = [];
   equipos: any[] = [];
 
-  // Modal: Crear jugador (admin)
   mostrarModalFichaje = false;
   nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
 
-  // Modal: Hacer oferta (entrenador)
   mostrarModalOferta = false;
   jugadorParaOfertar: any = null;
   montoOferta = 0;
@@ -58,7 +56,6 @@ export class MercadoComponent implements OnInit {
       this.equipos = eqs;
       this.agentesLibres = todos.filter((j: any) => !j.equipo?.id);
       this._todosConEquipo = todos.filter((j: any) => j.equipo?.id);
-      console.log('[Mercado] Total:', todos.length, '| Libres:', this.agentesLibres.length, '| Con equipo:', this._todosConEquipo.length);
       this.actualizarJugadoresConEquipo();
 
       this.cargando = false;
@@ -89,7 +86,6 @@ export class MercadoComponent implements OnInit {
     );
   }
 
-  // --- Presupuesto y equipo propio
   _miEquipoId: number | null = null;
   miEquipoPresupuesto = 0;
 
@@ -109,7 +105,6 @@ export class MercadoComponent implements OnInit {
     });
   }
 
-  // --- Modal: Crear jugador (admin / cantera)
   abrirModal() {
     this.mostrarModalFichaje = true;
     this.nuevoJugador = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
@@ -139,7 +134,6 @@ export class MercadoComponent implements OnInit {
     });
   }
 
-  // --- Fichar agente libre (traspaso directo)
   ficharAgenteLibre(jugador: any) {
     if (!this.miEquipoId) {
       alert('Necesitas tener un equipo asignado para realizar fichajes.');
@@ -148,6 +142,7 @@ export class MercadoComponent implements OnInit {
     const equipoDestino = this.equipos.find(e => e.id == this.miEquipoId);
     if (!confirm(`¿Fichar a ${jugador.nombre} para ${equipoDestino?.nombre}?`)) return;
 
+    // Fichaje directo para agentes libres (sin negociación entre clubes)
     const payload = { ...jugador, equipo: equipoDestino };
     this.http.put(`http://localhost:8080/api/jugadores/${jugador.id}`, payload, { responseType: 'text' as 'json' }).subscribe({
       next: () => {
@@ -163,7 +158,6 @@ export class MercadoComponent implements OnInit {
     });
   }
 
-  // --- Modal: Hacer oferta por un jugador con equipo
   abrirModalOferta(jugador: any) {
     this.jugadorParaOfertar = jugador;
     this.montoOferta = jugador.valor || 0;
@@ -179,6 +173,7 @@ export class MercadoComponent implements OnInit {
   enviarOferta() {
     if (!this.miEquipoId || !this.jugadorParaOfertar) return;
 
+    // Flujo de negociación: las ofertas deben ser validadas por el equipo receptor
     const payload = {
       equipoOrigenId:  this.miEquipoId,
       equipoDestinoId: this.jugadorParaOfertar.equipo.id,

@@ -27,8 +27,7 @@ public class DataFixer {
         List<Equipo> equipos = equipoRepository.findAll();
         List<Partido> partidos = partidoRepository.findAll();
 
-        // Usamos un mapa por ID para garantizar que siempre modificamos
-        // las mismas instancias que luego guardamos con saveAll(equipos)
+        // Mapeamos para no perder las referencias al actualizar
         Map<Long, Equipo> equipoMap = new HashMap<>();
         for (Equipo e : equipos) {
             e.setPts(0); e.setPj(0); e.setPg(0); e.setPe(0); e.setPp(0); e.setGf(0); e.setGc(0);

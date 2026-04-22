@@ -1,5 +1,4 @@
 <div class="app-wrapper">
-  <!-- Navbar Global Sticky -->
   <header class="global-navbar" *ngIf="mostrarMenu()">
     <div class="navbar-container">
       <div class="navbar-brand">
@@ -8,7 +7,6 @@
       </div>
 
       <nav class="navbar-links">
-        <!-- Todos los roles ven estas secciones (solo lectura para no-admin) -->
         <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
           <span class="icon">📊</span> Inicio
         </a>
@@ -25,24 +23,19 @@
           <span class="icon">🤝</span> Mercado
         </a>
 
-        <!-- Jugador: Mi Perfil -->
         <a *ngIf="authService.isJugador()" routerLink="/mi-perfil" routerLinkActive="active-link">
           <span class="icon">👤</span> Mi Perfil
         </a>
 
-        <!-- Entrenador: Mi Equipo (gestión de su plantilla) -->
         <a *ngIf="authService.isEntrenador()" routerLink="/mi-equipo" routerLinkActive="active-link">
           <span class="icon">🏟️</span> Mi Equipo
         </a>
 
-        <!-- Jugadores, entrenadores y admin ven Mensajes -->
         <a *ngIf="authService.isJugador() || authService.isEntrenador() || authService.isAdmin()" routerLink="/mensajes" routerLinkActive="active-link">
           <span class="icon">✉️</span> Mensajes
         </a>
 
-        <!-- Admin: panel de administración -->
         <ng-container *ngIf="authService.isAdmin()">
-
           <a routerLink="/admin" routerLinkActive="active-link">
             <span class="icon">⚙️</span> Admin
           </a>
@@ -61,7 +54,6 @@
     </div>
   </header>
 
-  <!-- Contenido Principal -->
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>

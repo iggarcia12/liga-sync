@@ -17,21 +17,17 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
 
   readonly urlBase = 'http://localhost:8080/api';
 
-  // Usuario actual
   miId: number | null = null;
   miNombre: string | null = null;
 
-  // Contactos activos (con historial de mensajes)
   contactosActivos: any[] = [];
 
-  // Búsqueda de nuevos usuarios
   textoBusqueda: string = '';
   resultadosBusqueda: any[] = [];
   todosUsuarios: any[] = [];
   buscando: boolean = false;
   mostrarBusqueda: boolean = false;
 
-  // Chat activo
   contactoSeleccionado: any = null;
   mensajesActivos: any[] = [];
   nuevoMensaje: string = '';
@@ -60,10 +56,8 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  // Carga solo usuarios con chats activos
   cargarContactosActivos() {
     if (!this.miId) {
-      console.warn('No hay miId disponible. ¿Has iniciado sesión?');
       this.cargandoContactos = false;
       return;
     }
@@ -71,8 +65,6 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
 
     this.http.get<any[]>(`${this.urlBase}/mensajes/contactos/${this.miId}`).subscribe({
       next: (usuarios) => {
-        // El endpoint devuelve todos si no hay historial; filtramos al propio usuario
-        // pero solo mostramos si hay historial real
         this.contactosActivos = usuarios.filter(u => u.id !== this.miId);
         this.cargandoContactos = false;
         this.cdr.detectChanges();
@@ -85,7 +77,7 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  // Pre-carga todos los usuarios para la búsqueda (sin mostrarlos)
+  // Pre-carga del universo de usuarios para habilitar la búsqueda instantánea
   cargarTodosUsuarios() {
     this.http.get<any[]>(`${this.urlBase}/mensajes/usuarios`).subscribe({
       next: (usuarios) => {
@@ -95,7 +87,6 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  // Filtra usuarios en tiempo real según el texto
   buscarUsuarios() {
     const q = this.textoBusqueda.trim().toLowerCase();
     if (!q) {
@@ -108,7 +99,7 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
       u.nombre?.toLowerCase().includes(q) ||
       u.email?.toLowerCase().includes(q) ||
       u.role?.toLowerCase().includes(q)
-    ).slice(0, 8); // máximo 8 resultados
+    ).slice(0, 8); 
   }
 
   limpiarBusqueda() {
@@ -122,7 +113,6 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     this.mensajesActivos = [];
     this.limpiarBusqueda();
 
-    // Si no estaba en contactos activos, añadirlo temporalmente al sidebar
     const yaEstaEnActivos = this.contactosActivos.some(c => c.id === usuario.id);
     if (!yaEstaEnActivos) {
       this.contactosActivos = [usuario, ...this.contactosActivos];
@@ -153,14 +143,7 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
   }
 
   enviarMensaje() {
-    console.log('Intentando enviar mensaje...', {
-      miId: this.miId,
-      contacto: this.contactoSeleccionado?.nombre,
-      texto: this.nuevoMensaje
-    });
-
     if (!this.nuevoMensaje.trim() || !this.contactoSeleccionado || !this.miId || this.enviando) {
-      console.warn('Envío cancelado: faltan datos o ya se está enviando.');
       return;
     }
 
@@ -176,7 +159,6 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
 
     this.http.post<any>(this.urlBase + '/mensajes', payload).subscribe({
       next: (msgGuardado) => {
-        console.log('Mensaje enviado con éxito:', msgGuardado);
         this.mensajesActivos.push(msgGuardado);
         this.enviando = false;
         this.debeScrollear = true;
@@ -220,6 +202,7 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  // Gestión automática del scroll al final del chat tras cambios en la vista
   private scrollAlFinal() {
     if (this.chatHistoryEl) {
       const el = this.chatHistoryEl.nativeElement;

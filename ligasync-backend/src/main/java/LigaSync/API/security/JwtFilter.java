@@ -38,16 +38,14 @@ public class JwtFilter extends OncePerRequestFilter {
                         .parseClaimsJws(token)
                         .getBody();
                 email = claims.getSubject();
-                rol = claims.get("rol", String.class); // <-- Leemos el rol del token
+                rol = claims.get("rol", String.class);
             } catch (Exception e) {
                 System.out.println("Token inválido o caducado: " + e.getMessage());
             }
         }
 
-        // Si el email es válido y aún no hay autenticación en este hilo
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            // Normalizamos: quitar prefijo si ya lo tiene, pasar a mayúsculas, y añadir ROLE_
+            // Spring Security necesita el prefijo ROLE_ para que funcionen los hasRole()
             String rolNormalizado = (rol != null && !rol.isEmpty()) ? rol.toUpperCase().replace("ROLE_", "") : "USER";
             String authority = "ROLE_" + rolNormalizado;
             SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);

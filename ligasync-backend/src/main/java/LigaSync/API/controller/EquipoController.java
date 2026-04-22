@@ -15,13 +15,11 @@ public class EquipoController {
     @Autowired
     private EquipoRepository equipoRepository;
 
-    // Obtener todos los equipos
     @GetMapping
     public List<Equipo> obtenerEquipos() {
         return equipoRepository.findAll();
     }
 
-    // Obtener un equipo por ID
     @GetMapping("/{id}")
     public ResponseEntity<Equipo> obtenerEquipoPorId(@PathVariable Long id) {
         return equipoRepository.findById(id)
@@ -29,12 +27,11 @@ public class EquipoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Crear un nuevo equipo
     @PostMapping
     public Equipo crearEquipo(@RequestBody Equipo nuevoEquipo) {
         return equipoRepository.save(nuevoEquipo);
     }
-    // Editar un equipo existente
+
     @PutMapping("/{id}")
     public Equipo actualizarEquipo(@PathVariable Long id, @RequestBody Equipo equipoActualizado) {
         return equipoRepository.findById(id).map(equipo -> {
@@ -45,7 +42,6 @@ public class EquipoController {
         }).orElseThrow(() -> new RuntimeException("Equipo no encontrado"));
     }
 
-    // Eliminar un equipo
     @DeleteMapping("/{id}")
     public void eliminarEquipo(@PathVariable Long id) {
         equipoRepository.deleteById(id);
