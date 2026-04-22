@@ -33,21 +33,18 @@
     <!-- Mensaje de éxito -->
     <div class="caja-exito" *ngIf="mensajeGuardado">{{ mensajeGuardado }}</div>
 
-    <!-- Modal de edición -->
+    <!-- Modal de edición del equipo -->
     <div class="modal-overlay" *ngIf="editando" (click)="cancelarEdicion()">
       <div class="modal-card" (click)="$event.stopPropagation()">
         <h3 class="modal-titulo">Editar datos del equipo</h3>
-
         <div class="grupo-input">
           <label>Nombre del equipo</label>
           <input type="text" [(ngModel)]="nombreEdicion" placeholder="Nombre del equipo" />
         </div>
-
         <div class="grupo-input">
           <label>URL del escudo</label>
           <input type="text" [(ngModel)]="escudoEdicion" placeholder="https://..." />
         </div>
-
         <div class="modal-acciones">
           <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
           <button class="btn-guardar" (click)="guardarCambios()">Guardar cambios</button>
@@ -55,9 +52,22 @@
       </div>
     </div>
 
-    <!-- Plantilla de jugadores -->
-    <section class="seccion-plantilla">
-      <h2 class="seccion-titulo">Plantilla</h2>
+    <!-- Navegación de pestañas -->
+    <nav class="tabs-nav">
+      <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'plantilla'" (click)="cambiarPestana('plantilla')">
+        Plantilla
+      </button>
+      <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'tactica'" (click)="cambiarPestana('tactica')">
+        📋 Pizarra Táctica
+      </button>
+      <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'ofertas'" (click)="cambiarPestana('ofertas')">
+        Bandeja de Ofertas
+        <span class="tab-badge" *ngIf="ofertasPendientes > 0">{{ ofertasPendientes }}</span>
+      </button>
+    </nav>
+
+    <!-- ===== PESTAÑA: PLANTILLA ===== -->
+    <section class="seccion-plantilla" *ngIf="pestanaActiva === 'plantilla'">
 
       <div *ngIf="jugadores.length === 0" class="plantilla-vacia">
         <p>No hay jugadores registrados en este equipo todavía.</p>
@@ -66,37 +76,139 @@
       <div class="plantilla-tabla" *ngIf="jugadores.length > 0">
         <div class="tabla-header">
           <span (click)="ordenar('nombre')" [class.active]="sortField === 'nombre'">
-            Jugador 
-            <i *ngIf="sortField === 'nombre'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            Jugador <i *ngIf="sortField === 'nombre'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('pos')" [class.active]="sortField === 'pos'">
-            Posición
-            <i *ngIf="sortField === 'pos'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            Pos. <i *ngIf="sortField === 'pos'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
+          <span (click)="ordenar('media')" [class.active]="sortField === 'media'">
+            Media <i *ngIf="sortField === 'media'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('goles')" [class.active]="sortField === 'goles'">
-            Goles
-            <i *ngIf="sortField === 'goles'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            Goles <i *ngIf="sortField === 'goles'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('asist')" [class.active]="sortField === 'asist'">
-            Asist.
-            <i *ngIf="sortField === 'asist'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            Asist. <i *ngIf="sortField === 'asist'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('amarillas')" [class.active]="sortField === 'amarillas'">
-            Amarillas
+            <span class="icono-tarjeta icono-tarjeta--amarilla">■</span>
             <i *ngIf="sortField === 'amarillas'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('rojas')" [class.active]="sortField === 'rojas'">
-            Rojas
+            <span class="icono-tarjeta icono-tarjeta--roja">■</span>
             <i *ngIf="sortField === 'rojas'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
+          <span>Acción</span>
         </div>
+
         <div class="tabla-fila" *ngFor="let j of jugadores">
           <span class="jugador-nombre">{{ j.nombre }}</span>
           <span class="jugador-posicion">{{ j.pos ?? '—' }}</span>
+          <span class="jugador-stat jugador-stat--media">{{ j.media ?? '—' }}</span>
           <span class="jugador-stat">{{ j.goles ?? 0 }}</span>
           <span class="jugador-stat">{{ j.asist ?? 0 }}</span>
           <span class="jugador-stat jugador-stat--amarilla">{{ j.amarillas ?? 0 }}</span>
           <span class="jugador-stat jugador-stat--roja">{{ j.rojas ?? 0 }}</span>
+          <span class="jugador-accion">
+            <button class="btn-despedir" (click)="despedirJugador(j)">Liberar</button>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PESTAÑA: PIZARRA TÁCTICA ===== -->
+    <section class="seccion-tactica" *ngIf="pestanaActiva === 'tactica'">
+      <div class="tactica-controles">
+        <div class="grupo-formacion">
+          <label>Formación:</label>
+          <select [(ngModel)]="equipo.formacion">
+            <option *ngFor="let f of formaciones" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+        <button class="btn-guardar-tactica" (click)="guardarTactica()">💾 Guardar Táctica</button>
+      </div>
+
+      <div class="pizarra-container">
+        <!-- Campo de fútbol -->
+        <div class="campo-futbol">
+          <div class="linea-medio"></div>
+          <div class="circulo-central"></div>
+          <div class="area-grande area-grande--arriba"></div>
+          <div class="area-grande area-grande--abajo"></div>
+
+          <!-- Jugadores Titulares -->
+          <div class="jugador-spot" 
+               *ngFor="let j of titulares; let i = index" 
+               [ngStyle]="getPosicionEstilo(j, i)"
+               [class.seleccionado]="jugadorSeleccionado?.id === j.id"
+               [class.fuera-de-posicion]="estaFueraDePosicion(j, i)"
+               (click)="seleccionarJugador(j)">
+            <div class="jugador-circulo">
+              <span class="jugador-media">{{ j.media }}</span>
+            </div>
+            <div class="jugador-info-pizarra">
+              <span class="jugador-nombre-pizarra">{{ j.nombre.split(' ')[0] }}</span>
+              <span class="jugador-pos-pizarra">{{ j.pos }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de Suplentes -->
+        <div class="suplentes-container">
+          <h3>Banquillo (Suplentes)</h3>
+          <div class="lista-suplentes-pizarra">
+            <div class="suplente-card" 
+                 *ngFor="let s of suplentes" 
+                 [class.seleccionado]="jugadorSeleccionado?.id === s.id"
+                 (click)="seleccionarJugador(s)">
+              <span class="suplente-pos">{{ s.pos }}</span>
+              <span class="suplente-nombre">{{ s.nombre }}</span>
+              <span class="suplente-media">{{ s.media }}</span>
+            </div>
+          </div>
+          <p class="instruccion-intercambio" *ngIf="!jugadorSeleccionado">
+            💡 Haz clic en un jugador para seleccionarlo e intercambiarlo.
+          </p>
+          <p class="instruccion-intercambio seleccionando" *ngIf="jugadorSeleccionado">
+            🔄 Selecciona otro jugador para realizar el cambio.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PESTAÑA: BANDEJA DE OFERTAS ===== -->
+    <section class="seccion-ofertas" *ngIf="pestanaActiva === 'ofertas'">
+
+      <div *ngIf="cargandoOfertas" class="estado-carga">
+        <div class="spinner"></div>
+        <p>Cargando ofertas...</p>
+      </div>
+
+      <div *ngIf="!cargandoOfertas && ofertas.length === 0" class="plantilla-vacia">
+        <p>No hay ofertas recibidas por ninguno de tus jugadores.</p>
+      </div>
+
+      <div class="lista-ofertas" *ngIf="!cargandoOfertas && ofertas.length > 0">
+        <div class="oferta-card" *ngFor="let o of ofertas" [class.oferta-card--aceptada]="o.estado === 'ACEPTADA'" [class.oferta-card--rechazada]="o.estado === 'RECHAZADA'">
+
+          <div class="oferta-info">
+            <div class="oferta-jugador">{{ getNombreJugador(o.jugadorId) }}</div>
+            <div class="oferta-detalle">
+              <span class="oferta-origen">🏟️ {{ getNombreEquipo(o.equipoOrigenId) }}</span>
+              <span class="oferta-monto">{{ o.monto | currency:'EUR':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+
+          <div class="oferta-estado-acciones">
+            <span class="badge-estado" [class.badge-estado--pendiente]="o.estado === 'PENDIENTE'" [class.badge-estado--aceptada]="o.estado === 'ACEPTADA'" [class.badge-estado--rechazada]="o.estado === 'RECHAZADA'">
+              {{ o.estado }}
+            </span>
+            <div class="oferta-botones" *ngIf="o.estado === 'PENDIENTE'">
+              <button class="btn-aceptar" (click)="aceptarOferta(o)">Aceptar</button>
+              <button class="btn-rechazar" (click)="rechazarOferta(o)">Rechazar</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

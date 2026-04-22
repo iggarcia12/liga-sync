@@ -98,38 +98,89 @@ export class EquiposComponent implements OnInit {
 
     const todosLosDelEquipo = this.jugadores.filter(j => j.equipo && j.equipo.id == this.equipoActualSeleccionado);
     
-    // Distribuimos para la pizarra (manteniendo la lógica de los primeros N)
-    this.porteros = todosLosDelEquipo.filter(j => j.pos === 'POR');
-    this.defensas = todosLosDelEquipo.filter(j => j.pos === 'DEF');
-    this.medios = todosLosDelEquipo.filter(j => j.pos === 'MED');
-    this.delanteros = todosLosDelEquipo.filter(j => j.pos === 'DEL');
-
-    // Definimos quiénes son titulares basándonos en la misma lógica que la pizarra
-    const idsTitulares = new Set<number>();
-    this.porteros.slice(0, 1).forEach(p => idsTitulares.add(p.id));
-    this.defensas.slice(0, 4).forEach(p => idsTitulares.add(p.id));
-    this.medios.slice(0, 4).forEach(p => idsTitulares.add(p.id));
-    this.delanteros.slice(0, 3).forEach(p => idsTitulares.add(p.id));
-
-    // Orden de posiciones: POR -> DEF -> MED -> DEL
-    const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
-
-    this.jugadoresFiltrados = todosLosDelEquipo.map(j => ({
-      ...j,
-      esTitular: idsTitulares.has(j.id)
-    })).sort((a, b) => {
-      // Primero por posición
+    // Titulares reales según el backend
+    this.jugadoresFiltrados = todosLosDelEquipo.sort((a, b) => {
+      // Orden de posiciones: POR -> DEF -> MED -> DEL
+      const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
       const orderA = posOrder[a.pos] || 99;
       const orderB = posOrder[b.pos] || 99;
       if (orderA !== orderB) return orderA - orderB;
       
       // Dentro de la misma posición, titulares primero
-      if (a.esTitular && !b.esTitular) return -1;
-      if (!a.esTitular && b.esTitular) return 1;
+      if (a.titular && !b.titular) return -1;
+      if (!a.titular && b.titular) return 1;
 
-      // Finalmente por media (de mayor a menor)
       return (b.media || 0) - (a.media || 0);
     });
+  }
+
+  get titulares() {
+    const reales = this.jugadoresFiltrados.filter(j => j.titular);
+    
+    // Si hay titulares reales, los usamos (ordenados por posición para los slots)
+    if (reales.length > 0) {
+      return reales.sort((a, b) => {
+        const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
+        return (posOrder[a.pos] || 99) - (posOrder[b.pos] || 99);
+      });
+    }
+
+    // Si NO hay titulares (equipos sin configurar), generamos un "11 Ideal" automático
+    const ideal: any[] = [];
+    const por = this.jugadoresFiltrados.filter(j => j.pos === 'POR').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 1);
+    const def = this.jugadoresFiltrados.filter(j => j.pos === 'DEF').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
+    const med = this.jugadoresFiltrados.filter(j => j.pos === 'MED').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
+    const del = this.jugadoresFiltrados.filter(j => j.pos === 'DEL').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 2);
+    
+    return [...por, ...def, ...med, ...del];
+  }
+
+  getSlots(formacionStr: string) {
+    if (!formacionStr) return [];
+    const parts = formacionStr.split('-').map(Number);
+    const slots: any[] = [];
+    slots.push({ type: 'POR', x: 50, y: 7 });
+    const yRange = 63;
+    const yBase = 25;
+    const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
+    parts.forEach((count, lineIdx) => {
+      let type = 'MED';
+      if (lineIdx === 0) type = 'DEF';
+      else if (lineIdx === parts.length - 1) type = 'DEL';
+      const y = yBase + (lineIdx * yStep);
+      const xStep = count > 1 ? 70 / (count - 1) : 0;
+      for (let i = 0; i < count; i++) {
+        const x = count > 1 ? 15 + (i * xStep) : 50;
+        slots.push({ type, x, y });
+      }
+    });
+    return slots;
+  }
+
+  estaFueraDePosicion(jugador: any, index: number): boolean {
+    // En la vista pública, forzamos que siempre parezca correcto
+    return false;
+  }
+
+  getPosicionEstilo(jugador: any, index: number) {
+    if (!this.equipoActualDetalles) return {};
+    
+    // Calculamos una formación "natural" basada en los titulares reales para que se vea perfecto
+    const titulares = this.titulares;
+    const nDef = titulares.filter(j => j.pos === 'DEF').length;
+    const nMed = titulares.filter(j => j.pos === 'MED').length;
+    const nDel = titulares.filter(j => j.pos === 'DEL').length;
+    const formacionNatural = (nDef || nMed || nDel) ? `${nDef}-${nMed}-${nDel}` : '4-4-2';
+
+    const slots = this.getSlots(formacionNatural);
+    const slot = slots[index];
+    if (!slot) return { display: 'none' };
+
+    return { 
+      bottom: `${slot.y}%`, 
+      left: `${slot.x}%`,
+      transform: 'translateX(-50%)'
+    };
   }
 
   venderJugador(jugador: any) {

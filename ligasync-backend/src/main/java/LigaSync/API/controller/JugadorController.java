@@ -79,6 +79,46 @@ public class JugadorController {
         return ResponseEntity.ok(jugadorRepository.save(nuevoJugador));
     }
 
+    // Liberar jugador (lo convierte en Agente Libre)
+    @PutMapping("/{id}/liberar")
+    public ResponseEntity<?> liberarJugador(@PathVariable Long id) {
+        return jugadorRepository.findById(id).map(jugador -> {
+            jugador.setEquipo(null);
+            jugador.setTitular(false);
+            return ResponseEntity.ok(jugadorRepository.save(jugador));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // Guardar titulares y formación de un equipo (pizarra táctica)
+    @PutMapping("/equipo/{equipoId}/titulares")
+    public ResponseEntity<?> actualizarTitulares(
+            @PathVariable Long equipoId,
+            @RequestBody java.util.Map<String, Object> cuerpo) {
+
+        @SuppressWarnings("unchecked")
+        java.util.List<Integer> idsEnteros = (java.util.List<Integer>) cuerpo.get("titularIds");
+        String formacion = (String) cuerpo.get("formacion");
+
+        java.util.Set<Long> titularIds = idsEnteros.stream()
+                .map(Integer::longValue)
+                .collect(Collectors.toSet());
+
+        List<Jugador> jugadores = jugadorRepository.findByEquipoId(equipoId);
+        for (Jugador j : jugadores) {
+            j.setTitular(titularIds.contains(j.getId()));
+        }
+        jugadorRepository.saveAll(jugadores);
+
+        if (formacion != null && !formacion.isBlank()) {
+            equipoRepository.findById(equipoId).ifPresent(e -> {
+                e.setFormacion(formacion);
+                equipoRepository.save(e);
+            });
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
     // Actualizar jugador (Traspasos, Modificar media, etc)
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarJugador(@PathVariable Long id, @RequestBody Jugador jugadorActualizado) {

@@ -55,6 +55,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/equipos/**").hasAnyRole("ADMIN", "ENTRENADOR")
                         .requestMatchers(HttpMethod.PUT, "/api/jugadores/**").hasAnyRole("ADMIN", "ENTRENADOR")
 
+                        // 4b. Entrenador puede crear y gestionar ofertas
+                        .requestMatchers(HttpMethod.POST, "/api/ofertas").hasAnyRole("ADMIN", "ENTRENADOR")
+                        .requestMatchers(HttpMethod.PUT, "/api/ofertas/**").hasAnyRole("ADMIN", "ENTRENADOR")
+
                         // 5. Acciones restringidas a ADMIN (POST/PUT/DELETE)
                         // IMPORTANTE: Estas reglas solo se aplican si no han matched con las de arriba
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")

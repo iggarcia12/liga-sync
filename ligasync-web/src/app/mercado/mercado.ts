@@ -14,13 +14,19 @@ import { AuthService } from '../auth.service';
   styleUrl: './mercado.css'
 })
 export class MercadoComponent implements OnInit {
-  cargando: boolean = true;
+  cargando = true;
   agentesLibres: any[] = [];
-  equipos: any[] = []; // Para poder asignarlos directamente si queremos
+  jugadoresConEquipo: any[] = [];
+  equipos: any[] = [];
 
-  // Formulario
-  mostrarModalFichaje: boolean = false;
+  // Modal: Crear jugador (admin)
+  mostrarModalFichaje = false;
   nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
+
+  // Modal: Hacer oferta (entrenador)
+  mostrarModalOferta = false;
+  jugadorParaOfertar: any = null;
+  montoOferta = 0;
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
@@ -33,37 +39,39 @@ export class MercadoComponent implements OnInit {
     return this.equipos.find(e => e.id === this.miEquipoId)?.nombre ?? '';
   }
 
-  ngOnInit() {
-    this.cargarMercado();
-  }
+  ngOnInit() { this.cargarMercado(); }
 
   cargarMercado() {
     this.cargando = true;
     const urlBase = 'http://localhost:8080/api';
 
     forkJoin({
-      jugadoresReq: this.http.get<any[]>(urlBase + '/jugadores').pipe(
-        catchError(err => of([]))
-      ),
-      equiposReq: this.http.get<any[]>(urlBase + '/equipos').pipe(
-        catchError(err => of([]))
-      )
+      jugadoresReq: this.http.get<any[]>(urlBase + '/jugadores').pipe(catchError(() => of([]))),
+      equiposReq:   this.http.get<any[]>(urlBase + '/equipos').pipe(catchError(() => of([])))
     }).subscribe(resp => {
-      let jResult = resp.jugadoresReq;
-      if (jResult && (jResult as any)._embedded) jResult = (jResult as any)._embedded.jugadores || [];
-      
-      let eResult = resp.equiposReq;
-      if (eResult && (eResult as any)._embedded) eResult = (eResult as any)._embedded.equipos || [];
+      let todos = resp.jugadoresReq;
+      if ((todos as any)?._embedded) todos = (todos as any)._embedded.jugadores || [];
 
-      this.equipos = eResult;
-      this.agentesLibres = jResult.filter((j: any) => !j.equipo || !j.equipo.id);
+      let eqs = resp.equiposReq;
+      if ((eqs as any)?._embedded) eqs = (eqs as any)._embedded.equipos || [];
+
+      this.equipos = eqs;
+      this.agentesLibres = todos.filter((j: any) => !j.equipo?.id);
+      this._todosConEquipo = todos.filter((j: any) => j.equipo?.id);
+      console.log('[Mercado] Total:', todos.length, '| Libres:', this.agentesLibres.length, '| Con equipo:', this._todosConEquipo.length);
+      this.actualizarJugadoresConEquipo();
+
       this.cargando = false;
 
       if (this.authService.isEntrenador()) {
         const userId = this.authService.getUserId();
         if (userId) {
           this.http.get<any>(`${urlBase}/usuarios/${userId}`).subscribe({
-            next: (u) => { this.miEquipoId = u.teamId ?? null; this.cdr.detectChanges(); },
+            next: (u) => {
+              this.miEquipoId = u.teamId ?? null;
+              this.actualizarJugadoresConEquipo();
+              this.cdr.detectChanges();
+            },
             error: (err) => console.error('Error al cargar equipo del entrenador:', err)
           });
         }
@@ -73,101 +81,121 @@ export class MercadoComponent implements OnInit {
     });
   }
 
-  // --- CRUD Lógica de "Cantera" (Crear Jugador desde 0) ---
+  private _todosConEquipo: any[] = [];
+
+  private actualizarJugadoresConEquipo() {
+    this.jugadoresConEquipo = this._todosConEquipo.filter(
+      (j: any) => j.equipo?.id !== this._miEquipoId
+    );
+  }
+
+  // --- Presupuesto y equipo propio
+  _miEquipoId: number | null = null;
+  miEquipoPresupuesto = 0;
+
+  get miEquipoId(): number | null { return this._miEquipoId; }
+
+  set miEquipoId(val: number | null) {
+    this._miEquipoId = val;
+    if (val) this.cargarPresupuesto(val);
+    else this.miEquipoPresupuesto = 0;
+    this.actualizarJugadoresConEquipo();
+  }
+
+  cargarPresupuesto(teamId: number) {
+    this.http.get<any>(`http://localhost:8080/api/equipos/${teamId}`).subscribe({
+      next: (eq) => { this.miEquipoPresupuesto = eq.presupuesto || 0; this.cdr.detectChanges(); },
+      error: (err) => console.error('Error al cargar presupuesto:', err)
+    });
+  }
+
+  // --- Modal: Crear jugador (admin / cantera)
   abrirModal() {
     this.mostrarModalFichaje = true;
     this.nuevoJugador = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
   }
 
-  cerrarModal() {
-    this.mostrarModalFichaje = false;
-  }
+  cerrarModal() { this.mostrarModalFichaje = false; }
 
   crearJugadorNuevo() {
-    const url = 'http://localhost:8080/api/jugadores';
-
-    // Formateamos correctamente la relación con equipo si seleccionó uno
     const jugadorAEnviar = { ...this.nuevoJugador };
     if (jugadorAEnviar.equipo && jugadorAEnviar.equipo !== 'null') {
-      const eqEncontrado = this.equipos.find(e => e.id == jugadorAEnviar.equipo);
-      jugadorAEnviar.equipo = eqEncontrado || null; // Objeto entero o ID dependiendo del Backend
+      jugadorAEnviar.equipo = this.equipos.find(e => e.id == jugadorAEnviar.equipo) || null;
     } else {
       jugadorAEnviar.equipo = null;
     }
 
-    this.http.post<any>(url, jugadorAEnviar).subscribe({
+    this.http.post<any>('http://localhost:8080/api/jugadores', jugadorAEnviar).subscribe({
       next: () => {
-        alert("¡Jugador fichado con éxito!");
+        alert('¡Jugador registrado con éxito!');
         this.cerrarModal();
         this.cargarMercado();
-        // Actualizar presupuesto si se asignó al equipo seleccionado
         if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
       },
       error: (err) => {
-        alert("Error al intentar fichar al jugador. Revisar la consola.");
+        alert('Error al registrar el jugador. Revisa la consola.');
         console.error(err);
       }
     });
   }
 
-  // --- Lógica del Mercado (Agentes Libres) ---
-  _miEquipoId: number | null = null;
-  miEquipoPresupuesto: number = 0;
-
-  get miEquipoId(): number | null {
-    return this._miEquipoId;
-  }
-
-  set miEquipoId(val: number | null) {
-    this._miEquipoId = val;
-    if (val) {
-      this.cargarPresupuesto(val);
-    } else {
-      this.miEquipoPresupuesto = 0;
+  // --- Fichar agente libre (traspaso directo)
+  ficharAgenteLibre(jugador: any) {
+    if (!this.miEquipoId) {
+      alert('Necesitas tener un equipo asignado para realizar fichajes.');
+      return;
     }
-  }
+    const equipoDestino = this.equipos.find(e => e.id == this.miEquipoId);
+    if (!confirm(`¿Fichar a ${jugador.nombre} para ${equipoDestino?.nombre}?`)) return;
 
-  cargarPresupuesto(teamId: number) {
-    this.http.get<any>(`http://localhost:8080/api/equipos/${teamId}`).subscribe({
-      next: (eq) => {
-        this.miEquipoPresupuesto = eq.presupuesto || 0;
-        this.cdr.detectChanges();
+    const payload = { ...jugador, equipo: equipoDestino };
+    this.http.put(`http://localhost:8080/api/jugadores/${jugador.id}`, payload, { responseType: 'text' as 'json' }).subscribe({
+      next: () => {
+        this.cargarMercado();
+        if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
+        alert(`¡Fichaje completado! ${jugador.nombre} es tuyo.`);
+      },
+      error: (err) => {
+        if (err.status === 400) alert('Presupuesto insuficiente: ' + err.error);
+        else if (err.status === 403) alert('Sin permiso para realizar esta acción.');
+        else console.error('Error en el traspaso:', err);
       }
     });
   }
 
-  ficharAgenteLibre(jugador: any) {
-     if (!this.miEquipoId) {
-         alert('Por favor, selecciona primero "Tu Equipo" en la parte superior para saber dónde hacer el traspaso.');
-         return;
-     }
-
-     const equipoDestino = this.equipos.find(e => e.id == this.miEquipoId);
-     const confirmacion = window.confirm(`¿Fichar a ${jugador.nombre} para ${equipoDestino.nombre}?`);
-
-     if (confirmacion) {
-        const url = `http://localhost:8080/api/jugadores/${jugador.id}`;
-        
-        // Fichamos para el equipo seleccionado en el panel superior
-        const payload = { ...jugador, equipo: equipoDestino };
-        
-        this.http.put(url, payload, { responseType: 'text' as 'json' }).subscribe({
-           next: () => {
-              this.cargarMercado();
-              if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
-              alert(`¡Fichaje completado! ${jugador.nombre} ahora viste los colores de ${equipoDestino.nombre}`);
-           },
-           error: (err) => {
-              if (err.status === 400) {
-                 alert("Fichaje rechazado: " + err.error);
-              } else if (err.status === 403) {
-                 alert("Fichaje bloqueado (Error 403): Tu usuario actual no tiene permiso de Administrador para modificar jugadores.");
-              } else {
-                 alert("Error en el traspaso de jugador. Revisa la consola.");
-              }
-           }
-        });
-     }
+  // --- Modal: Hacer oferta por un jugador con equipo
+  abrirModalOferta(jugador: any) {
+    this.jugadorParaOfertar = jugador;
+    this.montoOferta = jugador.valor || 0;
+    this.mostrarModalOferta = true;
   }
 
+  cerrarModalOferta() {
+    this.mostrarModalOferta = false;
+    this.jugadorParaOfertar = null;
+    this.montoOferta = 0;
+  }
+
+  enviarOferta() {
+    if (!this.miEquipoId || !this.jugadorParaOfertar) return;
+
+    const payload = {
+      equipoOrigenId:  this.miEquipoId,
+      equipoDestinoId: this.jugadorParaOfertar.equipo.id,
+      jugadorId:       this.jugadorParaOfertar.id,
+      monto:           this.montoOferta
+    };
+
+    this.http.post<any>('http://localhost:8080/api/ofertas', payload).subscribe({
+      next: () => {
+        alert(`Oferta enviada por ${this.jugadorParaOfertar.nombre}. El entrenador rival deberá aceptarla.`);
+        this.cerrarModalOferta();
+      },
+      error: (err) => {
+        const msg = err.error || 'No se pudo enviar la oferta.';
+        alert(`Error: ${msg}`);
+        console.error('Error al enviar oferta:', err);
+      }
+    });
+  }
 }

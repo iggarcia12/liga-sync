@@ -221,3 +221,228 @@
   flex-direction: column;
   gap: 0.75rem;
 }
+
+/* --- Títulos de sección ------------------------------------ */
+.seccion-mercado-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.seccion-subtitulo {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  margin: 0 0 1.25rem 0;
+}
+
+.contador-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-radius: 9999px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0 0.5rem;
+}
+
+.contador-badge--azul {
+  background: rgba(75, 159, 255, 0.12);
+  color: var(--accent-color);
+}
+
+/* --- Tarjeta jugador en activo ----------------------------- */
+.market-card--activo::before {
+  background: linear-gradient(90deg, var(--accent-color), #8b5cf6);
+}
+
+.player-photo--activo {
+  background: linear-gradient(135deg, #1e3a5f, #3b5998);
+  box-shadow: 0 6px 20px rgba(75, 159, 255, 0.25);
+}
+
+.equipo-actual-badge {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.6rem;
+  width: 100%;
+}
+
+/* --- Botón Hacer Oferta ------------------------------------ */
+.btn-oferta {
+  background: transparent;
+  border: 1.5px solid var(--accent-color);
+  border-radius: var(--radius-sm);
+  color: var(--accent-color);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-oferta:hover {
+  background: var(--accent-color);
+  color: white;
+}
+
+.sin-equipo-msg {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* --- Modal Oferta ------------------------------------------ */
+.modal-oferta {
+  max-width: 420px;
+}
+
+.modal-oferta-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-oferta-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-color), #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.modal-oferta-header h3 {
+  margin: 0 0 0.2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.modal-oferta-header p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+}
+
+.input-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.modal-aviso {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 1.25rem;
+}
+
+.modal-aviso strong { color: var(--success-color); }
+
+/* --- Modal base -------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 1.5rem 0;
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.grupo-input label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.grupo-input input,
+.grupo-input .input-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.grupo-input input:focus,
+.grupo-input .input-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.modal-acciones {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}

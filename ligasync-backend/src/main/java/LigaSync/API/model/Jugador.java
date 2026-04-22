@@ -61,6 +61,17 @@ public class Jugador {
 
     public void setMedia(Integer media) {
         this.media = media;
+        recalcularValor();
+    }
+
+    // Fórmula exponencial: media 70 ≈ 5M€, media 80 = 25M€, media 90 ≈ 100M€
+    public void recalcularValor() {
+        if (this.media == null || this.media < 1) {
+            this.valor = 0;
+            return;
+        }
+        double valorMillones = Math.pow(this.media / 80.0, 12) * 25;
+        this.valor = (int) Math.round(valorMillones * 1_000_000);
     }
 
     public Integer getValor() {

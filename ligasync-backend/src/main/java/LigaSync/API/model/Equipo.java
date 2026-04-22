@@ -19,6 +19,8 @@ public class Equipo {
 
     private Integer presupuesto = 0; // Valor por defecto
 
+    private String formacion = "4-4-2";
+
     // Estadísticas de la liga
     private Integer pts = 0;
     private Integer pj = 0; // Partidos jugados
@@ -123,5 +125,13 @@ public class Equipo {
 
     public void setGc(Integer gc) {
         this.gc = gc;
+    }
+
+    public String getFormacion() {
+        return formacion;
+    }
+
+    public void setFormacion(String formacion) {
+        this.formacion = formacion;
     }
 }

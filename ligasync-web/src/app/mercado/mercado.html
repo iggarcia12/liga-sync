@@ -1,106 +1,165 @@
 <div class="mercado-page">
-   <div class="header-section">
-      <h1 class="page-title">💰 Mercado de Fichajes</h1>
-      <p class="page-subtitle">Explora agentes libres disponibles o registra nuevos talentos (Cantera).</p>
-   </div>
+  <div class="header-section">
+    <h1 class="page-title">Mercado de Fichajes</h1>
+    <p class="page-subtitle">Explora agentes libres, ficha jugadores o negocia traspasos con otros equipos.</p>
+  </div>
 
-   <div class="estado-mensaje" *ngIf="cargando">
-      <p>⏳ Buscando talentos...</p>
-   </div>
+  <div class="estado-mensaje" *ngIf="cargando">
+    <p>⏳ Buscando talentos...</p>
+  </div>
 
-   <!-- Panel de Presupuesto / Control (solo para admin y entrenador) -->
-   <div class="presupuesto-panel card" *ngIf="!cargando && (esAdmin || esEntrenador)">
-      <div class="presupuesto-info">
-         <h3 *ngIf="esAdmin">Tu Equipo (Simulado):
-            <select [(ngModel)]="miEquipoId" class="team-selector-inline">
-               <option [ngValue]="null">--- Selecciona un Equipo ---</option>
-               <option *ngFor="let eq of equipos" [value]="eq.id">{{eq.nombre}}</option>
-            </select>
-         </h3>
-         <h3 *ngIf="esEntrenador">Tu Equipo: <strong>{{ miEquipoNombre || 'Sin equipo asignado' }}</strong></h3>
-         <div class="saldo">
-            <span class="currency">€</span>
-            <span class="amount">{{ miEquipoPresupuesto | number:'1.0-0' }}</span>
-         </div>
-         <p class="text-sm">Presupuesto para Fichajes</p>
+  <!-- Panel de Presupuesto -->
+  <div class="presupuesto-panel card" *ngIf="!cargando && (esAdmin || esEntrenador)">
+    <div class="presupuesto-info">
+      <h3 *ngIf="esAdmin">Simular equipo:
+        <select [(ngModel)]="miEquipoId" class="team-selector-inline">
+          <option [ngValue]="null">--- Selecciona un Equipo ---</option>
+          <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+        </select>
+      </h3>
+      <h3 *ngIf="esEntrenador">Tu Equipo: <strong>{{ miEquipoNombre || 'Sin equipo asignado' }}</strong></h3>
+      <div class="saldo">
+        <span class="currency">€</span>
+        <span class="amount">{{ miEquipoPresupuesto | number:'1.0-0' }}</span>
       </div>
-      <div class="presupuesto-acciones" *ngIf="esAdmin">
-         <button class="btn btn-primary" (click)="abrirModal()">+ Crear Nuevo Jugador</button>
-      </div>
-   </div>
+      <p class="text-sm">Presupuesto disponible</p>
+    </div>
+    <div class="presupuesto-acciones" *ngIf="esAdmin">
+      <button class="btn btn-primary" (click)="abrirModal()">+ Registrar jugador</button>
+    </div>
+  </div>
 
-   <!-- Catálogo de Agentes Libres -->
-   <div class="seccion-agentes" *ngIf="!cargando && agentesLibres.length > 0">
-      <h3>Lista de Agentes Libres</h3>
-      <div class="grid-jugadores-mercado">
-         
-         <div class="card market-card" *ngFor="let j of agentesLibres">
-            <div class="player-photo">
-               <span class="p-dorsal">{{ j.media || '-' }}</span>
-            </div>
-            <div class="market-info">
-               <h4>{{j.nombre}}</h4>
-               <span class="p-pos" [ngClass]="j.pos">{{j.pos}}</span>
-                <div class="market-price">
-                   <span>Valor:</span>
-                   <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
-                </div>
-               <button class="btn btn-primary btn-block" *ngIf="esAdmin || esEntrenador" (click)="ficharAgenteLibre(j)">Fichar</button>
-            </div>
-         </div>
+  <!-- ===== SECCIÓN 1: AGENTES LIBRES ===== -->
+  <div class="seccion-agentes" *ngIf="!cargando">
+    <h3 class="seccion-mercado-titulo">
+      Agentes Libres
+      <span class="contador-badge">{{ agentesLibres.length }}</span>
+    </h3>
 
-      </div>
-   </div>
-
-   <div class="estado-mensaje vacio" *ngIf="!cargando && agentesLibres.length === 0">
+    <div *ngIf="agentesLibres.length === 0" class="estado-mensaje vacio">
       <p>No hay agentes libres en el mercado actualmente.</p>
-   </div>
+    </div>
 
-   <!-- MODAL: CREAR JUGADOR (Recuperado del Dashboard Antiguo) -->
-   <div class="modal-overlay" *ngIf="mostrarModalFichaje">
-      <div class="modal-content">
-         <h3>Cazar Talento (Nuevo Registro)</h3>
-
-         <form (ngSubmit)="crearJugadorNuevo()">
-            <div class="grupo-input">
-               <label>Nombre del Jugador</label>
-               <input type="text" name="nombre" [(ngModel)]="nuevoJugador.nombre" required placeholder="Ej: Lionel Messi" />
-            </div>
-
-            <div class="grupo-input">
-               <label>Posición</label>
-               <!-- Utilizando el select como el usuario pidió originalmente (Issue de UI del Formulario) -->
-               <select class="input-select" name="pos" [(ngModel)]="nuevoJugador.pos">
-                  <option value="POR">Portero (POR)</option>
-                  <option value="DEF">Defensa (DEF)</option>
-                  <option value="MED">Centrocampista (MED)</option>
-                  <option value="DEL">Delantero (DEL)</option>
-               </select>
-            </div>
-
-            <div class="grupo-input">
-               <label>Nivel Medio (Media Física)</label>
-               <input type="number" name="media" [(ngModel)]="nuevoJugador.media" required max="99" min="40"/>
-            </div>
-
-            <div class="grupo-input">
-               <label>Precio de Fichaje (Valor)</label>
-               <input type="number" name="valor" [(ngModel)]="nuevoJugador.valor" required min="0"/>
-            </div>
-            
-            <div class="grupo-input">
-               <label>Destino Inicial</label>
-               <select class="input-select" name="equipo" [(ngModel)]="nuevoJugador.equipo">
-                  <option value="null">Quedar Libre (Mercado)</option>
-                  <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
-               </select>
-            </div>
-
-            <div class="modal-acciones">
-               <button type="button" class="btn" (click)="cerrarModal()">Cancelar</button>
-               <button type="submit" class="btn btn-primary">Fichar / Registrar</button>
-            </div>
-         </form>
+    <div class="grid-jugadores-mercado" *ngIf="agentesLibres.length > 0">
+      <div class="card market-card" *ngFor="let j of agentesLibres">
+        <div class="player-photo">
+          <span class="p-dorsal">{{ j.media || '—' }}</span>
+        </div>
+        <div class="market-info">
+          <h4>{{ j.nombre }}</h4>
+          <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
+          <div class="market-price">
+            <span>Valor</span>
+            <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
+          </div>
+          <button class="btn btn-primary btn-block" *ngIf="esAdmin || esEntrenador" (click)="ficharAgenteLibre(j)">
+            Fichar
+          </button>
+        </div>
       </div>
-   </div>
+    </div>
+  </div>
+
+  <!-- ===== SECCIÓN 2: JUGADORES EN ACTIVO ===== -->
+  <div class="seccion-agentes" *ngIf="!cargando">
+    <h3 class="seccion-mercado-titulo">
+      Jugadores en Activo
+      <span class="contador-badge contador-badge--azul">{{ jugadoresConEquipo.length }}</span>
+    </h3>
+    <p class="seccion-subtitulo">¿Quieres un jugador que ya pertenece a otro equipo? Envíales una oferta económica.</p>
+
+    <div *ngIf="jugadoresConEquipo.length === 0" class="estado-mensaje vacio">
+      <p>No hay jugadores fichados por otros equipos. Cuando los equipos tengan plantilla, aparecerán aquí.</p>
+    </div>
+
+    <div class="grid-jugadores-mercado" *ngIf="jugadoresConEquipo.length > 0">
+      <div class="card market-card market-card--activo" *ngFor="let j of jugadoresConEquipo">
+        <div class="player-photo player-photo--activo">
+          <span class="p-dorsal">{{ j.media || '—' }}</span>
+        </div>
+        <div class="market-info">
+          <h4>{{ j.nombre }}</h4>
+          <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
+          <div class="equipo-actual-badge">
+            🏟️ {{ j.equipo?.nombre }}
+          </div>
+          <div class="market-price">
+            <span>Valor estimado</span>
+            <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
+          </div>
+          <button class="btn btn-oferta btn-block" *ngIf="(esAdmin || esEntrenador) && miEquipoId" (click)="abrirModalOferta(j)">
+            Hacer Oferta
+          </button>
+          <p class="sin-equipo-msg" *ngIf="(esAdmin || esEntrenador) && !miEquipoId">
+            Asigna un equipo para ofertar
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Crear jugador (Admin) -->
+  <div class="modal-overlay" *ngIf="mostrarModalFichaje" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Registrar nuevo jugador</h3>
+      <form (ngSubmit)="crearJugadorNuevo()">
+        <div class="grupo-input">
+          <label>Nombre del Jugador</label>
+          <input type="text" name="nombre" [(ngModel)]="nuevoJugador.nombre" required placeholder="Ej: Lionel Messi" />
+        </div>
+        <div class="grupo-input">
+          <label>Posición</label>
+          <select class="input-select" name="pos" [(ngModel)]="nuevoJugador.pos">
+            <option value="POR">Portero (POR)</option>
+            <option value="DEF">Defensa (DEF)</option>
+            <option value="MED">Centrocampista (MED)</option>
+            <option value="DEL">Delantero (DEL)</option>
+          </select>
+        </div>
+        <div class="grupo-input">
+          <label>Media</label>
+          <input type="number" name="media" [(ngModel)]="nuevoJugador.media" required max="99" min="40" />
+        </div>
+        <div class="grupo-input">
+          <label>Destino Inicial</label>
+          <select class="input-select" name="equipo" [(ngModel)]="nuevoJugador.equipo">
+            <option value="null">Agente Libre (Mercado)</option>
+            <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+          </select>
+        </div>
+        <div class="modal-acciones">
+          <button type="button" class="btn" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Hacer Oferta -->
+  <div class="modal-overlay" *ngIf="mostrarModalOferta && jugadorParaOfertar" (click)="cerrarModalOferta()">
+    <div class="modal-content modal-oferta" (click)="$event.stopPropagation()">
+      <div class="modal-oferta-header">
+        <div class="modal-oferta-avatar">{{ jugadorParaOfertar.media }}</div>
+        <div>
+          <h3>{{ jugadorParaOfertar.nombre }}</h3>
+          <p>{{ jugadorParaOfertar.pos }} · {{ jugadorParaOfertar.equipo?.nombre }}</p>
+        </div>
+      </div>
+      <div class="grupo-input">
+        <label>Oferta económica (€)</label>
+        <input type="number" [(ngModel)]="montoOferta" min="1" placeholder="Ej: 25000000" />
+        <span class="input-hint">Valor estimado: {{ (jugadorParaOfertar.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</span>
+      </div>
+      <p class="modal-aviso">
+        Tu presupuesto: <strong>{{ miEquipoPresupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong>
+      </p>
+      <div class="modal-acciones">
+        <button type="button" class="btn" (click)="cerrarModalOferta()">Cancelar</button>
+        <button type="button" class="btn btn-primary" [disabled]="montoOferta <= 0" (click)="enviarOferta()">
+          Enviar Oferta
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
