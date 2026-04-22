@@ -65,11 +65,27 @@
   line-height: 1.1;
 }
 
-.equipo-jugadores-count {
+.equipo-meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.equipo-jugadores-count,
+.equipo-presupuesto {
   font-size: 0.85rem;
   color: var(--text-secondary);
   margin: 0;
   font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.equipo-presupuesto strong {
+  color: var(--success-color);
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .btn-editar {
@@ -233,6 +249,29 @@
   letter-spacing: 0.08em;
   color: var(--text-secondary);
   font-family: 'Montserrat', sans-serif;
+}
+
+.tabla-header span {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s;
+}
+
+.tabla-header span:hover {
+  color: var(--accent-color);
+}
+
+.tabla-header span.active {
+  color: var(--accent-color);
+}
+
+.tabla-header i {
+  font-style: normal;
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 
 .tabla-fila {

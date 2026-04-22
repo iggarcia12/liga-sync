@@ -20,7 +20,7 @@
          <h3 *ngIf="esEntrenador">Tu Equipo: <strong>{{ miEquipoNombre || 'Sin equipo asignado' }}</strong></h3>
          <div class="saldo">
             <span class="currency">€</span>
-            <span class="amount">124.500.000</span>
+            <span class="amount">{{ miEquipoPresupuesto | number:'1.0-0' }}</span>
          </div>
          <p class="text-sm">Presupuesto para Fichajes</p>
       </div>
@@ -41,10 +41,10 @@
             <div class="market-info">
                <h4>{{j.nombre}}</h4>
                <span class="p-pos" [ngClass]="j.pos">{{j.pos}}</span>
-               <div class="market-price">
-                  <span>Valor:</span>
-                  <strong>€ 5.000.000</strong>
-               </div>
+                <div class="market-price">
+                   <span>Valor:</span>
+                   <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
+                </div>
                <button class="btn btn-primary btn-block" *ngIf="esAdmin || esEntrenador" (click)="ficharAgenteLibre(j)">Fichar</button>
             </div>
          </div>
@@ -81,6 +81,11 @@
             <div class="grupo-input">
                <label>Nivel Medio (Media Física)</label>
                <input type="number" name="media" [(ngModel)]="nuevoJugador.media" required max="99" min="40"/>
+            </div>
+
+            <div class="grupo-input">
+               <label>Precio de Fichaje (Valor)</label>
+               <input type="number" name="valor" [(ngModel)]="nuevoJugador.valor" required min="0"/>
             </div>
             
             <div class="grupo-input">

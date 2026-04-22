@@ -20,7 +20,7 @@ export class MercadoComponent implements OnInit {
 
   // Formulario
   mostrarModalFichaje: boolean = false;
-  nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, equipo: null };
+  nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
@@ -76,7 +76,7 @@ export class MercadoComponent implements OnInit {
   // --- CRUD Lógica de "Cantera" (Crear Jugador desde 0) ---
   abrirModal() {
     this.mostrarModalFichaje = true;
-    this.nuevoJugador = { nombre: '', pos: 'DEL', media: 70, precio: 5000000, equipo: null };
+    this.nuevoJugador = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
   }
 
   cerrarModal() {
@@ -100,6 +100,8 @@ export class MercadoComponent implements OnInit {
         alert("¡Jugador fichado con éxito!");
         this.cerrarModal();
         this.cargarMercado();
+        // Actualizar presupuesto si se asignó al equipo seleccionado
+        if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
       },
       error: (err) => {
         alert("Error al intentar fichar al jugador. Revisar la consola.");
@@ -109,7 +111,30 @@ export class MercadoComponent implements OnInit {
   }
 
   // --- Lógica del Mercado (Agentes Libres) ---
-  miEquipoId: number | null = null;
+  _miEquipoId: number | null = null;
+  miEquipoPresupuesto: number = 0;
+
+  get miEquipoId(): number | null {
+    return this._miEquipoId;
+  }
+
+  set miEquipoId(val: number | null) {
+    this._miEquipoId = val;
+    if (val) {
+      this.cargarPresupuesto(val);
+    } else {
+      this.miEquipoPresupuesto = 0;
+    }
+  }
+
+  cargarPresupuesto(teamId: number) {
+    this.http.get<any>(`http://localhost:8080/api/equipos/${teamId}`).subscribe({
+      next: (eq) => {
+        this.miEquipoPresupuesto = eq.presupuesto || 0;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   ficharAgenteLibre(jugador: any) {
      if (!this.miEquipoId) {
@@ -126,13 +151,16 @@ export class MercadoComponent implements OnInit {
         // Fichamos para el equipo seleccionado en el panel superior
         const payload = { ...jugador, equipo: equipoDestino };
         
-        this.http.put(url, payload).subscribe({
+        this.http.put(url, payload, { responseType: 'text' as 'json' }).subscribe({
            next: () => {
               this.cargarMercado();
+              if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
               alert(`¡Fichaje completado! ${jugador.nombre} ahora viste los colores de ${equipoDestino.nombre}`);
            },
            error: (err) => {
-              if (err.status === 403) {
+              if (err.status === 400) {
+                 alert("Fichaje rechazado: " + err.error);
+              } else if (err.status === 403) {
                  alert("Fichaje bloqueado (Error 403): Tu usuario actual no tiene permiso de Administrador para modificar jugadores.");
               } else {
                  alert("Error en el traspaso de jugador. Revisa la consola.");

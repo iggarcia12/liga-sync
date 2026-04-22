@@ -22,6 +22,10 @@ export class MiEquipoComponent implements OnInit {
   editando = false;
   mensajeGuardado = '';
 
+  // Ordenación de la tabla
+  sortField: string = 'pos'; // Por defecto posición
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   nombreEdicion = '';
   escudoEdicion = '';
 
@@ -73,6 +77,7 @@ export class MiEquipoComponent implements OnInit {
       next: (jugadores) => {
         console.log('[MiEquipo] jugadores recibidos:', jugadores);
         this.jugadores = jugadores;
+        this.aplicarOrdenacion(); // Ordenar al cargar
         this.cargando = false;
         this.cdr.detectChanges();
       },
@@ -80,6 +85,39 @@ export class MiEquipoComponent implements OnInit {
         console.error('Error al cargar jugadores del equipo:', err);
         this.cargando = false;
       }
+    });
+  }
+
+  ordenar(campo: string) {
+    if (this.sortField === campo) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = campo;
+      this.sortDirection = 'asc';
+    }
+    this.aplicarOrdenacion();
+  }
+
+  private aplicarOrdenacion() {
+    const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
+    
+    this.jugadores.sort((a, b) => {
+      let valA = a[this.sortField];
+      let valB = b[this.sortField];
+
+      // Manejo de nulos
+      if (valA === undefined || valA === null) valA = (typeof valB === 'string') ? '' : 0;
+      if (valB === undefined || valB === null) valB = (typeof valA === 'string') ? '' : 0;
+
+      // Lógica especial para posición
+      if (this.sortField === 'pos') {
+        valA = posOrder[valA] || 99;
+        valB = posOrder[valB] || 99;
+      }
+
+      if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1;
+      if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
     });
   }
 

@@ -51,6 +51,12 @@
                 <th class="th-pos">#</th>
                 <th class="th-equipo">Equipo</th>
                 <th class="th-pj">PJ</th>
+                <th class="th-pg">PG</th>
+                <th class="th-pe">PE</th>
+                <th class="th-pp">PP</th>
+                <th class="th-gf">GF</th>
+                <th class="th-gc">GC</th>
+                <th class="th-dg">DG</th>
                 <th class="th-pts">Pts</th>
               </tr>
             </thead>
@@ -66,8 +72,14 @@
                   </span>
                 </td>
                 <td class="col-equipo">{{ equipo.nombre }}</td>
-                <td class="col-pj">{{ equipo.partidosJugados || 0 }}</td>
-                <td class="col-pts">{{ equipo.puntos || 0 }}</td>
+                <td class="col-pj">{{ equipo.pj || 0 }}</td>
+                <td class="col-pg">{{ equipo.pg || 0 }}</td>
+                <td class="col-pe">{{ equipo.pe || 0 }}</td>
+                <td class="col-pp">{{ equipo.pp || 0 }}</td>
+                <td class="col-gf">{{ equipo.gf || 0 }}</td>
+                <td class="col-gc">{{ equipo.gc || 0 }}</td>
+                <td class="col-dg">{{ (equipo.gf || 0) - (equipo.gc || 0) }}</td>
+                <td class="col-pts">{{ equipo.pts || 0 }}</td>
               </tr>
             </tbody>
           </table>

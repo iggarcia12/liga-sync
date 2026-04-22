@@ -22,7 +22,10 @@
       <div class="equipo-info">
         <span class="equipo-badge">Tu Equipo</span>
         <h1 class="equipo-nombre">{{ equipo.nombre }}</h1>
-        <p class="equipo-jugadores-count">{{ jugadores.length }} jugadores en plantilla</p>
+        <div class="equipo-meta">
+          <p class="equipo-jugadores-count">👥 {{ jugadores.length }} jugadores</p>
+          <p class="equipo-presupuesto">💰 Presupuesto: <strong>{{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
+        </div>
       </div>
       <button class="btn-editar" (click)="abrirEdicion()">✏️ Editar equipo</button>
     </div>
@@ -62,12 +65,30 @@
 
       <div class="plantilla-tabla" *ngIf="jugadores.length > 0">
         <div class="tabla-header">
-          <span>Jugador</span>
-          <span>Posición</span>
-          <span>Goles</span>
-          <span>Asist.</span>
-          <span>Amarillas</span>
-          <span>Rojas</span>
+          <span (click)="ordenar('nombre')" [class.active]="sortField === 'nombre'">
+            Jugador 
+            <i *ngIf="sortField === 'nombre'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
+          <span (click)="ordenar('pos')" [class.active]="sortField === 'pos'">
+            Posición
+            <i *ngIf="sortField === 'pos'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
+          <span (click)="ordenar('goles')" [class.active]="sortField === 'goles'">
+            Goles
+            <i *ngIf="sortField === 'goles'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
+          <span (click)="ordenar('asist')" [class.active]="sortField === 'asist'">
+            Asist.
+            <i *ngIf="sortField === 'asist'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
+          <span (click)="ordenar('amarillas')" [class.active]="sortField === 'amarillas'">
+            Amarillas
+            <i *ngIf="sortField === 'amarillas'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
+          <span (click)="ordenar('rojas')" [class.active]="sortField === 'rojas'">
+            Rojas
+            <i *ngIf="sortField === 'rojas'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+          </span>
         </div>
         <div class="tabla-fila" *ngFor="let j of jugadores">
           <span class="jugador-nombre">{{ j.nombre }}</span>

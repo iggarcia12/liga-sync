@@ -85,13 +85,17 @@
         <h3>Lista Completa</h3>
         
         <div class="grid-jugadores mini">
-          <div class="card player-mini-card" *ngFor="let j of jugadoresFiltrados">
+          <div class="card player-mini-card" *ngFor="let j of jugadoresFiltrados" [class.is-titular]="j.esTitular">
              <div class="player-avatar-bg">
                 <span class="p-dorsal">{{ j.media || '-' }}</span>
              </div>
              <div class="player-info">
                <h4>{{ j.nombre }}</h4>
-               <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
+               <div class="player-meta">
+                 <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
+                 <span class="badge-titular" *ngIf="j.esTitular">TITULAR</span>
+                 <span class="badge-suplente" *ngIf="!j.esTitular">SUPLENTE</span>
+               </div>
              </div>
              <button class="btn btn-danger btn-vender" *ngIf="esAdmin" (click)="venderJugador(j)" title="Vender al Mercado">💰</button>
           </div>

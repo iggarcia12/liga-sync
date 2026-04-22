@@ -132,7 +132,10 @@
 
 .th-pos   { width: 2.5rem; text-align: center; }
 .th-equipo { text-align: left; }
-.th-pj    { width: 3rem; text-align: center; }
+.th-pj, .th-pg, .th-pe, .th-pp, .th-gf, .th-gc, .th-dg { 
+  width: 2.2rem; 
+  text-align: center; 
+}
 .th-pts   { width: 3.5rem; text-align: right; padding-right: 0.875rem; }
 
 .tabla-clasificacion tbody tr {
@@ -191,12 +194,17 @@
 
 .fila-lider .col-equipo { color: var(--text-primary); }
 
-.col-pj {
+.col-pj, .col-pg, .col-pe, .col-pp, .col-gf, .col-gc, .col-dg {
   font-family: var(--font-ui);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   text-align: center;
   font-weight: 600;
+}
+
+.col-dg {
+  color: var(--text-primary);
+  opacity: 0.9;
 }
 
 .col-pts {

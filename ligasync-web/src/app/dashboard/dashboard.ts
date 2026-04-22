@@ -33,23 +33,23 @@ export class DashboardComponent implements OnInit {
 
   cargarEstadisticas() {
     // 1. Jugadores
-    this.http.get<any[]>(this.urlBase + '/jugadores').subscribe(datos => {
-      this.jugadores = datos;
-      this.totalJugadores = datos.length;
+    this.http.get<any>(this.urlBase + '/jugadores').subscribe(resp => {
+      this.jugadores = resp._embedded ? resp._embedded.jugadores : resp;
+      this.totalJugadores = this.jugadores.length;
       this.cdr.detectChanges();
     });
 
     // 2. Equipos
-    this.http.get<any[]>(this.urlBase + '/equipos').subscribe(datos => {
-      this.equipos = datos;
-      this.totalEquipos = datos.length;
+    this.http.get<any>(this.urlBase + '/equipos').subscribe(resp => {
+      this.equipos = resp._embedded ? resp._embedded.equipos : resp;
+      this.totalEquipos = this.equipos.length;
       this.cdr.detectChanges();
     });
 
     // 3. Partidos
-    this.http.get<any[]>(this.urlBase + '/partidos').subscribe(datos => {
-      this.partidos = datos;
-      this.partidosJugados = datos.filter(p => p.golesLocal !== null && p.golesLocal !== undefined).length;
+    this.http.get<any>(this.urlBase + '/partidos').subscribe(resp => {
+      this.partidos = resp._embedded ? resp._embedded.partidos : resp;
+      this.partidosJugados = this.partidos.filter(p => p.golesLocal !== null && p.golesLocal !== undefined).length;
       this.cdr.detectChanges();
     });
   }
@@ -94,7 +94,20 @@ export class DashboardComponent implements OnInit {
   }
 
   get equiposOrdenados(): any[] {
-    return [...this.equipos].sort((a, b) => (b.puntos || 0) - (a.puntos || 0));
+    return [...this.equipos].sort((a, b) => {
+      // 1. Puntos
+      if ((b.pts || 0) !== (a.pts || 0)) {
+        return (b.pts || 0) - (a.pts || 0);
+      }
+      // 2. Diferencia de goles
+      const dgA = (a.gf || 0) - (a.gc || 0);
+      const dgB = (b.gf || 0) - (b.gc || 0);
+      if (dgB !== dgA) {
+        return dgB - dgA;
+      }
+      // 3. Goles a favor
+      return (b.gf || 0) - (a.gf || 0);
+    });
   }
 
   get ultimoPartido(): any | null {

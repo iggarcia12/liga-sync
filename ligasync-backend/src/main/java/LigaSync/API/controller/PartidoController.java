@@ -153,6 +153,44 @@ public class PartidoController {
             partido.setGoleadores(resumenGoleadores.substring(0, resumenGoleadores.length() - 2));
         }
 
+        // Actualizar estadísticas de los equipos
+        Equipo local = partido.getLocal();
+        Equipo visitante = partido.getVisitante();
+        int gL = request.getGolesLocal();
+        int gV = request.getGolesVisitante();
+
+        if (local != null) {
+            local.setPj(local.getPj() + 1);
+            local.setGf(local.getGf() + gL);
+            local.setGc(local.getGc() + gV);
+            if (gL > gV) {
+                local.setPg(local.getPg() + 1);
+                local.setPts(local.getPts() + 3);
+            } else if (gL == gV) {
+                local.setPe(local.getPe() + 1);
+                local.setPts(local.getPts() + 1);
+            } else {
+                local.setPp(local.getPp() + 1);
+            }
+            equipoRepository.save(local);
+        }
+
+        if (visitante != null) {
+            visitante.setPj(visitante.getPj() + 1);
+            visitante.setGf(visitante.getGf() + gV);
+            visitante.setGc(visitante.getGc() + gL);
+            if (gV > gL) {
+                visitante.setPg(visitante.getPg() + 1);
+                visitante.setPts(visitante.getPts() + 3);
+            } else if (gV == gL) {
+                visitante.setPe(visitante.getPe() + 1);
+                visitante.setPts(visitante.getPts() + 1);
+            } else {
+                visitante.setPp(visitante.getPp() + 1);
+            }
+            equipoRepository.save(visitante);
+        }
+
         Partido guardado = partidoRepository.save(partido);
 
         // Crear noticia automática
@@ -171,6 +209,8 @@ public class PartidoController {
 
         return ResponseEntity.ok(guardado);
     }
+
+
 
     // Eliminar un partido
     @DeleteMapping("/{id}")

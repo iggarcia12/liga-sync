@@ -38,11 +38,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Rutas públicas y pre-flight (IMPORTANTE: Orden descendente de especificidad)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/registro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Por si se usa para registro alternativo
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
 
                         // 2. Mensajes (POST y GET) - Cualquier autenticado
                         .requestMatchers(HttpMethod.POST, "/api/mensajes").authenticated()

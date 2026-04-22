@@ -96,13 +96,40 @@ export class EquiposComponent implements OnInit {
   procesarJugadoresDelEquipoActivo() {
     if (!this.equipoActualSeleccionado || this.jugadores.length === 0) return;
 
-    this.jugadoresFiltrados = this.jugadores.filter(j => j.equipo && j.equipo.id == this.equipoActualSeleccionado);
+    const todosLosDelEquipo = this.jugadores.filter(j => j.equipo && j.equipo.id == this.equipoActualSeleccionado);
     
-    // Distribuimos para la pizarra
-    this.porteros = this.jugadoresFiltrados.filter(j => j.pos === 'POR');
-    this.defensas = this.jugadoresFiltrados.filter(j => j.pos === 'DEF');
-    this.medios = this.jugadoresFiltrados.filter(j => j.pos === 'MED');
-    this.delanteros = this.jugadoresFiltrados.filter(j => j.pos === 'DEL');
+    // Distribuimos para la pizarra (manteniendo la lógica de los primeros N)
+    this.porteros = todosLosDelEquipo.filter(j => j.pos === 'POR');
+    this.defensas = todosLosDelEquipo.filter(j => j.pos === 'DEF');
+    this.medios = todosLosDelEquipo.filter(j => j.pos === 'MED');
+    this.delanteros = todosLosDelEquipo.filter(j => j.pos === 'DEL');
+
+    // Definimos quiénes son titulares basándonos en la misma lógica que la pizarra
+    const idsTitulares = new Set<number>();
+    this.porteros.slice(0, 1).forEach(p => idsTitulares.add(p.id));
+    this.defensas.slice(0, 4).forEach(p => idsTitulares.add(p.id));
+    this.medios.slice(0, 4).forEach(p => idsTitulares.add(p.id));
+    this.delanteros.slice(0, 3).forEach(p => idsTitulares.add(p.id));
+
+    // Orden de posiciones: POR -> DEF -> MED -> DEL
+    const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
+
+    this.jugadoresFiltrados = todosLosDelEquipo.map(j => ({
+      ...j,
+      esTitular: idsTitulares.has(j.id)
+    })).sort((a, b) => {
+      // Primero por posición
+      const orderA = posOrder[a.pos] || 99;
+      const orderB = posOrder[b.pos] || 99;
+      if (orderA !== orderB) return orderA - orderB;
+      
+      // Dentro de la misma posición, titulares primero
+      if (a.esTitular && !b.esTitular) return -1;
+      if (!a.esTitular && b.esTitular) return 1;
+
+      // Finalmente por media (de mayor a menor)
+      return (b.media || 0) - (a.media || 0);
+    });
   }
 
   venderJugador(jugador: any) {

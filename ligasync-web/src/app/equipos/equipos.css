@@ -339,8 +339,43 @@
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-top: 0.15rem;
   font-family: 'Montserrat', sans-serif;
+}
+
+.player-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.badge-titular {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-suplente {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  opacity: 0.7;
+}
+
+.player-mini-card.is-titular {
+  border-left: 3px solid var(--accent-color);
+}
+
+.player-mini-card.is-titular .player-avatar-bg {
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .btn-vender {
