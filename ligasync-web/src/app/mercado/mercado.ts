@@ -18,6 +18,7 @@ export class MercadoComponent implements OnInit {
   agentesLibres: any[] = [];
   jugadoresConEquipo: any[] = [];
   equipos: any[] = [];
+  jornadaActual = 0;
 
   mostrarModalFichaje = false;
   nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
@@ -25,6 +26,10 @@ export class MercadoComponent implements OnInit {
   mostrarModalOferta = false;
   jugadorParaOfertar: any = null;
   montoOferta = 0;
+
+  get ventanaAbierta(): boolean {
+    return this.jornadaActual === 0 || this.jornadaActual % 3 === 0;
+  }
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
@@ -37,7 +42,13 @@ export class MercadoComponent implements OnInit {
     return this.equipos.find(e => e.id === this.miEquipoId)?.nombre ?? '';
   }
 
-  ngOnInit() { this.cargarMercado(); }
+  ngOnInit() {
+    this.cargarMercado();
+    this.http.get<number>('http://localhost:8080/api/partidos/jornada-actual').subscribe({
+      next: (j) => { this.jornadaActual = j; this.cdr.detectChanges(); },
+      error: (err) => console.error('Error al cargar jornada actual:', err)
+    });
+  }
 
   cargarMercado() {
     this.cargando = true;

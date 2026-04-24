@@ -5,16 +5,62 @@
     <p>Cargando tu equipo...</p>
   </div>
 
-  <div *ngIf="!cargando && !equipo" class="estado-vacio">
+  <div *ngIf="!cargando && !equipo && !esJugador" class="estado-vacio">
     <span>🛡️</span>
     <h2>Sin equipo asignado</h2>
     <p>El administrador aún no te ha asignado un equipo. Contacta con él para que lo configure.</p>
   </div>
 
-  <ng-container *ngIf="!cargando && equipo">
+  <section class="seccion-convocatoria" *ngIf="!cargando && esJugador">
+    <div *ngIf="!miJugador" class="estado-vacio">
+      <p>Aún no tienes un perfil de jugador asignado o cargando datos...</p>
+    </div>
+
+    <div class="card-convocatoria" *ngIf="miJugador">
+      <div class="convocatoria-header">
+        <span class="convocatoria-titulo">📅 Próximo Partido</span>
+        <span class="convocatoria-estado"
+          [class.convocatoria-estado--si]="miJugador.convocado"
+          [class.convocatoria-estado--no]="!miJugador.convocado">
+          {{ miJugador.convocado ? '✅ Confirmado' : '❌ Sin confirmar' }}
+        </span>
+      </div>
+
+      <div class="convocatoria-partido" *ngIf="proximoPartido; else sinPartido">
+        <div class="conv-enfrentamiento">
+          <span class="conv-equipo">{{ proximoPartido.local?.nombre || '—' }}</span>
+          <span class="conv-vs">VS</span>
+          <span class="conv-equipo">{{ proximoPartido.visitante?.nombre || '—' }}</span>
+        </div>
+        <p class="conv-jornada">Jornada {{ proximoPartido.jornada }}</p>
+      </div>
+      <ng-template #sinPartido>
+        <p class="conv-sin-partido">No hay partidos pendientes programados.</p>
+      </ng-template>
+
+      <div class="convocatoria-sancion" *ngIf="miJugador.estadoDisciplinario === 'SANCIONADO'">
+        🚫 Estás sancionado y no puedes participar en el próximo partido.
+      </div>
+
+      <div class="convocatoria-acciones" *ngIf="miJugador.estadoDisciplinario !== 'SANCIONADO'">
+        <button class="btn-asistire"
+          [class.btn-asistire--activo]="miJugador.convocado"
+          (click)="toggleConvocatoria(true)">
+          ✅ Asistiré
+        </button>
+        <button class="btn-no-asistire"
+          [class.btn-no-asistire--activo]="!miJugador.convocado"
+          (click)="toggleConvocatoria(false)">
+          ❌ No Asistiré
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!cargando && equipo && esEntrenador">
 
     <!-- Cabecera del equipo -->
-    <div class="equipo-header">
+    <div class="equipo-header" *ngIf="esEntrenador">
       <div class="equipo-escudo">
         <img *ngIf="equipo.escudo" [src]="equipo.escudo" [alt]="equipo.nombre" />
         <span *ngIf="!equipo.escudo">🛡️</span>
@@ -27,8 +73,32 @@
           <p class="equipo-presupuesto">💰 Presupuesto: <strong>{{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
         </div>
       </div>
-      <button class="btn-editar" (click)="abrirEdicion()">✏️ Editar equipo</button>
+      <button class="btn-editar" *ngIf="esEntrenador" (click)="abrirEdicion()">✏️ Editar equipo</button>
     </div>
+
+    <!-- ===== CARD TESORERÍA (solo entrenador) ===== -->
+    <div class="card-tesoreria" *ngIf="esEntrenador && equipo.deudaAcumulada > 0">
+      <div class="tesoreria-icono">⚠️</div>
+      <div class="tesoreria-info">
+        <span class="tesoreria-label">Deuda por sanciones disciplinarias</span>
+        <span class="tesoreria-valor">{{ equipo.deudaAcumulada | currency:'EUR':'symbol':'1.0-0' }}</span>
+        <span class="tesoreria-aviso" *ngIf="equipo.presupuesto < equipo.deudaAcumulada">
+          Presupuesto insuficiente ({{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }} disponibles)
+        </span>
+      </div>
+      <button class="btn-pagar-deuda" (click)="pagarDeuda()"
+        [disabled]="equipo.presupuesto < equipo.deudaAcumulada">
+        Pagar deuda
+      </button>
+    </div>
+    <div class="card-tesoreria card-tesoreria--ok" *ngIf="esEntrenador && !(equipo.deudaAcumulada > 0)">
+      <div class="tesoreria-icono">✅</div>
+      <div class="tesoreria-info">
+        <span class="tesoreria-label">Sin deudas disciplinarias</span>
+        <span class="tesoreria-valor">0 €</span>
+      </div>
+    </div>
+
 
     <!-- Mensaje de éxito -->
     <div class="caja-exito" *ngIf="mensajeGuardado">{{ mensajeGuardado }}</div>
@@ -53,18 +123,27 @@
     </div>
 
     <!-- Navegación de pestañas -->
-    <nav class="tabs-nav">
+    <nav class="tabs-nav" *ngIf="esEntrenador">
+      <button class="tab-btn" *ngIf="esJugador" [class.tab-btn--active]="pestanaActiva === 'convocatoria'" (click)="cambiarPestana('convocatoria')">
+        ✅ Convocatoria
+      </button>
       <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'plantilla'" (click)="cambiarPestana('plantilla')">
         Plantilla
       </button>
-      <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'tactica'" (click)="cambiarPestana('tactica')">
+      <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'tactica'" (click)="cambiarPestana('tactica')">
         📋 Pizarra Táctica
       </button>
-      <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'ofertas'" (click)="cambiarPestana('ofertas')">
+      <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'ofertas'" (click)="cambiarPestana('ofertas')">
         Bandeja de Ofertas
         <span class="tab-badge" *ngIf="ofertasPendientes > 0">{{ ofertasPendientes }}</span>
       </button>
+      <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'asistencia'" (click)="cambiarPestana('asistencia')">
+        ✅ Asistencia
+        <span class="tab-badge tab-badge--verde" *ngIf="jugadoresConfirmados.length > 0">{{ jugadoresConfirmados.length }}</span>
+      </button>
     </nav>
+
+
 
     <!-- ===== PESTAÑA: PLANTILLA ===== -->
     <section class="seccion-plantilla" *ngIf="pestanaActiva === 'plantilla'">
@@ -109,7 +188,7 @@
           <span class="jugador-stat">{{ j.asist ?? 0 }}</span>
           <span class="jugador-stat jugador-stat--amarilla">{{ j.amarillas ?? 0 }}</span>
           <span class="jugador-stat jugador-stat--roja">{{ j.rojas ?? 0 }}</span>
-          <span class="jugador-accion">
+          <span class="jugador-accion" *ngIf="esEntrenador">
             <button class="btn-despedir" (click)="despedirJugador(j)">Liberar</button>
           </span>
         </div>
@@ -211,6 +290,43 @@
 
         </div>
       </div>
+    </section>
+
+    <!-- ===== PESTAÑA: ASISTENCIA ===== -->
+    <section class="seccion-asistencia" *ngIf="pestanaActiva === 'asistencia'">
+
+      <div class="asistencia-grupo">
+        <h3 class="asistencia-grupo__titulo asistencia-grupo__titulo--si">
+          ✅ Confirmados <span class="asistencia-count">{{ jugadoresConfirmados.length }}</span>
+        </h3>
+        <div *ngIf="jugadoresConfirmados.length === 0" class="asistencia-vacio">
+          Ningún jugador ha confirmado asistencia todavía.
+        </div>
+        <div class="asistencia-lista" *ngIf="jugadoresConfirmados.length > 0">
+          <div class="asistencia-fila" *ngFor="let j of jugadoresConfirmados">
+            <span class="asistencia-pos" [attr.data-pos]="j.pos">{{ j.pos ?? '—' }}</span>
+            <span class="asistencia-nombre">{{ j.nombre }}</span>
+            <span class="asistencia-media">{{ j.media ?? '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="asistencia-grupo asistencia-grupo--no">
+        <h3 class="asistencia-grupo__titulo asistencia-grupo__titulo--no">
+          ❌ Sin confirmar / No asiste <span class="asistencia-count">{{ jugadoresSinConfirmar.length }}</span>
+        </h3>
+        <div *ngIf="jugadoresSinConfirmar.length === 0" class="asistencia-vacio">
+          Todos los jugadores han confirmado.
+        </div>
+        <div class="asistencia-lista" *ngIf="jugadoresSinConfirmar.length > 0">
+          <div class="asistencia-fila asistencia-fila--no" *ngFor="let j of jugadoresSinConfirmar">
+            <span class="asistencia-pos" [attr.data-pos]="j.pos">{{ j.pos ?? '—' }}</span>
+            <span class="asistencia-nombre">{{ j.nombre }}</span>
+            <span class="asistencia-media">{{ j.media ?? '—' }}</span>
+          </div>
+        </div>
+      </div>
+
     </section>
 
   </ng-container>

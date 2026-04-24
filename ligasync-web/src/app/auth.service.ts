@@ -50,6 +50,10 @@ export class AuthService {
     return this._rolNormalizado() === 'ESPECTADOR';
   }
 
+  isArbitro(): boolean {
+    return this._rolNormalizado() === 'ARBITRO';
+  }
+
   private _rolNormalizado(): string {
     const rol = this.getRol() ?? '';
     return rol.replace('ROLE_', '').toUpperCase();

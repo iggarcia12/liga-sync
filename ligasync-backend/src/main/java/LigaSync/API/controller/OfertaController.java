@@ -6,6 +6,7 @@ import LigaSync.API.model.Oferta;
 import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
 import LigaSync.API.repository.OfertaRepository;
+import LigaSync.API.repository.PartidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class OfertaController {
     @Autowired private OfertaRepository ofertaRepository;
     @Autowired private JugadorRepository jugadorRepository;
     @Autowired private EquipoRepository equipoRepository;
+    @Autowired private PartidoRepository partidoRepository;
 
     @GetMapping("/recibidas/{equipoId}")
     public List<Oferta> ofertasRecibidas(@PathVariable Long equipoId) {
@@ -33,6 +35,11 @@ public class OfertaController {
 
     @PostMapping
     public ResponseEntity<?> crearOferta(@RequestBody Oferta oferta) {
+        Integer jornadaActual = partidoRepository.findJornadaActual();
+        if (jornadaActual == null || jornadaActual == 0 || jornadaActual % 3 != 0) {
+            return ResponseEntity.badRequest().body("La ventana de fichajes está cerrada. Los traspasos solo se permiten en las jornadas 3, 6, 9...");
+        }
+
         Optional<Jugador> jugadorOpt = jugadorRepository.findById(oferta.getJugadorId());
         if (jugadorOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Jugador no encontrado.");

@@ -8,6 +8,7 @@
   <div class="admin-tabs">
     <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥 Usuarios</button>
     <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">⚽ Partidos y Calendario</button>
+    <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅ Convocatoria</button>
   </div>
 
   <div class="admin-grid">
@@ -153,6 +154,107 @@
         </table>
       </div>
     </div>
+    <!-- SECCIÓN CONVOCATORIA -->
+    <div class="card panel-convocatoria" *ngIf="tabActiva === 'convocatoria'">
+
+      <!-- ── VISTA: LISTA DE PARTIDOS PENDIENTES ── -->
+      <ng-container *ngIf="!partidoConvocatoria">
+        <div class="card-header">
+          <h3>Convocatoria por Partido</h3>
+          <span class="badge badge-espectador">{{ partidosPendientes.length }} partidos pendientes</span>
+        </div>
+
+        <div class="estado-vacio" *ngIf="partidosPendientes.length === 0">
+          <p>No hay partidos pendientes. Todos han sido finalizados y firmados.</p>
+        </div>
+
+        <div class="conv-partidos-lista" *ngIf="partidosPendientes.length > 0">
+          <div class="conv-partido-fila" *ngFor="let p of partidosPendientes" (click)="abrirConvocatoriaPartido(p)">
+            <span class="conv-jornada-badge">J{{ p.jornada }}</span>
+            <div class="conv-partido-equipos">
+              <span class="conv-partido-equipo">{{ p.local?.nombre || '?' }}</span>
+              <span class="conv-partido-vs">vs</span>
+              <span class="conv-partido-equipo">{{ p.visitante?.nombre || '?' }}</span>
+            </div>
+            <span class="conv-partido-fecha">{{ p.fecha }}</span>
+            <button class="btn btn-small btn-primary">Gestionar →</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ── VISTA: DETALLE DE PARTIDO ── -->
+      <ng-container *ngIf="partidoConvocatoria">
+        <div class="card-header">
+          <button class="btn btn-small" (click)="volverListaConvocatoria()">← Volver</button>
+          <h3>
+            J{{ partidoConvocatoria.jornada }} —
+            {{ partidoConvocatoria.local?.nombre }} vs {{ partidoConvocatoria.visitante?.nombre }}
+          </h3>
+        </div>
+
+        <div class="estado-vacio" *ngIf="cargandoConvJugadores"><p>⏳ Cargando jugadores...</p></div>
+
+        <div class="conv-detalle-grid" *ngIf="!cargandoConvJugadores">
+
+          <!-- LOCAL -->
+          <div class="conv-equipo-panel">
+            <div class="conv-equipo-header">
+              <span class="conv-equipo-nombre">🏠 {{ partidoConvocatoria.local?.nombre }}</span>
+              <div class="conv-equipo-acciones">
+                <button class="btn btn-small btn-success" (click)="marcarTodoConv(jugadoresLocalConv, true)">✅ Todos</button>
+                <button class="btn btn-small btn-danger"  (click)="marcarTodoConv(jugadoresLocalConv, false)">❌ Ninguno</button>
+              </div>
+            </div>
+            <div class="conv-jugador-lista">
+              <div class="conv-jugador-fila" *ngFor="let j of jugadoresLocalConv"
+                [class.conv-jugador-fila--sancionado]="j.estadoDisciplinario === 'SANCIONADO'">
+                <span class="conv-jugador-pos" [attr.data-pos]="j.pos">{{ j.pos ?? '—' }}</span>
+                <span class="conv-jugador-nombre">{{ j.nombre }}</span>
+                <span class="conv-sancion-badge" *ngIf="j.estadoDisciplinario === 'SANCIONADO'">🚫 Sancionado</span>
+                <button class="btn-conv-toggle"
+                  *ngIf="j.estadoDisciplinario !== 'SANCIONADO'"
+                  [class.btn-conv-toggle--si]="j.convocado"
+                  [class.btn-conv-toggle--no]="!j.convocado"
+                  (click)="toggleConvocatoria(j)">
+                  {{ j.convocado ? '✅ Asiste' : '❌ No asiste' }}
+                </button>
+              </div>
+              <p class="conv-sin-jugadores" *ngIf="jugadoresLocalConv.length === 0">Sin jugadores en este equipo.</p>
+            </div>
+          </div>
+
+          <!-- VISITANTE -->
+          <div class="conv-equipo-panel">
+            <div class="conv-equipo-header">
+              <span class="conv-equipo-nombre">🚌 {{ partidoConvocatoria.visitante?.nombre }}</span>
+              <div class="conv-equipo-acciones">
+                <button class="btn btn-small btn-success" (click)="marcarTodoConv(jugadoresVisitanteConv, true)">✅ Todos</button>
+                <button class="btn btn-small btn-danger"  (click)="marcarTodoConv(jugadoresVisitanteConv, false)">❌ Ninguno</button>
+              </div>
+            </div>
+            <div class="conv-jugador-lista">
+              <div class="conv-jugador-fila" *ngFor="let j of jugadoresVisitanteConv"
+                [class.conv-jugador-fila--sancionado]="j.estadoDisciplinario === 'SANCIONADO'">
+                <span class="conv-jugador-pos" [attr.data-pos]="j.pos">{{ j.pos ?? '—' }}</span>
+                <span class="conv-jugador-nombre">{{ j.nombre }}</span>
+                <span class="conv-sancion-badge" *ngIf="j.estadoDisciplinario === 'SANCIONADO'">🚫 Sancionado</span>
+                <button class="btn-conv-toggle"
+                  *ngIf="j.estadoDisciplinario !== 'SANCIONADO'"
+                  [class.btn-conv-toggle--si]="j.convocado"
+                  [class.btn-conv-toggle--no]="!j.convocado"
+                  (click)="toggleConvocatoria(j)">
+                  {{ j.convocado ? '✅ Asiste' : '❌ No asiste' }}
+                </button>
+              </div>
+              <p class="conv-sin-jugadores" *ngIf="jugadoresVisitanteConv.length === 0">Sin jugadores en este equipo.</p>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+    </div>
+
   </div>
 </div>
 

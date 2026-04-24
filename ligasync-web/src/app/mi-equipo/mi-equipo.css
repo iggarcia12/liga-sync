@@ -832,3 +832,348 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ============================================================
+   CARD TESORERÍA
+   ============================================================ */
+.card-tesoreria {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-tesoreria--ok {
+  background: #d1fae5;
+  border-color: #10b981;
+}
+
+.tesoreria-icono {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.tesoreria-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tesoreria-label {
+  font-size: 0.85rem;
+  color: #92400e;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-tesoreria--ok .tesoreria-label {
+  color: #065f46;
+}
+
+.tesoreria-valor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #b45309;
+  letter-spacing: -0.02em;
+}
+
+.card-tesoreria--ok .tesoreria-valor {
+  color: #065f46;
+}
+
+.tesoreria-aviso {
+  font-size: 0.78rem;
+  color: #dc2626;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.btn-pagar-deuda {
+  margin-left: auto;
+  padding: 0.55rem 1.4rem;
+  background: #b45309;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-pagar-deuda:hover:not(:disabled) {
+  background: #92400e;
+}
+
+.btn-pagar-deuda:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   CARD CONVOCATORIA (jugador)
+   ============================================================ */
+.card-convocatoria {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.convocatoria-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.convocatoria-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: 0.03em;
+}
+
+.convocatoria-estado {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.convocatoria-estado--si {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.convocatoria-estado--no {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.convocatoria-partido {
+  background: var(--bg-color, #f9fafb);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.conv-enfrentamiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.conv-equipo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.conv-vs {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted, #9ca3af);
+  letter-spacing: 0.1em;
+}
+
+.conv-jornada {
+  font-size: 0.78rem;
+  color: var(--text-muted, #9ca3af);
+  margin: 0;
+}
+
+.conv-sin-partido {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  margin-top: 0;
+}
+
+.convocatoria-sancion {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.convocatoria-acciones {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-asistire,
+.btn-no-asistire {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  color: var(--text-color);
+}
+
+.btn-asistire:hover { border-color: #10b981; color: #10b981; }
+.btn-no-asistire:hover { border-color: #ef4444; color: #ef4444; }
+
+.btn-asistire--activo {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.btn-no-asistire--activo {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+/* ============================================================
+   PESTAÑA ASISTENCIA (entrenador)
+   ============================================================ */
+.seccion-asistencia {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.asistencia-grupo {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.asistencia-grupo__titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.asistencia-grupo__titulo--si {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.asistencia-grupo__titulo--no {
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.asistencia-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.asistencia-grupo__titulo--no .asistencia-count {
+  background: var(--border-color);
+  color: var(--text-secondary);
+}
+
+.asistencia-vacio {
+  padding: 1.25rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.asistencia-lista {
+  display: flex;
+  flex-direction: column;
+}
+
+.asistencia-fila {
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.15s;
+}
+
+.asistencia-fila:last-child {
+  border-bottom: none;
+}
+
+.asistencia-fila:hover {
+  background: rgba(75, 159, 255, 0.04);
+}
+
+.asistencia-fila--no {
+  opacity: 0.65;
+}
+
+.asistencia-pos {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--border-color);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.asistencia-pos[data-pos="POR"] { background: rgba(245,158,11,0.15); color: #b45309; }
+.asistencia-pos[data-pos="DEF"] { background: rgba(16,185,129,0.15); color: #059669; }
+.asistencia-pos[data-pos="MED"] { background: rgba(75,159,255,0.15); color: #2563eb; }
+.asistencia-pos[data-pos="DEL"] { background: rgba(239,68,68,0.15); color: #dc2626; }
+
+.asistencia-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.asistencia-media {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--accent-color);
+  text-align: right;
+}
+
+.tab-badge--verde {
+  background: rgba(16, 185, 129, 0.2);
+  color: #059669;
+}

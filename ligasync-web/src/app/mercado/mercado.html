@@ -8,6 +8,19 @@
     <p>⏳ Buscando talentos...</p>
   </div>
 
+  <!-- Banner ventana de mercado -->
+  <div class="ventana-banner" [class.ventana-banner--abierta]="ventanaAbierta" [class.ventana-banner--cerrada]="!ventanaAbierta" *ngIf="!cargando">
+    <span class="ventana-icono">{{ ventanaAbierta ? '🟢' : '🔴' }}</span>
+    <div class="ventana-texto">
+      <strong>{{ ventanaAbierta ? 'Ventana de Fichajes ABIERTA' : 'Ventana de Fichajes CERRADA' }}</strong>
+      <span *ngIf="jornadaActual > 0">
+        — Jornada {{ jornadaActual }}.
+        {{ ventanaAbierta ? 'Puedes negociar traspasos con otros equipos.' : 'Solo puedes fichar agentes libres. La siguiente ventana se abre en la jornada ' + ((jornadaActual - (jornadaActual % 3)) + 3) + '.' }}
+      </span>
+      <span *ngIf="jornadaActual === 0">— La liga aún no ha comenzado. Aprovecha el mercado de pretemporada para construir tu plantilla.</span>
+    </div>
+  </div>
+
   <!-- Panel de Presupuesto -->
   <div class="presupuesto-panel card" *ngIf="!cargando && (esAdmin || esEntrenador)">
     <div class="presupuesto-info">
@@ -87,12 +100,19 @@
             <span>Valor estimado</span>
             <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
           </div>
-          <button class="btn btn-oferta btn-block" *ngIf="(esAdmin || esEntrenador) && miEquipoId" (click)="abrirModalOferta(j)">
-            Hacer Oferta
-          </button>
-          <p class="sin-equipo-msg" *ngIf="(esAdmin || esEntrenador) && !miEquipoId">
-            Asigna un equipo para ofertar
-          </p>
+          <ng-container *ngIf="esAdmin || esEntrenador">
+            <button class="btn btn-oferta btn-block"
+              *ngIf="miEquipoId && ventanaAbierta"
+              (click)="abrirModalOferta(j)">
+              Hacer Oferta
+            </button>
+            <p class="sin-equipo-msg" *ngIf="!miEquipoId">
+              Asigna un equipo para ofertar
+            </p>
+            <p class="ventana-cerrada-msg" *ngIf="miEquipoId && !ventanaAbierta">
+              🔒 Ventana cerrada
+            </p>
+          </ng-container>
         </div>
       </div>
     </div>

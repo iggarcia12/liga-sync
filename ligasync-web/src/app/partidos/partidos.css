@@ -164,6 +164,13 @@
   border-color: var(--border-color);
 }
 
+.equipo .escudo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .equipo .nombre {
   font-weight: 700;
   color: var(--text-primary);
@@ -237,4 +244,573 @@
 
 [data-theme="dark"] .card-footer {
   background: rgba(255, 255, 255, 0.01);
+}
+
+/* --- Cabecera de la card (jornada + estado) ----------------- */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem 0;
+}
+
+.badge-estado {
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.badge-firmado {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.card-marcador.firmado {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.acta-firmada-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.goleadores-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   MODAL DE ACTA DEL PARTIDO
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-acta {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: modalEntrada 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalEntrada {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Header del modal */
+.modal-acta__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem 2rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-jornada-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-color);
+}
+
+.modal-acta__titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  margin: 0.2rem 0 0.1rem;
+  line-height: 1;
+}
+
+.modal-acta__subtitulo {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+.btn-cerrar-modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-cerrar-modal:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+/* Marcador editable */
+.acta-marcador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.75rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.acta-equipo-nombre {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  width: 28%;
+  text-align: center;
+}
+
+.acta-score-editor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.score-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.6rem;
+}
+
+.btn-score {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.btn-score:hover { background: var(--accent-color); color: white; }
+
+.score-numero {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  min-width: 2.5rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.score-sep {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--border-color);
+}
+
+/* Grid de jugadores */
+.acta-jugadores-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.acta-columna {
+  padding: 1.5rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.acta-columna:last-child { border-right: none; }
+
+.acta-columna__titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.acta-columna__titulo.local   { color: var(--accent-color); border-color: var(--accent-color); }
+.acta-columna__titulo.visitante { color: #f59e0b; border-color: #f59e0b; }
+
+.acta-jugador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  gap: 0.5rem;
+}
+
+.acta-jugador:last-child { border-bottom: none; }
+
+.acta-jugador__info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.acta-jugador__nombre {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pos-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.acta-jugador__acciones {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.btn-inc {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  width: 30px;
+  height: 30px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+
+.btn-inc:hover { transform: scale(1.15); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.btn-inc:active { transform: scale(0.95); }
+
+.inc-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--accent-color);
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sin-jugadores {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* MVP Selector */
+.acta-mvp {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-surface);
+}
+
+.acta-mvp__label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.acta-mvp__select {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.acta-mvp__select:focus { outline: none; border-color: var(--accent-color); }
+
+/* Log de incidencias */
+.acta-log {
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.acta-log__titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem;
+}
+
+.acta-log__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.acta-log__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+}
+
+.btn-quitar-inc {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.btn-quitar-inc:hover { opacity: 1; color: #ef4444; }
+
+/* Footer del modal */
+.modal-acta__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.btn-cancelar {
+  padding: 0.6rem 1.25rem;
+  background: transparent;
+  border: 1.5px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancelar:hover:not(:disabled) { border-color: var(--text-secondary); color: var(--text-primary); }
+.btn-cancelar:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-firmar {
+  padding: 0.6rem 1.5rem;
+  background: var(--accent-color);
+  border: none;
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.btn-firmar:hover { background: var(--accent-hover); box-shadow: 0 4px 14px var(--accent-glow); }
+.btn-firmar:active { transform: scale(0.97); }
+
+.btn-guardar-resultado {
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  border: 1.5px solid var(--accent-color);
+  border-radius: var(--radius-sm);
+  color: var(--accent-color);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.btn-guardar-resultado:hover:not(:disabled) {
+  background: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+.btn-guardar-resultado:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.acta-error-msg {
+  margin: 0 1.5rem 0.75rem;
+  padding: 0.65rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-sm);
+  color: #ef4444;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Overlay de confirmación (dentro del modal) */
+.confirmacion-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 10;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.confirmacion-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.confirmacion-box__icono {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem;
+}
+
+.confirmacion-box__texto {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.confirmacion-box__texto strong { color: var(--text-primary); }
+
+.confirmacion-botones {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.btn-firmar-confirm {
+  padding: 0.65rem 1.5rem;
+  background: #ef4444;
+  border: none;
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-firmar-confirm:hover:not(:disabled) { background: #dc2626; }
+.btn-firmar-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .acta-jugadores-grid { grid-template-columns: 1fr; }
+  .acta-columna { border-right: none; border-bottom: 1px solid var(--border-color); }
+  .acta-marcador { flex-direction: column; gap: 0.75rem; }
+  .acta-equipo-nombre { width: 100%; }
 }

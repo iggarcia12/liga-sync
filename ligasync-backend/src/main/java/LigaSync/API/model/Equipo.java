@@ -17,7 +17,9 @@ public class Equipo {
 
     private String ciudad;
 
-    private Integer presupuesto = 0; // Valor por defecto
+    private Integer presupuesto = 0;
+
+    private Double deudaAcumulada = 0.0;
 
     private String formacion = "4-4-2";
 
@@ -125,6 +127,14 @@ public class Equipo {
 
     public void setGc(Integer gc) {
         this.gc = gc;
+    }
+
+    public Double getDeudaAcumulada() {
+        return deudaAcumulada;
+    }
+
+    public void setDeudaAcumulada(Double deudaAcumulada) {
+        this.deudaAcumulada = deudaAcumulada;
     }
 
     public String getFormacion() {

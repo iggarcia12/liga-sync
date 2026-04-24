@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 @Table(name = "jugadores")
 public class Jugador {
 
+    public enum EstadoDisciplinario {
+        DISPONIBLE, SANCIONADO
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +26,13 @@ public class Jugador {
     private Integer amarillas = 0;
     private Integer rojas = 0;
     private Boolean titular = false;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoDisciplinario estadoDisciplinario = EstadoDisciplinario.DISPONIBLE;
+
+    private Integer tarjetasAmarillasAcumuladas = 0;
+
+    private Boolean convocado = false;
 
     // --- LA MAGIA DE LAS RELACIONES ---
     // @ManyToOne indica que "Muchos" jugadores pertenecen a "Un" Equipo
@@ -128,5 +139,29 @@ public class Jugador {
 
     public void setEquipo(Equipo equipo) {
         this.equipo = equipo;
+    }
+
+    public EstadoDisciplinario getEstadoDisciplinario() {
+        return estadoDisciplinario;
+    }
+
+    public void setEstadoDisciplinario(EstadoDisciplinario estadoDisciplinario) {
+        this.estadoDisciplinario = estadoDisciplinario;
+    }
+
+    public Integer getTarjetasAmarillasAcumuladas() {
+        return tarjetasAmarillasAcumuladas;
+    }
+
+    public void setTarjetasAmarillasAcumuladas(Integer tarjetasAmarillasAcumuladas) {
+        this.tarjetasAmarillasAcumuladas = tarjetasAmarillasAcumuladas;
+    }
+
+    public Boolean getConvocado() {
+        return convocado;
+    }
+
+    public void setConvocado(Boolean convocado) {
+        this.convocado = convocado;
     }
 }

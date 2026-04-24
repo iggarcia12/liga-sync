@@ -27,8 +27,10 @@
           <span class="icon">👤</span> Mi Perfil
         </a>
 
-        <a *ngIf="authService.isEntrenador()" routerLink="/mi-equipo" routerLinkActive="active-link">
-          <span class="icon">🏟️</span> Mi Equipo
+        <a *ngIf="authService.isEntrenador() || authService.isJugador()" routerLink="/mi-equipo" routerLinkActive="active-link">
+          <span class="icon" *ngIf="authService.isEntrenador()">🏟️</span> 
+          <span class="icon" *ngIf="!authService.isEntrenador()">✅</span> 
+          {{ authService.isEntrenador() ? 'Mi Equipo' : 'Convocatoria' }}
         </a>
 
         <a *ngIf="authService.isJugador() || authService.isEntrenador() || authService.isAdmin()" routerLink="/mensajes" routerLinkActive="active-link">

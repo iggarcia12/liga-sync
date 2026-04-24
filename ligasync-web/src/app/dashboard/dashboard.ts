@@ -110,6 +110,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  get totalDeudaLiga(): number {
+    return this.equipos.reduce((acc, e) => acc + (e.deudaAcumulada || 0), 0);
+  }
+
+  get equiposConDeuda(): any[] {
+    return this.equipos.filter(e => (e.deudaAcumulada || 0) > 0);
+  }
+
   get ultimoPartido(): any | null {
     const jugados = this.partidos.filter(p => p.golesLocal !== null && p.golesLocal !== undefined);
     return jugados.length > 0 ? jugados[jugados.length - 1] : null;

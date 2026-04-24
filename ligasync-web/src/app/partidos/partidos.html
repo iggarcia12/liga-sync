@@ -12,32 +12,208 @@
   </div>
 
   <div class="lista-partidos" *ngIf="!cargando && partidos.length > 0">
-    <div class="card-marcador" *ngFor="let partido of partidos">
-      <div class="jornada-badge">Jornada {{ partido.jornada || '-' }}</div>
+    <div class="card-marcador" *ngFor="let partido of partidos" [class.firmado]="esFirmado(partido)">
+
+      <div class="card-header-row">
+        <div class="jornada-badge">Jornada {{ partido.jornada || '-' }}</div>
+        <span class="badge-estado" [class.badge-firmado]="esFirmado(partido)">
+          {{ esFirmado(partido) ? '✅ FIRMADO' : (partido.golesLocal !== null ? 'CON RESULTADO' : 'PENDIENTE') }}
+        </span>
+      </div>
 
       <div class="enfrentamiento">
         <div class="equipo">
-          <span class="escudo">🛡️</span>
+          <div class="escudo">
+            <img *ngIf="partido.local?.escudo" [src]="partido.local.escudo" [alt]="partido.local?.nombre || 'Local'" />
+            <span *ngIf="!partido.local?.escudo">🛡️</span>
+          </div>
           <span class="nombre">{{ partido.local?.nombre || 'Por definir' }}</span>
         </div>
 
         <div class="resultado">
           <span class="goles">{{ partido.golesLocal !== null ? partido.golesLocal : '-' }}</span>
           <span class="separador">:</span>
-          <span class="goles">{{
-            partido.golesVisitante !== null ? partido.golesVisitante : '-'
-          }}</span>
+          <span class="goles">{{ partido.golesVisitante !== null ? partido.golesVisitante : '-' }}</span>
         </div>
 
         <div class="equipo">
-          <span class="escudo">🛡️</span>
+          <div class="escudo">
+            <img *ngIf="partido.visitante?.escudo" [src]="partido.visitante.escudo" [alt]="partido.visitante?.nombre || 'Visitante'" />
+            <span *ngIf="!partido.visitante?.escudo">🛡️</span>
+          </div>
           <span class="nombre">{{ partido.visitante?.nombre || 'Por definir' }}</span>
         </div>
       </div>
 
-      <div class="card-footer" *ngIf="esAdmin">
-        <button class="btn-editar">✏️ Actualizar Resultado</button>
+      <div class="card-footer" *ngIf="puedeGestionarActas && !esFirmado(partido)">
+        <button class="btn-editar" (click)="abrirActa(partido)">🖊️ Gestionar Acta</button>
+      </div>
+
+      <div class="acta-firmada-info" *ngIf="esFirmado(partido)">
+        <span>Acta firmada y sellada</span>
+        <span *ngIf="partido.goleadores" class="goleadores-label">⚽ {{ partido.goleadores }}</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL DE GESTIÓN DE ACTA (solo árbitro / admin)
+     ============================================================ -->
+<div class="modal-overlay" *ngIf="partidoEnActa" (click)="cerrarActa()">
+  <div class="modal-acta" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="modal-acta__header">
+      <div>
+        <span class="modal-jornada-label">Jornada {{ partidoEnActa.jornada }}</span>
+        <h2 class="modal-acta__titulo">Acta del Partido</h2>
+        <p class="modal-acta__subtitulo">
+          {{ partidoEnActa.local?.nombre }} vs {{ partidoEnActa.visitante?.nombre }}
+        </p>
+      </div>
+      <button class="btn-cerrar-modal" (click)="cerrarActa()">✕</button>
+    </div>
+
+    <!-- Marcador editable -->
+    <div class="acta-marcador">
+      <div class="acta-equipo-nombre">{{ partidoEnActa.local?.nombre }}</div>
+      <div class="acta-score-editor">
+        <div class="score-control">
+          <button class="btn-score" (click)="golesLocalActa = golesLocalActa > 0 ? golesLocalActa - 1 : 0">−</button>
+          <span class="score-numero">{{ golesLocalActa }}</span>
+          <button class="btn-score" (click)="golesLocalActa = golesLocalActa + 1">+</button>
+        </div>
+        <span class="score-sep">:</span>
+        <div class="score-control">
+          <button class="btn-score" (click)="golesVisitanteActa = golesVisitanteActa > 0 ? golesVisitanteActa - 1 : 0">−</button>
+          <span class="score-numero">{{ golesVisitanteActa }}</span>
+          <button class="btn-score" (click)="golesVisitanteActa = golesVisitanteActa + 1">+</button>
+        </div>
+      </div>
+      <div class="acta-equipo-nombre">{{ partidoEnActa.visitante?.nombre }}</div>
+    </div>
+
+    <!-- Jugadores: dos columnas -->
+    <div class="acta-jugadores-grid">
+
+      <div class="acta-columna">
+        <h3 class="acta-columna__titulo local">{{ partidoEnActa.local?.nombre }}</h3>
+        <div class="acta-jugador" *ngFor="let j of jugadoresLocal">
+          <div class="acta-jugador__info">
+            <span class="acta-jugador__nombre">{{ j.nombre }}</span>
+            <span class="pos-badge">{{ j.pos }}</span>
+          </div>
+          <div class="acta-jugador__acciones">
+            <button class="btn-inc btn-gol"
+              (click)="anadirIncidencia(j, 'local', 'GOL')"
+              title="Añadir gol">
+              ⚽<span *ngIf="contarIncidencias(j.id, 'GOL') > 0" class="inc-count">{{ contarIncidencias(j.id, 'GOL') }}</span>
+            </button>
+            <button class="btn-inc btn-asist"
+              (click)="anadirIncidencia(j, 'local', 'ASIST')"
+              title="Añadir asistencia">
+              🎯<span *ngIf="contarIncidencias(j.id, 'ASIST') > 0" class="inc-count">{{ contarIncidencias(j.id, 'ASIST') }}</span>
+            </button>
+            <button class="btn-inc btn-amarilla"
+              (click)="anadirIncidencia(j, 'local', 'AMARILLA')"
+              title="Tarjeta amarilla">🟨</button>
+            <button class="btn-inc btn-roja"
+              (click)="anadirIncidencia(j, 'local', 'ROJA')"
+              title="Tarjeta roja">🟥</button>
+          </div>
+        </div>
+        <p class="sin-jugadores" *ngIf="jugadoresLocal.length === 0">Cargando jugadores...</p>
+      </div>
+
+      <div class="acta-columna">
+        <h3 class="acta-columna__titulo visitante">{{ partidoEnActa.visitante?.nombre }}</h3>
+        <div class="acta-jugador" *ngFor="let j of jugadoresVisitante">
+          <div class="acta-jugador__info">
+            <span class="acta-jugador__nombre">{{ j.nombre }}</span>
+            <span class="pos-badge">{{ j.pos }}</span>
+          </div>
+          <div class="acta-jugador__acciones">
+            <button class="btn-inc btn-gol"
+              (click)="anadirIncidencia(j, 'visitante', 'GOL')"
+              title="Añadir gol">
+              ⚽<span *ngIf="contarIncidencias(j.id, 'GOL') > 0" class="inc-count">{{ contarIncidencias(j.id, 'GOL') }}</span>
+            </button>
+            <button class="btn-inc btn-asist"
+              (click)="anadirIncidencia(j, 'visitante', 'ASIST')"
+              title="Añadir asistencia">
+              🎯<span *ngIf="contarIncidencias(j.id, 'ASIST') > 0" class="inc-count">{{ contarIncidencias(j.id, 'ASIST') }}</span>
+            </button>
+            <button class="btn-inc btn-amarilla"
+              (click)="anadirIncidencia(j, 'visitante', 'AMARILLA')"
+              title="Tarjeta amarilla">🟨</button>
+            <button class="btn-inc btn-roja"
+              (click)="anadirIncidencia(j, 'visitante', 'ROJA')"
+              title="Tarjeta roja">🟥</button>
+          </div>
+        </div>
+        <p class="sin-jugadores" *ngIf="jugadoresVisitante.length === 0">Cargando jugadores...</p>
       </div>
     </div>
+
+    <!-- MVP selector -->
+    <div class="acta-mvp">
+      <label class="acta-mvp__label" for="mvp-select">⭐ MVP del Partido</label>
+      <select id="mvp-select" class="acta-mvp__select" [(ngModel)]="mvpIdActa">
+        <option [ngValue]="null">— Sin seleccionar —</option>
+        <option *ngFor="let j of todosLosJugadores" [ngValue]="j.id">
+          {{ j.nombre }} ({{ j.equipoLabel }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Log de incidencias -->
+    <div class="acta-log" *ngIf="incidencias.length > 0">
+      <h4 class="acta-log__titulo">Incidencias registradas</h4>
+      <div class="acta-log__lista">
+        <div class="acta-log__item" *ngFor="let inc of incidencias; let i = index">
+          <span>{{ tipoIcono(inc.tipo) }} <strong>{{ inc.nombre }}</strong></span>
+          <button class="btn-quitar-inc" (click)="quitarIncidencia(i)" title="Quitar">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje de error del acta -->
+    <div class="acta-error-msg" *ngIf="mensajeErrorActa">
+      ⚠️ {{ mensajeErrorActa }}
+    </div>
+
+    <!-- Footer del modal -->
+    <div class="modal-acta__footer">
+      <button class="btn-cancelar" (click)="cerrarActa()">Cancelar</button>
+      <button class="btn-guardar-resultado" *ngIf="esAdmin"
+        (click)="guardarSinFirmar()" [disabled]="guardandoResultado">
+        {{ guardandoResultado ? 'Guardando...' : '💾 Guardar sin firmar' }}
+      </button>
+      <button class="btn-firmar" (click)="mostrarConfirmacion = true; mensajeErrorActa = ''">
+        🖊️ Firmar Acta
+      </button>
+    </div>
+
+    <!-- Overlay de confirmación (dentro del modal) -->
+    <div class="confirmacion-overlay" *ngIf="mostrarConfirmacion">
+      <div class="confirmacion-box">
+        <p class="confirmacion-box__icono">⚠️</p>
+        <p class="confirmacion-box__texto">
+          Esta acción es <strong>irreversible</strong>. El acta quedará firmada y sellada permanentemente.
+          Los datos disciplinarios y de tesorería se calcularán en este momento.
+        </p>
+        <div class="confirmacion-botones">
+          <button class="btn-cancelar" (click)="mostrarConfirmacion = false" [disabled]="firmando">
+            Volver
+          </button>
+          <button class="btn-firmar-confirm" (click)="firmarActa()" [disabled]="firmando">
+            {{ firmando ? 'Firmando...' : 'Confirmar y Firmar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

@@ -75,6 +75,16 @@ public class JugadorController {
         return ResponseEntity.ok(jugadorRepository.save(nuevoJugador));
     }
 
+    @PutMapping("/{id}/convocatoria")
+    public ResponseEntity<?> actualizarConvocatoria(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, Boolean> cuerpo) {
+        return jugadorRepository.findById(id).map(jugador -> {
+            jugador.setConvocado(Boolean.TRUE.equals(cuerpo.get("convocado")));
+            return ResponseEntity.ok(jugadorRepository.save(jugador));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}/liberar")
     public ResponseEntity<?> liberarJugador(@PathVariable Long id) {
         return jugadorRepository.findById(id).map(jugador -> {

@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 @Table(name = "partidos")
 public class Partido {
 
+    public enum EstadoPartido {
+        PENDIENTE, EN_JUEGO, FINALIZADO_Y_FIRMADO
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,18 +24,20 @@ public class Partido {
 
     private String fecha;
 
-    // Guardaremos los goleadores como texto plano por ahora (ej: "Lamine (12')")
     @Column(columnDefinition = "TEXT")
     private String goleadores;
 
-    // --- LA MAGIA: DOS RELACIONES AL MISMO TIEMPO ---
+    @Enumerated(EnumType.STRING)
+    private EstadoPartido estado = EstadoPartido.PENDIENTE;
+
+    private Long mvpId;
 
     @ManyToOne
-    @JoinColumn(name = "local_id") // Crea la columna para el equipo de casa
+    @JoinColumn(name = "local_id")
     private Equipo local;
 
     @ManyToOne
-    @JoinColumn(name = "visitante_id") // Crea la columna para el equipo de fuera
+    @JoinColumn(name = "visitante_id")
     private Equipo visitante;
 
     // --- GETTERS Y SETTERS ---
@@ -97,5 +103,21 @@ public class Partido {
 
     public void setVisitante(Equipo visitante) {
         this.visitante = visitante;
+    }
+
+    public EstadoPartido getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPartido estado) {
+        this.estado = estado;
+    }
+
+    public Long getMvpId() {
+        return mvpId;
+    }
+
+    public void setMvpId(Long mvpId) {
+        this.mvpId = mvpId;
     }
 }

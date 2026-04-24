@@ -14,6 +14,14 @@ export class AdminComponent implements OnInit {
 
   readonly urlBase = 'http://localhost:8080/api';
   tabActiva: string = 'usuarios';
+  partidoConvocatoria: any = null;
+  jugadoresLocalConv: any[] = [];
+  jugadoresVisitanteConv: any[] = [];
+  cargandoConvJugadores = false;
+
+  get partidosPendientes(): any[] {
+    return this.partidos.filter(p => p.estado !== 'FINALIZADO_Y_FIRMADO');
+  }
   usuarios: any[] = [];
   partidos: any[] = [];
   equipos: any[] = [];
@@ -26,7 +34,7 @@ export class AdminComponent implements OnInit {
     equiposRegistrados: 0
   };
 
-  rolesDisponibles = ['espectador', 'jugador', 'entrenador', 'admin'];
+  rolesDisponibles = ['espectador', 'jugador', 'entrenador', 'arbitro', 'admin'];
   rangosPendientes: { [userId: number]: { role: string; teamId: number | null; jugadorId: number | null } } = {};
   jugadoresSinUsuario: any[] = [];
   mensajeRango = '';
@@ -100,7 +108,53 @@ export class AdminComponent implements OnInit {
 
   activarTab(tab: string) {
     this.tabActiva = tab;
+    if (tab !== 'convocatoria') this.partidoConvocatoria = null;
     this.cdr.detectChanges();
+  }
+
+  abrirConvocatoriaPartido(partido: any) {
+    this.partidoConvocatoria = partido;
+    this.jugadoresLocalConv = [];
+    this.jugadoresVisitanteConv = [];
+    this.cargandoConvJugadores = true;
+
+    let pendientes = (partido.local?.id ? 1 : 0) + (partido.visitante?.id ? 1 : 0);
+    const check = () => { if (--pendientes === 0) { this.cargandoConvJugadores = false; this.cdr.detectChanges(); } };
+
+    if (partido.local?.id) {
+      this.http.get<any[]>(`${this.urlBase}/jugadores/equipo/${partido.local.id}`).subscribe({
+        next: (j) => { this.jugadoresLocalConv = j; check(); },
+        error: (err) => { console.error('Error al cargar jugadores locales:', err); check(); }
+      });
+    }
+    if (partido.visitante?.id) {
+      this.http.get<any[]>(`${this.urlBase}/jugadores/equipo/${partido.visitante.id}`).subscribe({
+        next: (j) => { this.jugadoresVisitanteConv = j; check(); },
+        error: (err) => { console.error('Error al cargar jugadores visitantes:', err); check(); }
+      });
+    }
+  }
+
+  volverListaConvocatoria() {
+    this.partidoConvocatoria = null;
+  }
+
+  toggleConvocatoria(jugador: any) {
+    const nuevoEstado = !jugador.convocado;
+    if (nuevoEstado && jugador.estadoDisciplinario === 'SANCIONADO') return;
+    this.http.put<any>(`${this.urlBase}/jugadores/${jugador.id}/convocatoria`, { convocado: nuevoEstado }).subscribe({
+      next: (actualizado) => { jugador.convocado = actualizado.convocado; this.cdr.detectChanges(); },
+      error: (err) => console.error('Error al cambiar convocatoria:', err)
+    });
+  }
+
+  marcarTodoConv(jugadores: any[], asiste: boolean) {
+    jugadores.filter(j => !asiste || j.estadoDisciplinario !== 'SANCIONADO').forEach(j => {
+      this.http.put<any>(`${this.urlBase}/jugadores/${j.id}/convocatoria`, { convocado: asiste }).subscribe({
+        next: (actualizado) => { j.convocado = actualizado.convocado; this.cdr.detectChanges(); },
+        error: (err) => console.error('Error al marcar convocatoria en bloque:', err)
+      });
+    });
   }
 
   generarCalendario() {

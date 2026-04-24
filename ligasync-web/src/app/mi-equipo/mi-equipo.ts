@@ -22,13 +22,20 @@ export class MiEquipoComponent implements OnInit {
   editando = false;
   mensajeGuardado = '';
 
+  // Datos específicos del jugador
+  miJugador: any = null;
+  proximoPartido: any = null;
+
+  get esJugador(): boolean { return this.authService.isJugador() || !!this.authService.getJugadorId(); }
+  get esEntrenador(): boolean { return this.authService.isEntrenador(); }
+
   sortField: string = 'pos';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   nombreEdicion = '';
   escudoEdicion = '';
 
-  pestanaActiva: 'plantilla' | 'ofertas' | 'tactica' = 'plantilla';
+  pestanaActiva: 'plantilla' | 'ofertas' | 'tactica' | 'convocatoria' | 'asistencia' = 'plantilla';
   formaciones = ['4-4-2', '4-3-3', '3-4-3', '3-5-2', '5-3-2', '4-5-1', '5-4-1', '4-2-3-1', '4-1-4-1'];
   jugadorSeleccionado: any = null;
   
@@ -41,6 +48,10 @@ export class MiEquipoComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.esJugador) {
+      this.pestanaActiva = 'convocatoria';
+    }
+
     const userId = this.authService.getUserId();
     if (!userId) { this.cargando = false; return; }
 
@@ -51,11 +62,53 @@ export class MiEquipoComponent implements OnInit {
         } else {
           this.cargando = false;
         }
+
+        if (usuario.jugadorId) {
+          this.cargarDatosJugador(usuario.jugadorId);
+        }
       },
       error: (err) => {
-        console.error('Error al obtener datos del entrenador:', err);
+        console.error('Error al obtener datos del usuario:', err);
         this.cargando = false;
       }
+    });
+  }
+
+  private cargarDatosJugador(jugadorId: number) {
+    this.http.get<any>(`http://localhost:8080/api/jugadores/${jugadorId}`).subscribe({
+      next: (jugador) => {
+        this.miJugador = jugador;
+        this.cargarProximoPartido(jugador.equipo?.id);
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar datos del jugador:', err)
+    });
+  }
+
+  private cargarProximoPartido(equipoId: number | undefined) {
+    if (!equipoId) return;
+    this.http.get<any[]>('http://localhost:8080/api/partidos').subscribe({
+      next: (partidos) => {
+        const pendientes = partidos.filter(p =>
+          p.estado !== 'FINALIZADO_Y_FIRMADO' &&
+          (p.local?.id === equipoId || p.visitante?.id === equipoId)
+        );
+        this.proximoPartido = pendientes.length > 0 ? pendientes[0] : null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar próximo partido:', err)
+    });
+  }
+
+  toggleConvocatoria(asiste: boolean) {
+    if (!this.miJugador) return;
+    if (asiste && this.miJugador.estadoDisciplinario === 'SANCIONADO') return;
+    this.http.put<any>(`http://localhost:8080/api/jugadores/${this.miJugador.id}/convocatoria`, { convocado: asiste }).subscribe({
+      next: (jugadorActualizado) => {
+        this.miJugador = jugadorActualizado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al actualizar convocatoria:', err)
     });
   }
 
@@ -145,7 +198,15 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  cambiarPestana(p: 'plantilla' | 'ofertas' | 'tactica') {
+  get jugadoresConfirmados(): any[] {
+    return this.jugadores.filter(j => j.convocado === true);
+  }
+
+  get jugadoresSinConfirmar(): any[] {
+    return this.jugadores.filter(j => !j.convocado);
+  }
+
+  cambiarPestana(p: 'plantilla' | 'ofertas' | 'tactica' | 'convocatoria' | 'asistencia') {
     this.pestanaActiva = p;
     this.jugadorSeleccionado = null; 
     if (p === 'ofertas' && this.equipo) {
@@ -199,6 +260,23 @@ export class MiEquipoComponent implements OnInit {
     this.http.put<any>(`http://localhost:8080/api/ofertas/${oferta.id}/rechazar`, {}).subscribe({
       next: () => { if (this.equipo) this.cargarOfertas(this.equipo.id); },
       error: (err) => console.error('Error al rechazar oferta:', err)
+    });
+  }
+
+  pagarDeuda() {
+    if (!this.equipo) return;
+    if (!confirm(`¿Pagar la deuda de ${this.equipo.deudaAcumulada.toLocaleString('es-ES')} €? Se descontará de tu presupuesto.`)) return;
+    this.http.put<any>(`http://localhost:8080/api/equipos/${this.equipo.id}/pagar-deuda`, {}).subscribe({
+      next: (equipoActualizado) => {
+        this.equipo = equipoActualizado;
+        this.mensajeGuardado = 'Deuda pagada correctamente.';
+        setTimeout(() => this.mensajeGuardado = '', 3000);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al pagar la deuda:', err);
+        alert(err.error || 'No se pudo pagar la deuda.');
+      }
     });
   }
 

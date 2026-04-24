@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/registro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
@@ -50,10 +51,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
 
                         .requestMatchers(HttpMethod.PUT, "/api/equipos/**").hasAnyRole("ADMIN", "ENTRENADOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/jugadores/**").hasAnyRole("ADMIN", "ENTRENADOR")
+                        // El jugador puede actualizar su propia convocatoria
+                        .requestMatchers(HttpMethod.PUT, "/api/jugadores/**").hasAnyRole("ADMIN", "ENTRENADOR", "JUGADOR")
 
                         .requestMatchers(HttpMethod.POST, "/api/ofertas").hasAnyRole("ADMIN", "ENTRENADOR")
                         .requestMatchers(HttpMethod.PUT, "/api/ofertas/**").hasAnyRole("ADMIN", "ENTRENADOR")
+
+                        // Árbitro: solo puede firmar actas y gestionar partidos
+                        .requestMatchers(HttpMethod.PUT, "/api/partidos/**").hasAnyRole("ADMIN", "ARBITRO")
 
                         // Reglas por defecto según el verbo HTTP
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")

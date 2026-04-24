@@ -446,3 +446,50 @@
   justify-content: flex-end;
   margin-top: 0.75rem;
 }
+
+/* ── Banner ventana de mercado ────────────────────────────── */
+.ventana-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  border: 1px solid transparent;
+}
+
+.ventana-banner--abierta {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.ventana-banner--cerrada {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #991b1b;
+}
+
+.ventana-icono {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.ventana-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.9rem;
+}
+
+.ventana-texto strong {
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.ventana-cerrada-msg {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 0.4rem 0 0;
+  text-align: center;
+}

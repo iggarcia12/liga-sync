@@ -159,6 +159,24 @@
         </ng-template>
       </div>
 
+      <!-- Mini-card: Tesorería de la Liga -->
+      <div class="card card-tesoreria-admin" *ngIf="totalDeudaLiga > 0">
+        <div class="card-header-kpi">
+          <span class="card-tag">⚠️</span>
+          <h3>Tesorería</h3>
+        </div>
+        <div class="tesoreria-total">
+          <p class="tesoreria-total__label">Deuda total en multas</p>
+          <p class="tesoreria-total__valor">{{ totalDeudaLiga | currency:'EUR':'symbol':'1.0-0' }}</p>
+        </div>
+        <div class="tesoreria-lista">
+          <div class="tesoreria-fila" *ngFor="let e of equiposConDeuda">
+            <span class="tesoreria-equipo">{{ e.nombre }}</span>
+            <span class="tesoreria-deuda">{{ e.deudaAcumulada | currency:'EUR':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+
     </aside>
   </div>
 

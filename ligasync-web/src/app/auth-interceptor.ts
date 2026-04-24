@@ -10,7 +10,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let peticionFinal = req;
 
-  // 1. Si hay token y no es una petición de login, lo pegamos en la cabecera
   const esLogin = req.url.includes('/api/login') || req.url.includes('/api/auth/registro');
   if (miToken && !esLogin) {
     peticionFinal = req.clone({
@@ -20,20 +19,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  // 2. Dejamos salir la petición, pero nos quedamos "escuchando" si vuelve con error
   return next(peticionFinal).pipe(
     catchError((error: HttpErrorResponse) => {
-      // 3. 401: Token caducado o inválido. Echar al usuario.
       if (error.status === 401) {
-        console.warn('El token ha caducado o es inválido. Redirigiendo al login...');
+        // Token caducado o corrupto: sesión fuera
         localStorage.removeItem('token');
         router.navigate(['/login']);
       }
-      // Si es 403 (Prohibido/Forbidden), significa de que el token vale, pero no tiene Permisos o Rol de Admin.
-      // Se lo pasamos al componente para que muestre una alerta amigable.
+      
       if (error.status === 403) {
-        console.warn('Acceso denegado: El usuario no tiene suficientes permisos (Rol) para esta acción.');
+        // El token vale pero el rol no. Solo avisamos por consola, la UI lo gestionará.
+        console.warn('Acceso denegado: permisos insuficientes.');
       }
+      
       return throwError(() => error);
     })
   );
