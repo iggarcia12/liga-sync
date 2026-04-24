@@ -5,8 +5,117 @@
 .dashboard-page {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
 }
+
+/* ── Fila superior: título + admin bar ─────────────────────── */
+.dashboard-top-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.dashboard-top-row .header-section {
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.dashboard-top-row .admin-action-bar {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Admin Action Bar ──────────────────────────────────────── */
+.admin-action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-left: 4px solid var(--warning-color);
+}
+
+.admin-action-content {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.admin-action-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.admin-action-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-action-info strong {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.admin-action-info span {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.admin-action-controles {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.btn-playoffs {
+  background: linear-gradient(135deg, #92400e, #f59e0b);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1.25rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-playoffs:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.btn-playoffs:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-ver-playoffs {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.btn-ver-playoffs:hover { opacity: 0.75; }
+
+.admin-action-msg {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+}
+
+.msg-ok  { color: var(--success-color); background: rgba(16, 185, 129, 0.08); }
+.msg-err { color: var(--danger-color);  background: rgba(220, 38, 38, 0.08); }
 
 /* ── KPI ── Panel de Estadísticas ─────────────────────────── */
 .panel-estadisticas {
@@ -21,7 +130,7 @@
   align-items: center;
   color: #fff;
   border: none;
-  padding: 1.75rem 2rem;
+  padding: 1.1rem 1.5rem;
   border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
@@ -49,16 +158,16 @@
 }
 
 .stat-info .stat-value {
-  margin: 0.5rem 0 0 0;
+  margin: 0.2rem 0 0 0;
   font-family: var(--font-display);
-  font-size: 3.4rem;
+  font-size: 2.4rem;
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0.02em;
 }
 
 .stat-icono {
-  font-size: 2.6rem;
+  font-size: 1.9rem;
   opacity: 0.28;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.25));
 }
@@ -80,8 +189,8 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 1.375rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.625rem;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -152,7 +261,7 @@
 }
 
 .tabla-clasificacion tbody td {
-  padding: 0.875rem 0.875rem;
+  padding: 0.5rem 0.875rem;
   vertical-align: middle;
 }
 
@@ -220,9 +329,9 @@
 .side-column {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.75rem;
   position: sticky;
-  top: 5.5rem;
+  top: calc(var(--topbar-height, 56px) + 1rem);
 }
 
 /* ── Card: Último Resultado ──────────────────────────────── */
@@ -445,8 +554,38 @@
   color: #b45309;
 }
 
+/* ── Link "Ver todo" ─────────────────────────────────────── */
+.card-footer-link {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+  text-align: right;
+}
+
+.btn-ver-todo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: gap 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-ver-todo:hover { opacity: 0.75; gap: 0.65rem; }
+.btn-ver-todo .flecha { font-size: 0.85rem; }
+
 /* ── Responsive ──────────────────────────────────────────── */
-@media (max-width: 1100px) {
+/* Con sidebar de 240px, el viewport efectivo se reduce — bajamos el breakpoint */
+@media (max-width: 1200px) {
+  .dashboard-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .dashboard-grid {
     grid-template-columns: 1fr;
   }

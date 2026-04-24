@@ -1,62 +1,121 @@
-<div class="app-wrapper">
-  <header class="global-navbar" *ngIf="mostrarMenu()">
-    <div class="navbar-container">
-      <div class="navbar-brand">
-        <span class="brand-icon">🏆</span>
-        <span class="brand-name">LigaSync <strong>PRO</strong></span>
+<ng-container *ngIf="mostrarMenu(); else sinLayout">
+  <div class="app-shell" [class.is-collapsed]="isSidebarCollapsed">
+
+    <!-- Overlay semitransparente en móvil -->
+    <div
+      class="sidebar-overlay"
+      [class.is-active]="isMobileOpen"
+      (click)="closeSidebar()">
+    </div>
+
+    <!-- ─── Sidebar ──────────────────────────────────────── -->
+    <aside class="sidebar" [class.mobile-open]="isMobileOpen">
+
+      <div class="sidebar-brand">
+        <span class="brand-icon">⚽</span>
+        <span class="brand-name">Liga<strong>Sync</strong></span>
       </div>
 
-      <nav class="navbar-links">
-        <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
-          <span class="icon">📊</span> Inicio
-        </a>
-        <a routerLink="/estadisticas" routerLinkActive="active-link">
-          <span class="icon">📈</span> Estadísticas
-        </a>
-        <a routerLink="/equipos" routerLinkActive="active-link">
-          <span class="icon">🛡️</span> Plantillas
-        </a>
-        <a routerLink="/partidos" routerLinkActive="active-link">
-          <span class="icon">⚽</span> Partidos
-        </a>
-        <a routerLink="/mercado" routerLinkActive="active-link">
-          <span class="icon">🤝</span> Mercado
-        </a>
+      <nav class="sidebar-nav">
 
-        <a *ngIf="authService.isJugador()" routerLink="/mi-perfil" routerLinkActive="active-link">
-          <span class="icon">👤</span> Mi Perfil
-        </a>
-
-        <a *ngIf="authService.isEntrenador() || authService.isJugador()" routerLink="/mi-equipo" routerLinkActive="active-link">
-          <span class="icon" *ngIf="authService.isEntrenador()">🏟️</span> 
-          <span class="icon" *ngIf="!authService.isEntrenador()">✅</span> 
-          {{ authService.isEntrenador() ? 'Mi Equipo' : 'Convocatoria' }}
-        </a>
-
-        <a *ngIf="authService.isJugador() || authService.isEntrenador() || authService.isAdmin()" routerLink="/mensajes" routerLinkActive="active-link">
-          <span class="icon">✉️</span> Mensajes
-        </a>
-
-        <ng-container *ngIf="authService.isAdmin()">
-          <a routerLink="/admin" routerLinkActive="active-link">
-            <span class="icon">⚙️</span> Admin
+        <!-- PRINCIPAL -->
+        <div class="nav-section">
+          <span class="nav-section-label">Principal</span>
+          <a routerLink="/dashboard" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{exact: true}" (click)="closeSidebar()">
+            <span class="nav-icon">📊</span> <span class="nav-text">Inicio</span>
           </a>
+          <a routerLink="/clasificacion" routerLinkActive="active-link" (click)="closeSidebar()">
+            <span class="nav-icon">🏆</span> <span class="nav-text">Clasificación</span>
+          </a>
+          <a routerLink="/partidos" routerLinkActive="active-link" (click)="closeSidebar()">
+            <span class="nav-icon">⚽</span> <span class="nav-text">Partidos</span>
+          </a>
+          <a routerLink="/equipos" routerLinkActive="active-link" (click)="closeSidebar()">
+            <span class="nav-icon">🛡️</span> <span class="nav-text">Plantillas</span>
+          </a>
+          <a routerLink="/estadisticas" routerLinkActive="active-link" (click)="closeSidebar()">
+            <span class="nav-icon">📈</span> <span class="nav-text">Estadísticas</span>
+          </a>
+          <a routerLink="/mercado" routerLinkActive="active-link" (click)="closeSidebar()">
+            <span class="nav-icon">🤝</span> <span class="nav-text">Mercado</span>
+          </a>
+          <a routerLink="/playoffs" routerLinkActive="active-link" (click)="closeSidebar()">
+            <span class="nav-icon">🏅</span> <span class="nav-text">Play-offs</span>
+          </a>
+        </div>
+
+        <!-- MI ESPACIO: jugador / entrenador -->
+        <ng-container *ngIf="authService.isJugador() || authService.isEntrenador()">
+          <div class="nav-section">
+            <span class="nav-section-label">Mi Espacio</span>
+            <a *ngIf="authService.isJugador()"
+               routerLink="/mi-perfil" routerLinkActive="active-link" (click)="closeSidebar()">
+              <span class="nav-icon">👤</span> <span class="nav-text">Mi Perfil</span>
+            </a>
+            <a routerLink="/mi-equipo" routerLinkActive="active-link" (click)="closeSidebar()">
+              <span class="nav-icon">{{ authService.isEntrenador() ? '🏟️' : '✅' }}</span>
+              <span class="nav-text">{{ authService.isEntrenador() ? 'Mi Equipo' : 'Convocatoria' }}</span>
+            </a>
+            <a routerLink="/mensajes" routerLinkActive="active-link" (click)="closeSidebar()">
+              <span class="nav-icon">✉️</span> <span class="nav-text">Mensajes</span>
+            </a>
+          </div>
         </ng-container>
+
+        <!-- GESTIÓN: solo admin -->
+        <ng-container *ngIf="authService.isAdmin()">
+          <div class="nav-section">
+            <span class="nav-section-label">Gestión</span>
+            <a routerLink="/mensajes" routerLinkActive="active-link" (click)="closeSidebar()">
+              <span class="nav-icon">✉️</span> <span class="nav-text">Mensajes</span>
+            </a>
+            <a routerLink="/admin" routerLinkActive="active-link" (click)="closeSidebar()">
+              <span class="nav-icon">⚙️</span> <span class="nav-text">Panel Admin</span>
+            </a>
+          </div>
+        </ng-container>
+
       </nav>
 
-      <div class="navbar-actions">
-        <button class="btn-icon theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
-          <span *ngIf="isDarkMode">☀️</span>
-          <span *ngIf="!isDarkMode">🌙</span>
-        </button>
-        <button (click)="salir()" class="btn-logout" title="Cerrar Sesión">
-          <span>🚪</span> <span class="logout-text">Salir</span>
+      <div class="sidebar-footer">
+        <button class="btn-theme-toggle" (click)="toggleTheme()">
+          <span class="nav-icon">{{ isDarkMode ? '☀️' : '🌙' }}</span>
+          <span class="nav-text">{{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
         </button>
       </div>
-    </div>
-  </header>
 
-  <main class="main-content">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+    </aside>
+
+    <!-- ─── Área principal ───────────────────────────────── -->
+    <main class="main-layout">
+
+      <header class="top-navbar">
+        <button class="btn-hamburger" (click)="toggleSidebar()" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="top-bar-user">
+          <span class="user-greeting">Hola, <strong>{{ authService.getNombre() }}</strong></span>
+        </div>
+
+        <button (click)="salir()" class="btn-logout">
+          <span class="nav-icon" style="opacity:1; width:auto; margin-right:4px;">🚪</span> <span class="nav-text">Salir</span>
+        </button>
+      </header>
+
+      <section class="page-container">
+        <router-outlet></router-outlet>
+      </section>
+
+    </main>
+
+  </div>
+</ng-container>
+
+<!-- Login / Registro: sin layout -->
+<ng-template #sinLayout>
+  <router-outlet></router-outlet>
+</ng-template>

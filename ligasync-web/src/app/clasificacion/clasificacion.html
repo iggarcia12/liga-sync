@@ -1,0 +1,85 @@
+<div class="clasificacion-page">
+
+  <!-- ── Cabecera ──────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <a routerLink="/dashboard" class="btn-volver">
+        <span>←</span> Volver
+      </a>
+      <div>
+        <h1 class="page-titulo">Clasificación</h1>
+        <p class="page-subtitulo">Temporada actual · Todas las jornadas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Estado: cargando ──────────────────────────────────── -->
+  <div *ngIf="cargando" class="estado-cargando">
+    <div class="spinner"></div>
+    <p>Cargando clasificación...</p>
+  </div>
+
+  <!-- ── Estado: error ─────────────────────────────────────── -->
+  <div *ngIf="!cargando && error" class="estado-error card">
+    <span class="icon-estado">⚠️</span>
+    <p>No se pudo cargar la clasificación.</p>
+    <button class="btn-reintentar" (click)="cargarClasificacion()">Reintentar</button>
+  </div>
+
+  <!-- ── Tabla principal ───────────────────────────────────── -->
+  <div *ngIf="!cargando && !error" class="card card-tabla">
+
+    <div *ngIf="equiposOrdenados.length === 0" class="estado-vacio">
+      <span class="icon-vacio">🏟️</span>
+      <p>No hay equipos registrados aún.</p>
+    </div>
+
+    <table *ngIf="equiposOrdenados.length > 0" class="tabla-completa">
+      <thead>
+        <tr>
+          <th class="th-pos">#</th>
+          <th class="th-equipo">Equipo</th>
+          <th class="th-num" title="Partidos Jugados">PJ</th>
+          <th class="th-num" title="Partidos Ganados">PG</th>
+          <th class="th-num" title="Partidos Empatados">PE</th>
+          <th class="th-num" title="Partidos Perdidos">PP</th>
+          <th class="th-num" title="Goles a Favor">GF</th>
+          <th class="th-num" title="Goles en Contra">GC</th>
+          <th class="th-num" title="Diferencia de Goles">DG</th>
+          <th class="th-pts">Pts</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let equipo of equiposOrdenados; let i = index"
+        >
+          <td class="col-pos">
+            <span
+              class="pos-badge"
+              [class.pos-oro]="i === 0"
+              [class.pos-plata]="i === 1"
+              [class.pos-bronce]="i === 2"
+            >
+              {{ i + 1 }}
+            </span>
+          </td>
+          <td class="col-equipo">
+            <span class="equipo-nombre">{{ equipo.nombre }}</span>
+            <span *ngIf="equipo.ciudad" class="equipo-ciudad">{{ equipo.ciudad }}</span>
+          </td>
+          <td class="col-num">{{ equipo.pj || 0 }}</td>
+          <td class="col-num col-pg">{{ equipo.pg || 0 }}</td>
+          <td class="col-num">{{ equipo.pe || 0 }}</td>
+          <td class="col-num col-pp">{{ equipo.pp || 0 }}</td>
+          <td class="col-num">{{ equipo.gf || 0 }}</td>
+          <td class="col-num">{{ equipo.gc || 0 }}</td>
+          <td class="col-num col-dg" [class.dg-positivo]="diferenciaGoles(equipo) > 0" [class.dg-negativo]="diferenciaGoles(equipo) < 0">
+            {{ diferenciaGoles(equipo) > 0 ? '+' : '' }}{{ diferenciaGoles(equipo) }}
+          </td>
+          <td class="col-pts">{{ equipo.pts || 0 }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

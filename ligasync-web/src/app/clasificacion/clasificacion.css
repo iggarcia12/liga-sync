@@ -1,0 +1,309 @@
+/* ============================================================
+   LigaSync PRO — Clasificación Completa
+   ============================================================ */
+
+.clasificacion-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── Cabecera de página ──────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.page-header__left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-volver:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+  transform: translateX(-2px);
+}
+
+.page-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.page-subtitulo {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+
+/* ── Tabla ───────────────────────────────────────────────── */
+.card-tabla {
+  padding: 0;
+  overflow: hidden;
+}
+
+.tabla-completa {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-completa thead th {
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--text-secondary);
+  padding: 1.1rem 1rem 1rem;
+  border-bottom: 2px solid var(--border-color);
+  background: var(--bg-surface);
+}
+
+.th-pos   { width: 3rem; text-align: center; }
+.th-equipo { text-align: left; min-width: 160px; }
+.th-num   { width: 2.8rem; text-align: center; }
+.th-pts   { width: 4rem; text-align: right; padding-right: 1.5rem !important; }
+
+/* Filas */
+.tabla-completa tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+.tabla-completa tbody tr:last-child {
+  border-bottom: none;
+}
+
+.tabla-completa tbody tr:hover {
+  background: var(--bg-surface);
+}
+
+/* Celdas */
+.tabla-completa tbody td {
+  padding: 1rem 1rem;
+  vertical-align: middle;
+}
+
+/* Posición */
+.col-pos { text-align: center; }
+
+.pos-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-color);
+}
+
+.pos-oro    { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #fff; border-color: transparent; }
+.pos-plata  { background: linear-gradient(135deg, #9ca3af, #d1d5db); color: #fff; border-color: transparent; }
+.pos-bronce { background: linear-gradient(135deg, #b45309, #d97706); color: #fff; border-color: transparent; }
+
+/* Equipo */
+.col-equipo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.equipo-nombre {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+.equipo-ciudad {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* Columnas numéricas */
+.col-num {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+  font-weight: 600;
+}
+
+.col-pg { color: var(--success-color); }
+.col-pp { color: var(--danger-color, #ef4444); }
+
+.col-dg {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dg-positivo { color: var(--success-color); }
+.dg-negativo { color: var(--danger-color, #ef4444); }
+
+/* Puntos */
+.col-pts {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--accent-color);
+  text-align: right;
+  padding-right: 1.5rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* ── Estados de carga / error / vacío ────────────────────── */
+.estado-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.estado-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3.5rem 2rem;
+  text-align: center;
+}
+
+.icon-estado {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+.estado-error p {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.btn-reintentar {
+  margin-top: 0.5rem;
+  padding: 0.55rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-reintentar:hover { opacity: 0.85; }
+
+.estado-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+}
+
+.icon-vacio {
+  font-size: 2.5rem;
+  opacity: 0.28;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page-titulo { font-size: 2.2rem; }
+
+  .th-num, .col-num { display: none; }
+
+  /* Mostramos solo PJ, PG, DG y Pts en móvil */
+  .th-num:nth-child(3),
+  .th-num:nth-child(4),
+  .th-num:nth-child(9),
+  .col-num:nth-child(3),
+  .col-num:nth-child(4),
+  .col-num:nth-child(9) {
+    display: table-cell;
+  }
+
+  .col-pts { font-size: 1.3rem; padding-right: 0.75rem; }
+  .th-pts  { padding-right: 0.75rem !important; }
+
+  .page-header { flex-direction: column; gap: 1rem; }
+  .page-header__left { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .tabla-completa tbody td { padding: 0.85rem 0.6rem; }
+  .tabla-completa thead th { padding: 0.85rem 0.6rem 0.75rem; }
+  .equipo-ciudad { display: none; }
+}

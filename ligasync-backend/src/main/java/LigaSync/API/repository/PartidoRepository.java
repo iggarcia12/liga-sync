@@ -15,4 +15,10 @@ public interface PartidoRepository extends JpaRepository<Partido, Long> {
     // Devuelve la última jornada que tiene resultado (goles registrados)
     @Query("SELECT COALESCE(MAX(p.jornada), 0) FROM Partido p WHERE p.golesLocal IS NOT NULL")
     Integer findJornadaActual();
+
+    List<Partido> findByTipoPartido(Partido.TipoPartido tipoPartido);
+
+    boolean existsByTipoPartido(Partido.TipoPartido tipoPartido);
+
+    java.util.Optional<Partido> findByCodigoEliminatoria(String codigoEliminatoria);
 }

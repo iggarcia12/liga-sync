@@ -1,0 +1,380 @@
+/* ============================================================
+   LigaSync PRO — Fase Final · Play-offs Bracket
+   "Editorial Deportivo Moderno / Panel de Alto Rendimiento"
+   ============================================================ */
+
+.playoffs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.page-title {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+.title-accent { color: var(--accent-color); }
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0.4rem 0 0;
+}
+
+/* ── Estados vacío / carga / error ───────────────────────── */
+.estado-cargando,
+.estado-error {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.estado-vacio {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.vacio-icono {
+  display: block;
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.estado-vacio h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.estado-vacio p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Banner Campeón ──────────────────────────────────────── */
+.campeon-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  background: linear-gradient(135deg, #78350f, #f59e0b 50%, #78350f);
+  color: #fff;
+  padding: 1.5rem 2.5rem;
+  border-radius: var(--radius-lg);
+  animation: pulso-oro 2.5s ease-in-out infinite;
+}
+
+.campeon-corona { font-size: 2rem; }
+
+.campeon-label {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  opacity: 0.85;
+}
+
+.campeon-nombre {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  letter-spacing: 0.04em;
+}
+
+@keyframes pulso-oro {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45); }
+  50%       { box-shadow: 0 0 0 16px rgba(245, 158, 11, 0); }
+}
+
+/* ── Round Headers ───────────────────────────────────────── */
+.bracket-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+.ronda-header {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-color);
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+/* ── Bracket: contenedor principal ──────────────────────── */
+.bracket {
+  display: flex;
+  gap: 40px;       /* este gap define el ancho del canal de conectores */
+  height: 600px;
+  overflow: visible;
+}
+
+/* ── Round: columna base ─────────────────────────────────── */
+.bracket-round {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  position: relative;
+  overflow: visible;
+}
+
+/* ── Cuartos: dos pares de 2 partidos ───────────────────── */
+.cuartos-pair {
+  flex: 1;                    /* cada par ocupa 300px (la mitad de 600px) */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: visible;
+}
+
+.cuartos-pair .match-wrap {
+  flex: 1;                    /* cada partido ocupa 150px (la mitad del par) */
+}
+
+/* ── Semis: cada partido ocupa 300px (centrado entre su par de cuartos) */
+.round-semis .match-wrap {
+  flex: 2;
+}
+
+/* ── Final: partido único, centrado en 600px verticales */
+.round-final .match-wrap {
+  flex: 1;
+}
+
+/* ── Match Wrap ──────────────────────────────────────────── */
+.match-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: visible;
+}
+
+/* ════════════════════════════════════════════════════════
+   CONECTORES CSS — Líneas del cuadro eliminatorio
+   Gap = 40px → mitad = 20px → punto medio a right: -21px
+   ════════════════════════════════════════════════════════ */
+
+/* Horizontal derecho: de cada partido al punto medio del canal */
+.round-cuartos .match-wrap::after,
+.round-semis   .match-wrap::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  width: 20px;
+  top: 50%;
+  height: 2px;
+  background: var(--accent-color);
+  opacity: 0.5;
+  transform: translateY(-1px);
+}
+
+/* Cuartos-pair: línea vertical en el punto medio del canal */
+.cuartos-pair::before {
+  content: '';
+  position: absolute;
+  right: -21px;
+  width: 2px;
+  top: 25%;     /* centro del primer match-wrap (50% de 150px dentro de 300px) */
+  bottom: 25%;  /* centro del segundo match-wrap */
+  background: var(--accent-color);
+  opacity: 0.5;
+}
+
+/* Cuartos-pair: horizontal desde el punto medio del canal hasta la semi */
+.cuartos-pair::after {
+  content: '';
+  position: absolute;
+  right: -40px;   /* desde la mitad del canal hasta el borde del siguiente round */
+  width: 20px;
+  top: 50%;
+  height: 2px;
+  background: var(--accent-color);
+  opacity: 0.5;
+  transform: translateY(-1px);
+}
+
+/* Semis round: línea vertical entre los dos semis */
+.round-semis::before {
+  content: '';
+  position: absolute;
+  right: -21px;
+  width: 2px;
+  top: 25%;     /* centro de Semi 1 (flex:2 de 4 → 150px de 600px) */
+  bottom: 25%;  /* centro de Semi 2 */
+  background: var(--accent-color);
+  opacity: 0.5;
+}
+
+/* Semis round: horizontal desde el punto medio hasta la Final */
+.round-semis::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  width: 20px;
+  top: 50%;
+  height: 2px;
+  background: var(--accent-color);
+  opacity: 0.5;
+  transform: translateY(-1px);
+}
+
+/* ── Match Card ──────────────────────────────────────────── */
+.match-card {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.match-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+
+.match-card.finalizado {
+  border-left-color: var(--success-color);
+}
+
+.match-etiqueta {
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.match-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2rem 0;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.match-fila.ganador {
+  background: rgba(16, 185, 129, 0.08);
+  padding: 0.2rem 0.4rem;
+  margin: 0 -0.4rem;
+}
+
+.match-equipo {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.match-fila.ganador .match-equipo {
+  color: var(--success-color);
+}
+
+.match-goles {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--text-primary);
+  min-width: 26px;
+  text-align: right;
+}
+
+.match-fila.ganador .match-goles {
+  color: var(--success-color);
+}
+
+.match-vs {
+  font-size: 0.6rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.match-estado-chip {
+  align-self: flex-end;
+  margin-top: 0.3rem;
+  font-family: var(--font-ui);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+}
+
+.chip-finalizado {
+  color: var(--success-color);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .bracket {
+    flex-direction: column;
+    height: auto;
+    gap: 2rem;
+  }
+
+  .bracket-round,
+  .round-cuartos {
+    height: auto;
+  }
+
+  .cuartos-pair {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .cuartos-pair .match-wrap,
+  .round-semis .match-wrap,
+  .round-final .match-wrap {
+    flex: 0 0 calc(50% - 0.375rem);
+    min-width: 200px;
+  }
+
+  .bracket-headers {
+    grid-template-columns: 1fr;
+  }
+
+  .bracket-headers .ronda-header:not(:first-child) {
+    display: none;
+  }
+
+  /* Ocultar conectores en móvil */
+  .round-cuartos .match-wrap::after,
+  .round-semis   .match-wrap::after,
+  .cuartos-pair::before,
+  .cuartos-pair::after,
+  .round-semis::before,
+  .round-semis::after {
+    display: none;
+  }
+}

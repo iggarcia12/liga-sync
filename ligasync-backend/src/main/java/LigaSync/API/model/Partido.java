@@ -10,6 +10,10 @@ public class Partido {
         PENDIENTE, EN_JUEGO, FINALIZADO_Y_FIRMADO
     }
 
+    public enum TipoPartido {
+        REGULAR, CUARTOS, SEMIFINAL, FINAL
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,6 +35,14 @@ public class Partido {
     private EstadoPartido estado = EstadoPartido.PENDIENTE;
 
     private Long mvpId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_partido")
+    private TipoPartido tipoPartido = TipoPartido.REGULAR;
+
+    // Identifica el cruce en el cuadro: CUARTOS_1, CUARTOS_2, SEMI_1, FINAL…
+    @Column(name = "codigo_eliminatoria")
+    private String codigoEliminatoria;
 
     @ManyToOne
     @JoinColumn(name = "local_id")
@@ -119,5 +131,21 @@ public class Partido {
 
     public void setMvpId(Long mvpId) {
         this.mvpId = mvpId;
+    }
+
+    public TipoPartido getTipoPartido() {
+        return tipoPartido;
+    }
+
+    public void setTipoPartido(TipoPartido tipoPartido) {
+        this.tipoPartido = tipoPartido;
+    }
+
+    public String getCodigoEliminatoria() {
+        return codigoEliminatoria;
+    }
+
+    public void setCodigoEliminatoria(String codigoEliminatoria) {
+        this.codigoEliminatoria = codigoEliminatoria;
     }
 }

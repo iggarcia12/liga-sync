@@ -1,8 +1,29 @@
 <div class="dashboard-page">
 
-  <div class="header-section">
-    <h1 class="page-title">Panorama General</h1>
-    <p class="page-subtitle">Estado de la liga, clasificación y estadísticas en tiempo real.</p>
+  <!-- ── FILA SUPERIOR: título + acción admin ──────────────────── -->
+  <div class="dashboard-top-row">
+    <div class="header-section">
+      <h1 class="page-title">Panorama General</h1>
+      <p class="page-subtitle">Estado de la liga, clasificación y estadísticas en tiempo real.</p>
+    </div>
+
+    <div class="admin-action-bar card" *ngIf="isAdmin">
+      <div class="admin-action-content">
+        <span class="admin-action-icon">🏆</span>
+        <div class="admin-action-info">
+          <strong>Fase Final</strong>
+          <span>Genera el cuadro eliminatorio con los 8 mejores clasificados</span>
+        </div>
+        <div class="admin-action-controles">
+          <button class="btn-playoffs" (click)="generarPlayoffs()" [disabled]="generandoPlayoffs">
+            {{ generandoPlayoffs ? 'Generando…' : 'Generar Play-offs' }}
+          </button>
+          <a routerLink="/playoffs" class="btn-ver-playoffs">Ver cuadro →</a>
+        </div>
+      </div>
+      <p class="admin-action-msg msg-ok"  *ngIf="mensajePlayoffs && !mensajePlayoffs.startsWith('Error')">✓ {{ mensajePlayoffs }}</p>
+      <p class="admin-action-msg msg-err" *ngIf="mensajePlayoffs &&  mensajePlayoffs.startsWith('Error')">⚠ {{ mensajePlayoffs }}</p>
+    </div>
   </div>
 
   <!-- ── 3 TARJETAS KPI ──────────────────────────────────────── -->
@@ -91,6 +112,12 @@
             <p>No hay equipos registrados aún.</p>
           </div>
         </ng-template>
+
+        <div *ngIf="equipos.length > 0" class="card-footer-link">
+          <a routerLink="/clasificacion" class="btn-ver-todo">
+            Ver clasificación completa <span class="flecha">→</span>
+          </a>
+        </div>
       </div>
     </div>
 

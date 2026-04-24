@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from './auth.service';
@@ -12,11 +12,25 @@ import { AuthService } from './auth.service';
 })
 export class App implements OnInit {
   private router = inject(Router);
-  public authService = inject(AuthService); 
+  public authService = inject(AuthService);
   isDarkMode = false;
+  isSidebarCollapsed = false;
+  isMobileOpen = false;
 
   ngOnInit() {
     this.initTheme();
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      this.isMobileOpen = false;
+    }
   }
 
   initTheme() {
@@ -40,6 +54,18 @@ export class App implements OnInit {
   mostrarMenu(): boolean {
     const rutasSinMenu = ['/login', '/registro', '/'];
     return !rutasSinMenu.includes(this.router.url);
+  }
+
+  toggleSidebar() {
+    if (window.innerWidth < 768) {
+      this.isMobileOpen = !this.isMobileOpen;
+    } else {
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    }
+  }
+
+  closeSidebar() {
+    this.isMobileOpen = false;
   }
 
   salir() {

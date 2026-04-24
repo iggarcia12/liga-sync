@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
@@ -20,6 +21,12 @@ export class DashboardComponent implements OnInit {
   totalEquipos: number = 0;
   partidosJugados: number = 0;
   cargandoNoticias: boolean = true;
+  generandoPlayoffs = false;
+  mensajePlayoffs = '';
+
+  get isAdmin(): boolean {
+    return localStorage.getItem('role') === 'ADMIN';
+  }
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
@@ -121,6 +128,24 @@ export class DashboardComponent implements OnInit {
   get ultimoPartido(): any | null {
     const jugados = this.partidos.filter(p => p.golesLocal !== null && p.golesLocal !== undefined);
     return jugados.length > 0 ? jugados[jugados.length - 1] : null;
+  }
+
+  generarPlayoffs() {
+    this.generandoPlayoffs = true;
+    this.mensajePlayoffs = '';
+    this.http.post(`${this.urlBase}/partidos/generar-playoffs`, {}).subscribe({
+      next: () => {
+        this.mensajePlayoffs = '¡Play-offs generados! 4 partidos de cuartos listos.';
+        this.generandoPlayoffs = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al generar play-offs:', err);
+        this.mensajePlayoffs = err.error || 'Error al generar los play-offs.';
+        this.generandoPlayoffs = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   get topGoleadores(): any[] {

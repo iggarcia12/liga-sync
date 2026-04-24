@@ -1,0 +1,98 @@
+<div class="playoffs-page">
+
+  <div class="playoffs-header">
+    <h1 class="page-title">Fase Final<span class="title-accent"> · Play-offs</span></h1>
+    <p class="page-subtitle">Cuadro eliminatorio. El mejor avanza.</p>
+  </div>
+
+  <!-- Template reutilizable para cada partido del cuadro -->
+  <ng-template #tarjeta let-p="p">
+    <div class="match-card" [class.finalizado]="finalizado(p)">
+      <span class="match-etiqueta">{{ p ? etiqueta(p) : '—' }}</span>
+      <div class="match-fila" [class.ganador]="ganador(p, 'local')">
+        <span class="match-equipo">{{ nombre(p, 'local') }}</span>
+        <span class="match-goles">{{ goles(p, 'local') }}</span>
+      </div>
+      <div class="match-vs">vs</div>
+      <div class="match-fila" [class.ganador]="ganador(p, 'visitante')">
+        <span class="match-equipo">{{ nombre(p, 'visitante') }}</span>
+        <span class="match-goles">{{ goles(p, 'visitante') }}</span>
+      </div>
+      <span class="match-estado-chip" [class.chip-finalizado]="finalizado(p)">
+        {{ finalizado(p) ? '✓ FINALIZADO' : 'PENDIENTE' }}
+      </span>
+    </div>
+  </ng-template>
+
+  <!-- Estados -->
+  <div class="estado-cargando card" *ngIf="cargando">Cargando cuadro…</div>
+  <div class="estado-error card" *ngIf="!cargando && error">⚠️ Error al cargar los play-offs.</div>
+
+  <div class="card estado-vacio" *ngIf="!cargando && !error && !hayPlayoffs">
+    <span class="vacio-icono">🏆</span>
+    <h3>Los play-offs aún no han comenzado</h3>
+    <p>El cuadro se generará cuando la liga regular haya finalizado.</p>
+  </div>
+
+  <!-- Bracket -->
+  <ng-container *ngIf="!cargando && !error && hayPlayoffs">
+
+    <!-- Banner de campeón -->
+    <div class="campeon-banner" *ngIf="campeon">
+      <span class="campeon-corona">👑</span>
+      <span class="campeon-label">CAMPEÓN</span>
+      <span class="campeon-nombre">{{ campeon }}</span>
+    </div>
+
+    <!-- Cabeceras de ronda, alineadas con las columnas del bracket -->
+    <div class="bracket-headers">
+      <div class="ronda-header">Cuartos de Final</div>
+      <div class="ronda-header">Semifinales</div>
+      <div class="ronda-header">Gran Final</div>
+    </div>
+
+    <!-- El cuadro -->
+    <div class="bracket">
+
+      <!-- CUARTOS (4 partidos en 2 pares) -->
+      <div class="bracket-round round-cuartos">
+        <div class="cuartos-pair">
+          <div class="match-wrap">
+            <ng-container *ngTemplateOutlet="tarjeta; context: { p: c1 }"></ng-container>
+          </div>
+          <div class="match-wrap">
+            <ng-container *ngTemplateOutlet="tarjeta; context: { p: c2 }"></ng-container>
+          </div>
+        </div>
+        <div class="cuartos-pair">
+          <div class="match-wrap">
+            <ng-container *ngTemplateOutlet="tarjeta; context: { p: c3 }"></ng-container>
+          </div>
+          <div class="match-wrap">
+            <ng-container *ngTemplateOutlet="tarjeta; context: { p: c4 }"></ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEMIFINALES (2 partidos) -->
+      <div class="bracket-round round-semis">
+        <div class="match-wrap">
+          <ng-container *ngTemplateOutlet="tarjeta; context: { p: s1 }"></ng-container>
+        </div>
+        <div class="match-wrap">
+          <ng-container *ngTemplateOutlet="tarjeta; context: { p: s2 }"></ng-container>
+        </div>
+      </div>
+
+      <!-- GRAN FINAL (1 partido) -->
+      <div class="bracket-round round-final">
+        <div class="match-wrap">
+          <ng-container *ngTemplateOutlet="tarjeta; context: { p: f }"></ng-container>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>
