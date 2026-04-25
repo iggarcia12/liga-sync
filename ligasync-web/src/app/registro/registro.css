@@ -41,9 +41,255 @@
 
 .registro-descripcion {
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+/* --- Selector CREAR / UNIRSE ------------------------------- */
+.selector-accion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.opcion-accion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1rem 0.6rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  text-align: center;
+  user-select: none;
+}
+
+.opcion-accion:hover {
+  border-color: var(--accent-color);
+  background-color: var(--accent-glow);
+}
+
+.opcion-accion--activa {
+  border-color: var(--accent-color);
+  background-color: var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.opcion-accion__icono {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.opcion-accion__titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+
+.opcion-accion--activa .opcion-accion__titulo {
+  color: var(--accent-color);
+}
+
+.opcion-accion__sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+/* --- Selector de Deporte (CREAR) --------------------------- */
+.selector-deporte {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.opcion-deporte {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.85rem 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  text-align: center;
+  user-select: none;
+}
+
+.opcion-deporte:hover {
+  border-color: var(--accent-color);
+  background-color: var(--accent-glow);
+}
+
+.opcion-deporte--activa {
+  border-color: var(--accent-color);
+  background-color: var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.opcion-deporte__icono {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.opcion-deporte__nombre {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.opcion-deporte--activa .opcion-deporte__nombre {
+  color: var(--accent-color);
+}
+
+/* --- Dropdown filtro de deporte (UNIRSE) ------------------- */
+.select-deporte {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+.select-deporte:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* --- Tags en sugerencias de liga --------------------------- */
+.sugerencia-nombre {
+  flex: 1;
+}
+
+.sugerencia-deporte-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.sugerencia-deporte-tag.tag-basket {
+  background-color: rgba(249, 115, 22, 0.12);
+  color: #f97316;
+}
+
+/* --- Buscador de liga (UNIRSE) ----------------------------- */
+.buscador-liga {
+  position: relative;
+}
+
+.buscador-liga input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.buscador-liga input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.buscador-liga input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.buscador-sugerencias {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  overflow: hidden;
+  animation: entrada-suave 0.15s ease;
+}
+
+.sugerencia-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.sugerencia-item:hover {
+  background-color: var(--accent-glow);
+  color: var(--accent-color);
+}
+
+.sugerencia-item + .sugerencia-item {
+  border-top: 1px solid var(--border-color);
+}
+
+.sugerencia-icono {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* Campo liga con animación de entrada */
+.grupo-input-liga {
+  animation: entrada-suave 0.22s ease;
+}
+
+@keyframes entrada-suave {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Divisor visual entre bloque liga y bloque personal */
+.separador-seccion {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0.5rem 0 1.1rem;
+  opacity: 0.5;
 }
 
 .grupo-input {

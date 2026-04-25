@@ -18,7 +18,10 @@ public class Noticia {
 
     private String fecha;
 
-    private String imagen; // URL de la imagen
+    private String imagen;
+
+    @Column(name = "liga_id")
+    private Long ligaId;
 
     // --- GETTERS Y SETTERS ---
     public Long getId() {
@@ -59,5 +62,13 @@ public class Noticia {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    public Long getLigaId() {
+        return ligaId;
+    }
+
+    public void setLigaId(Long ligaId) {
+        this.ligaId = ligaId;
     }
 }

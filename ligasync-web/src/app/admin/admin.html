@@ -7,7 +7,7 @@
 
   <div class="admin-tabs">
     <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥 Usuarios</button>
-    <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">⚽ Partidos y Calendario</button>
+    <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Partidos y Calendario</button>
     <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅ Convocatoria</button>
   </div>
 
@@ -145,7 +145,7 @@
               <td>{{ p.fecha }}</td>
               <td>
                 <div class="acciones-celda">
-                  <button class="btn btn-small btn-success" (click)="abrirModalResultado(p)">⚽ Resultado</button>
+                  <button class="btn btn-small btn-success" (click)="abrirModalResultado(p)">{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Resultado</button>
                   <button class="btn btn-small btn-danger" (click)="eliminarPartido(p.id)">🗑️</button>
                 </div>
               </td>
@@ -301,7 +301,7 @@
         <div class="lista-jugadores-editor" *ngIf="jugadoresLocal.length > 0; else sinLocal">
           <div class="fila-jugador-editor" *ngFor="let j of jugadoresLocal">
             <span class="jugador-nombre-editor">{{ j.nombre }}</span>
-            <button class="btn-stat btn-stat--gol"      title="Gol"        (click)="agregarIncidencia(j.id, 'GOL')">⚽</button>
+            <button class="btn-stat btn-stat--gol"      title="Gol"        (click)="agregarIncidencia(j.id, 'GOL')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</button>
             <button class="btn-stat btn-stat--asist"    title="Asistencia" (click)="agregarIncidencia(j.id, 'ASIST')">👟</button>
             <button class="btn-stat btn-stat--amarilla" title="Amarilla"   (click)="agregarIncidencia(j.id, 'AMARILLA')">🟨</button>
             <button class="btn-stat btn-stat--roja"     title="Roja"       (click)="agregarIncidencia(j.id, 'ROJA')">🟥</button>
@@ -355,7 +355,7 @@
 
         <div class="lista-jugadores-editor" *ngIf="jugadoresVisitante.length > 0; else sinVisitante">
           <div class="fila-jugador-editor fila-jugador-editor--der" *ngFor="let j of jugadoresVisitante">
-            <button class="btn-stat btn-stat--gol"      title="Gol"        (click)="agregarIncidencia(j.id, 'GOL')">⚽</button>
+            <button class="btn-stat btn-stat--gol"      title="Gol"        (click)="agregarIncidencia(j.id, 'GOL')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</button>
             <button class="btn-stat btn-stat--asist"    title="Asistencia" (click)="agregarIncidencia(j.id, 'ASIST')">👟</button>
             <button class="btn-stat btn-stat--amarilla" title="Amarilla"   (click)="agregarIncidencia(j.id, 'AMARILLA')">🟨</button>
             <button class="btn-stat btn-stat--roja"     title="Roja"       (click)="agregarIncidencia(j.id, 'ROJA')">🟥</button>
@@ -382,7 +382,7 @@
         </div>
         <div class="incident-list-item" *ngFor="let inc of incidencias; let i = index">
           <div class="incident-icon" [ngClass]="inc.tipo.toLowerCase()">
-            {{ inc.tipo === 'GOL' ? '⚽' : inc.tipo === 'ASIST' ? '👟' : inc.tipo === 'AMARILLA' ? '🟨' : '🟥' }}
+            {{ inc.tipo === 'GOL' ? (authService.esBaloncesto() ? '🏀' : '⚽') : inc.tipo === 'ASIST' ? '👟' : inc.tipo === 'AMARILLA' ? '🟨' : '🟥' }}
           </div>
           <div class="incident-details">
             <span class="player-name">{{ getNombreJugador(inc.jugadorId) }}</span>

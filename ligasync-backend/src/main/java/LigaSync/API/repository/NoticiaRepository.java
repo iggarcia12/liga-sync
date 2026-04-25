@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
-    // Devuelve noticias ordenadas por ID descendente (más recientes primero)
-    List<Noticia> findAllByOrderByIdDesc();
+
+    List<Noticia> findByLigaIdOrderByIdDesc(Long ligaId);
 }

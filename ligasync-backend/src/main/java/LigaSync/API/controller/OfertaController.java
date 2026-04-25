@@ -7,6 +7,7 @@ import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
 import LigaSync.API.repository.OfertaRepository;
 import LigaSync.API.repository.PartidoRepository;
+import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class OfertaController {
 
     @PostMapping
     public ResponseEntity<?> crearOferta(@RequestBody Oferta oferta) {
-        Integer jornadaActual = partidoRepository.findJornadaActual();
+        Integer jornadaActual = partidoRepository.findJornadaActualByLiga(SecurityUtils.getLigaId());
         if (jornadaActual == null || jornadaActual == 0 || jornadaActual % 3 != 0) {
             return ResponseEntity.badRequest().body("La ventana de fichajes está cerrada. Los traspasos solo se permiten en las jornadas 3, 6, 9...");
         }

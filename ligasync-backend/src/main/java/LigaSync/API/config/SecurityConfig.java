@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/registro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/ligas/buscar").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/mensajes").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/mensajes/**").authenticated()

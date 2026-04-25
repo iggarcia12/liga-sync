@@ -4,12 +4,15 @@ import LigaSync.API.model.Partido;
 import LigaSync.API.model.Noticia;
 import LigaSync.API.model.Equipo;
 import LigaSync.API.model.Jugador;
+import LigaSync.API.model.Deporte;
 import LigaSync.API.dto.MatchResultRequest;
 import LigaSync.API.dto.FirmarActaRequest;
 import LigaSync.API.repository.PartidoRepository;
 import LigaSync.API.repository.NoticiaRepository;
 import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
+import LigaSync.API.repository.LigaRepository;
+import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,53 +26,52 @@ import java.util.Optional;
 @RequestMapping("/api/partidos")
 public class PartidoController {
 
-    @Autowired
-    private PartidoRepository partidoRepository;
+    @Autowired private PartidoRepository partidoRepository;
+    @Autowired private NoticiaRepository noticiaRepository;
+    @Autowired private EquipoRepository equipoRepository;
+    @Autowired private JugadorRepository jugadorRepository;
+    @Autowired private LigaRepository ligaRepository;
 
-    @Autowired
-    private NoticiaRepository noticiaRepository;
-
-    @Autowired
-    private EquipoRepository equipoRepository;
-
-    @Autowired
-    private JugadorRepository jugadorRepository;
+    private static final double MULTA_AMARILLA = 500_000.0;
+    private static final double MULTA_ROJA = 1_000_000.0;
+    private static final int AMARILLAS_PARA_SANCION = 3;
 
     @GetMapping
     public List<Partido> obtenerPartidos() {
-        return partidoRepository.findAll();
+        return partidoRepository.findByLigaId(SecurityUtils.getLigaId());
     }
 
     @GetMapping("/jornada/{numJornada}")
     public List<Partido> obtenerPorJornada(@PathVariable Integer numJornada) {
-        return partidoRepository.findByJornada(numJornada);
+        return partidoRepository.findByJornadaAndLigaId(numJornada, SecurityUtils.getLigaId());
     }
 
     @GetMapping("/jornada-actual")
     public ResponseEntity<Integer> obtenerJornadaActual() {
-        Integer jornada = partidoRepository.findJornadaActual();
+        Integer jornada = partidoRepository.findJornadaActualByLiga(SecurityUtils.getLigaId());
         return ResponseEntity.ok(jornada != null ? jornada : 0);
     }
 
     @PostMapping
     public Partido registrarPartido(@RequestBody Partido partido) {
+        partido.setLigaId(SecurityUtils.getLigaId());
         return partidoRepository.save(partido);
     }
 
     @PostMapping("/generar-calendario")
     public ResponseEntity<List<Partido>> generarCalendario() {
-        List<Equipo> equipos = equipoRepository.findAll();
-        if (equipos.size() < 2) {
-            return ResponseEntity.badRequest().build();
-        }
+        Long ligaId = SecurityUtils.getLigaId();
+        List<Equipo> equipos = equipoRepository.findByLigaId(ligaId);
+        if (equipos.size() < 2) return ResponseEntity.badRequest().build();
 
-        partidoRepository.deleteAll();
+        partidoRepository.deleteAll(partidoRepository.findByLigaId(ligaId));
 
-        // Resetear estadísticas de todos los jugadores
-        List<Jugador> jugadores = jugadorRepository.findAll();
+        List<Jugador> jugadores = jugadorRepository.findByEquipo_LigaId(ligaId);
         for (Jugador j : jugadores) {
             j.setGoles(0);
             j.setAsist(0);
+            j.setRebotes(0);
+            j.setTriples(0);
             j.setAmarillas(0);
             j.setRojas(0);
             j.setTarjetasAmarillasAcumuladas(0);
@@ -77,28 +79,17 @@ public class PartidoController {
         }
         jugadorRepository.saveAll(jugadores);
 
-        // Resetear estadísticas de clasificación de todos los equipos
-        List<Equipo> todosEquipos = equipoRepository.findAll();
-        for (Equipo e : todosEquipos) {
-            e.setPts(0);
-            e.setPj(0);
-            e.setPg(0);
-            e.setPe(0);
-            e.setPp(0);
-            e.setGf(0);
-            e.setGc(0);
-            e.setDeudaAcumulada(0.0);
+        for (Equipo e : equipos) {
+            e.setPts(0); e.setPj(0); e.setPg(0);
+            e.setPe(0);  e.setPp(0); e.setGf(0);
+            e.setGc(0);  e.setDeudaAcumulada(0.0);
         }
-        equipoRepository.saveAll(todosEquipos);
+        equipoRepository.saveAll(equipos);
 
         List<Partido> partidosGenerados = new ArrayList<>();
         int numEquipos = equipos.size();
         boolean esImpar = (numEquipos % 2 != 0);
-
-        if (esImpar) {
-            // El truco del equipo "fantasma" para que cuadren las jornadas en ligas impares
-            numEquipos++; 
-        }
+        if (esImpar) numEquipos++;
 
         int jornadas = numEquipos - 1;
         int partidosPorJornada = numEquipos / 2;
@@ -107,28 +98,24 @@ public class PartidoController {
             for (int p = 0; p < partidosPorJornada; p++) {
                 int localIdx = (j + p) % (numEquipos - 1);
                 int visitanteIdx = (j + numEquipos - 1 - p) % (numEquipos - 1);
+                if (p == 0) visitanteIdx = numEquipos - 1;
 
-                if (p == 0) {
-                    visitanteIdx = numEquipos - 1;
-                }
-
-                if ((!esImpar) || (localIdx < equipos.size() && visitanteIdx < equipos.size())) {
+                if (!esImpar || (localIdx < equipos.size() && visitanteIdx < equipos.size())) {
                     Equipo local = equipos.get(localIdx);
                     Equipo visitante = equipos.get(visitanteIdx);
 
                     Partido ida = new Partido();
-                    ida.setLocal(local);
-                    ida.setVisitante(visitante);
+                    ida.setLocal(local); ida.setVisitante(visitante);
                     ida.setJornada(j + 1);
                     ida.setFecha(LocalDate.now().plusDays(j * 7).toString());
+                    ida.setLigaId(ligaId);
                     partidosGenerados.add(ida);
 
-                    // Generamos ida y vuelta del tirón para tener la liga completa
                     Partido vuelta = new Partido();
-                    vuelta.setLocal(visitante);
-                    vuelta.setVisitante(local);
+                    vuelta.setLocal(visitante); vuelta.setVisitante(local);
                     vuelta.setJornada(j + 1 + jornadas);
                     vuelta.setFecha(LocalDate.now().plusDays((j + jornadas) * 7).toString());
+                    vuelta.setLigaId(ligaId);
                     partidosGenerados.add(vuelta);
                 }
             }
@@ -139,303 +126,270 @@ public class PartidoController {
 
     @PutMapping("/{id}/resultado")
     public ResponseEntity<Partido> actualizarResultado(@PathVariable Long id, @RequestBody MatchResultRequest request) {
+        Long ligaId = SecurityUtils.getLigaId();
         Optional<Partido> partidoOpt = partidoRepository.findById(id);
-        if (partidoOpt.isEmpty())
+        if (partidoOpt.isEmpty() || !ligaId.equals(partidoOpt.get().getLigaId()))
             return ResponseEntity.notFound().build();
 
+        boolean esBasket = esLigaDeBaloncesto(ligaId);
         Partido partido = partidoOpt.get();
         partido.setGolesLocal(request.getGolesLocal());
         partido.setGolesVisitante(request.getGolesVisitante());
 
-        StringBuilder resumenGoleadores = new StringBuilder();
+        StringBuilder resumen = new StringBuilder();
         if (request.getIncidencias() != null) {
             for (MatchResultRequest.IncidenciaDTO inc : request.getIncidencias()) {
                 Optional<Jugador> jugOpt = jugadorRepository.findById(inc.getJugadorId());
-                if (jugOpt.isPresent()) {
-                    Jugador j = jugOpt.get();
-                    switch (inc.getTipo().toUpperCase()) {
-                        case "GOL":
-                            j.setGoles((j.getGoles() != null ? j.getGoles() : 0) + 1);
-                            resumenGoleadores.append(j.getNombre()).append(" (gol), ");
-                            break;
-                        case "ASIST":
-                            j.setAsist((j.getAsist() != null ? j.getAsist() : 0) + 1);
-                            break;
-                        case "AMARILLA":
-                            j.setAmarillas((j.getAmarillas() != null ? j.getAmarillas() : 0) + 1);
-                            if (j.getEquipo() != null) {
-                                double deuda = j.getEquipo().getDeudaAcumulada() != null ? j.getEquipo().getDeudaAcumulada() : 0.0;
-                                j.getEquipo().setDeudaAcumulada(deuda + MULTA_AMARILLA);
-                                equipoRepository.save(j.getEquipo());
-                            }
-                            break;
-                        case "ROJA":
-                            j.setRojas((j.getRojas() != null ? j.getRojas() : 0) + 1);
-                            if (j.getEquipo() != null) {
-                                double deuda = j.getEquipo().getDeudaAcumulada() != null ? j.getEquipo().getDeudaAcumulada() : 0.0;
-                                j.getEquipo().setDeudaAcumulada(deuda + MULTA_ROJA);
-                                equipoRepository.save(j.getEquipo());
-                            }
-                            break;
-                    }
-                    jugadorRepository.save(j);
-                }
+                if (jugOpt.isEmpty()) continue;
+                Jugador j = jugOpt.get();
+                procesarIncidencia(j, inc.getTipo(), resumen, esBasket);
+                jugadorRepository.save(j);
             }
         }
 
-        if (resumenGoleadores.length() > 2) {
-            // Limpieza de la última coma del acumulado
-            partido.setGoleadores(resumenGoleadores.substring(0, resumenGoleadores.length() - 2));
-        }
+        if (resumen.length() > 2)
+            partido.setGoleadores(resumen.substring(0, resumen.length() - 2));
 
-        // Al meter el resultado, recalculamos stats de los dos equipos
-        Equipo local = partido.getLocal();
-        Equipo visitante = partido.getVisitante();
-        int gL = request.getGolesLocal() != null ? request.getGolesLocal() : 0;
-        int gV = request.getGolesVisitante() != null ? request.getGolesVisitante() : 0;
+        int gL = safe(request.getGolesLocal());
+        int gV = safe(request.getGolesVisitante());
 
-        if (local != null) {
-            local.setPj((local.getPj() != null ? local.getPj() : 0) + 1);
-            local.setGf((local.getGf() != null ? local.getGf() : 0) + gL);
-            local.setGc((local.getGc() != null ? local.getGc() : 0) + gV);
-            if (gL > gV) {
-                local.setPg((local.getPg() != null ? local.getPg() : 0) + 1);
-                local.setPts((local.getPts() != null ? local.getPts() : 0) + 3);
-            } else if (gL == gV) {
-                local.setPe((local.getPe() != null ? local.getPe() : 0) + 1);
-                local.setPts((local.getPts() != null ? local.getPts() : 0) + 1);
-            } else {
-                local.setPp((local.getPp() != null ? local.getPp() : 0) + 1);
-            }
-            equipoRepository.save(local);
+        if (partido.getLocal() != null) {
+            actualizarClasificacion(partido.getLocal(), gL, gV, esBasket);
+            equipoRepository.save(partido.getLocal());
         }
-        if (visitante != null) {
-            visitante.setPj((visitante.getPj() != null ? visitante.getPj() : 0) + 1);
-            visitante.setGf((visitante.getGf() != null ? visitante.getGf() : 0) + gV);
-            visitante.setGc((visitante.getGc() != null ? visitante.getGc() : 0) + gL);
-            if (gV > gL) {
-                visitante.setPg((visitante.getPg() != null ? visitante.getPg() : 0) + 1);
-                visitante.setPts((visitante.getPts() != null ? visitante.getPts() : 0) + 3);
-            } else if (gV == gL) {
-                visitante.setPe((visitante.getPe() != null ? visitante.getPe() : 0) + 1);
-                visitante.setPts((visitante.getPts() != null ? visitante.getPts() : 0) + 1);
-            } else {
-                visitante.setPp((visitante.getPp() != null ? visitante.getPp() : 0) + 1);
-            }
-            equipoRepository.save(visitante);
+        if (partido.getVisitante() != null) {
+            actualizarClasificacion(partido.getVisitante(), gV, gL, esBasket);
+            equipoRepository.save(partido.getVisitante());
         }
 
         Partido guardado = partidoRepository.save(partido);
-
-        String nombreLocal = guardado.getLocal() != null ? guardado.getLocal().getNombre() : "Equipo Local";
-        String nombreVisitante = guardado.getVisitante() != null ? guardado.getVisitante().getNombre()
-                : "Equipo Visitante";
-
-        String titulo = "Resultado: " + nombreLocal + " " + guardado.getGolesLocal() + " - "
-                + guardado.getGolesVisitante() + " " + nombreVisitante;
-        String contenido = "Jornada " + guardado.getJornada() + ". Final del partido en " + nombreLocal + ". " +
-                titulo + (guardado.getGoleadores() != null ? ". Goles: " + guardado.getGoleadores() : "");
-
-        Noticia noticia = new Noticia();
-        noticia.setTitulo(titulo);
-        noticia.setContenido(contenido);
-        noticia.setFecha(LocalDate.now().toString());
-        noticiaRepository.save(noticia);
-
+        publicarNoticia(guardado, ligaId, esBasket);
         return ResponseEntity.ok(guardado);
     }
 
-    private static final double MULTA_AMARILLA = 500_000.0;
-    private static final double MULTA_ROJA = 1_000_000.0;
-    private static final int AMARILLAS_PARA_SANCION = 3;
-
     @PutMapping("/{id}/firmar")
     public ResponseEntity<?> firmarActa(@PathVariable Long id, @RequestBody FirmarActaRequest request) {
+        Long ligaId = SecurityUtils.getLigaId();
         Optional<Partido> partidoOpt = partidoRepository.findById(id);
-        if (partidoOpt.isEmpty())
+        if (partidoOpt.isEmpty() || !ligaId.equals(partidoOpt.get().getLigaId()))
             return ResponseEntity.notFound().build();
 
         Partido partido = partidoOpt.get();
-
         if (partido.getEstado() == Partido.EstadoPartido.FINALIZADO_Y_FIRMADO)
             return ResponseEntity.badRequest().body("El acta de este partido ya ha sido firmada y no puede modificarse.");
+
+        boolean esBasket = esLigaDeBaloncesto(ligaId);
+        int gL = safe(request.getGolesLocal());
+        int gV = safe(request.getGolesVisitante());
+
+        // En baloncesto nunca hay empate; en playoffs tampoco
+        boolean esPlayoff = partido.getTipoPartido() != null && partido.getTipoPartido() != Partido.TipoPartido.REGULAR;
+        if ((esBasket || esPlayoff) && gL == gV)
+            return ResponseEntity.badRequest().body(
+                esBasket ? "En baloncesto no puede haber empate." : "En los play-offs no puede haber empate."
+            );
 
         partido.setGolesLocal(request.getGolesLocal());
         partido.setGolesVisitante(request.getGolesVisitante());
         partido.setMvpId(request.getMvpId());
 
-        // En play-offs debe haber un ganador — no se admiten empates
-        if (partido.getTipoPartido() != null && partido.getTipoPartido() != Partido.TipoPartido.REGULAR) {
-            int gLCheck = request.getGolesLocal() != null ? request.getGolesLocal() : 0;
-            int gVCheck = request.getGolesVisitante() != null ? request.getGolesVisitante() : 0;
-            if (gLCheck == gVCheck) {
-                return ResponseEntity.badRequest().body("En los play-offs no puede haber empate. El resultado debe tener un ganador.");
-            }
-        }
-
-        StringBuilder resumenGoleadores = new StringBuilder();
-
+        StringBuilder resumen = new StringBuilder();
         if (request.getIncidencias() != null) {
             for (FirmarActaRequest.IncidenciaDTO inc : request.getIncidencias()) {
                 Optional<Jugador> jugOpt = jugadorRepository.findById(inc.getJugadorId());
                 if (jugOpt.isEmpty()) continue;
-
                 Jugador jugador = jugOpt.get();
-                Equipo equipo = jugador.getEquipo();
-
-                switch (inc.getTipo().toUpperCase()) {
-                    case "GOL":
-                        jugador.setGoles((jugador.getGoles() != null ? jugador.getGoles() : 0) + 1);
-                        resumenGoleadores.append(jugador.getNombre()).append(" (gol), ");
-                        break;
-                    case "ASIST":
-                        jugador.setAsist((jugador.getAsist() != null ? jugador.getAsist() : 0) + 1);
-                        break;
-                    case "AMARILLA":
-                        jugador.setAmarillas((jugador.getAmarillas() != null ? jugador.getAmarillas() : 0) + 1);
-                        int acumuladas = (jugador.getTarjetasAmarillasAcumuladas() != null ? jugador.getTarjetasAmarillasAcumuladas() : 0) + 1;
-                        jugador.setTarjetasAmarillasAcumuladas(acumuladas);
-                        if (acumuladas >= AMARILLAS_PARA_SANCION) {
-                            jugador.setEstadoDisciplinario(Jugador.EstadoDisciplinario.SANCIONADO);
-                            jugador.setTarjetasAmarillasAcumuladas(0);
-                        }
-                        if (equipo != null) {
-                            double deuda = equipo.getDeudaAcumulada() != null ? equipo.getDeudaAcumulada() : 0.0;
-                            equipo.setDeudaAcumulada(deuda + MULTA_AMARILLA);
-                        }
-                        break;
-                    case "ROJA":
-                        jugador.setRojas((jugador.getRojas() != null ? jugador.getRojas() : 0) + 1);
-                        jugador.setEstadoDisciplinario(Jugador.EstadoDisciplinario.SANCIONADO);
-                        if (equipo != null) {
-                            double deuda = equipo.getDeudaAcumulada() != null ? equipo.getDeudaAcumulada() : 0.0;
-                            equipo.setDeudaAcumulada(deuda + MULTA_ROJA);
-                        }
-                        break;
-                }
-
-                if (equipo != null) equipoRepository.save(equipo);
+                procesarIncidenciaFirma(jugador, inc.getTipo(), resumen, esBasket);
+                if (jugador.getEquipo() != null) equipoRepository.save(jugador.getEquipo());
                 jugadorRepository.save(jugador);
             }
         }
 
-        if (resumenGoleadores.length() > 2)
-            partido.setGoleadores(resumenGoleadores.substring(0, resumenGoleadores.length() - 2));
+        if (resumen.length() > 2)
+            partido.setGoleadores(resumen.substring(0, resumen.length() - 2));
 
-        Equipo local = partido.getLocal();
-        Equipo visitante = partido.getVisitante();
-        int gL = request.getGolesLocal() != null ? request.getGolesLocal() : 0;
-        int gV = request.getGolesVisitante() != null ? request.getGolesVisitante() : 0;
-
-        // Los partidos de play-offs no computan en la clasificación de liga regular
-        if (partido.getTipoPartido() == null || partido.getTipoPartido() == Partido.TipoPartido.REGULAR) {
-            if (local != null) {
-                local.setPj((local.getPj() != null ? local.getPj() : 0) + 1);
-                local.setGf((local.getGf() != null ? local.getGf() : 0) + gL);
-                local.setGc((local.getGc() != null ? local.getGc() : 0) + gV);
-                if (gL > gV) {
-                    local.setPg((local.getPg() != null ? local.getPg() : 0) + 1);
-                    local.setPts((local.getPts() != null ? local.getPts() : 0) + 3);
-                } else if (gL == gV) {
-                    local.setPe((local.getPe() != null ? local.getPe() : 0) + 1);
-                    local.setPts((local.getPts() != null ? local.getPts() : 0) + 1);
-                } else {
-                    local.setPp((local.getPp() != null ? local.getPp() : 0) + 1);
-                }
-                equipoRepository.save(local);
+        if (!esPlayoff) {
+            if (partido.getLocal() != null) {
+                actualizarClasificacion(partido.getLocal(), gL, gV, esBasket);
+                equipoRepository.save(partido.getLocal());
             }
-
-            if (visitante != null) {
-                visitante.setPj((visitante.getPj() != null ? visitante.getPj() : 0) + 1);
-                visitante.setGf((visitante.getGf() != null ? visitante.getGf() : 0) + gV);
-                visitante.setGc((visitante.getGc() != null ? visitante.getGc() : 0) + gL);
-                if (gV > gL) {
-                    visitante.setPg((visitante.getPg() != null ? visitante.getPg() : 0) + 1);
-                    visitante.setPts((visitante.getPts() != null ? visitante.getPts() : 0) + 3);
-                } else if (gV == gL) {
-                    visitante.setPe((visitante.getPe() != null ? visitante.getPe() : 0) + 1);
-                    visitante.setPts((visitante.getPts() != null ? visitante.getPts() : 0) + 1);
-                } else {
-                    visitante.setPp((visitante.getPp() != null ? visitante.getPp() : 0) + 1);
-                }
-                equipoRepository.save(visitante);
+            if (partido.getVisitante() != null) {
+                actualizarClasificacion(partido.getVisitante(), gV, gL, esBasket);
+                equipoRepository.save(partido.getVisitante());
             }
         }
 
         partido.setEstado(Partido.EstadoPartido.FINALIZADO_Y_FIRMADO);
         Partido guardado = partidoRepository.save(partido);
 
-        // Avance automático: insertar al ganador en el siguiente cruce del cuadro
-        if (partido.getTipoPartido() != null && partido.getTipoPartido() != Partido.TipoPartido.REGULAR) {
-            Equipo ganador = (gL > gV) ? local : visitante;
-            avanzarGanador(partido.getCodigoEliminatoria(), ganador);
+        if (esPlayoff) {
+            Equipo ganador = (gL > gV) ? partido.getLocal() : partido.getVisitante();
+            avanzarGanador(partido.getCodigoEliminatoria(), ganador, ligaId);
         }
 
-        String nombreLocal = guardado.getLocal() != null ? guardado.getLocal().getNombre() : "Local";
-        String nombreVisitante = guardado.getVisitante() != null ? guardado.getVisitante().getNombre() : "Visitante";
-        String titulo = "Acta firmada: " + nombreLocal + " " + gL + " - " + gV + " " + nombreVisitante;
-        boolean esPlayoff = guardado.getTipoPartido() != null && guardado.getTipoPartido() != Partido.TipoPartido.REGULAR;
-        String prefijo = esPlayoff ? guardado.getTipoPartido().name() : "Jornada " + guardado.getJornada();
-        String contenido = prefijo + ". " + titulo +
-                (guardado.getGoleadores() != null ? ". Goles: " + guardado.getGoleadores() : "");
-
-        Noticia noticia = new Noticia();
-        noticia.setTitulo(titulo);
-        noticia.setContenido(contenido);
-        noticia.setFecha(java.time.LocalDate.now().toString());
-        noticiaRepository.save(noticia);
-
+        publicarNoticia(guardado, ligaId, esBasket);
         return ResponseEntity.ok(guardado);
     }
 
     @PostMapping("/generar-playoffs")
     public ResponseEntity<?> generarPlayoffs() {
-        if (partidoRepository.existsByTipoPartido(Partido.TipoPartido.CUARTOS)) {
+        Long ligaId = SecurityUtils.getLigaId();
+        if (partidoRepository.existsByTipoPartidoAndLigaId(Partido.TipoPartido.CUARTOS, ligaId))
             return ResponseEntity.badRequest().body("Los play-offs ya han sido generados.");
-        }
 
-        List<Equipo> clasificacion = equipoRepository.findAll();
+        List<Equipo> clasificacion = equipoRepository.findByLigaId(ligaId);
         clasificacion.sort((a, b) -> {
-            int ptsDiff = (b.getPts() != null ? b.getPts() : 0) - (a.getPts() != null ? a.getPts() : 0);
+            int ptsDiff = safe(b.getPts()) - safe(a.getPts());
             if (ptsDiff != 0) return ptsDiff;
-            // Desempate por diferencia de goles
-            int gdA = (a.getGf() != null ? a.getGf() : 0) - (a.getGc() != null ? a.getGc() : 0);
-            int gdB = (b.getGf() != null ? b.getGf() : 0) - (b.getGc() != null ? b.getGc() : 0);
-            return gdB - gdA;
+            return (safe(b.getGf()) - safe(b.getGc())) - (safe(a.getGf()) - safe(a.getGc()));
         });
 
-        if (clasificacion.size() < 8) {
+        if (clasificacion.size() < 8)
             return ResponseEntity.badRequest().body("Se necesitan al menos 8 equipos para generar los play-offs.");
-        }
 
-        // Cruces: 1º vs 8º, 4º vs 5º, 2º vs 7º, 3º vs 6º
         List<Partido> cuartos = new ArrayList<>();
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(0), clasificacion.get(7), Partido.TipoPartido.CUARTOS, "CUARTOS_1"));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(3), clasificacion.get(4), Partido.TipoPartido.CUARTOS, "CUARTOS_2"));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(1), clasificacion.get(6), Partido.TipoPartido.CUARTOS, "CUARTOS_3"));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(2), clasificacion.get(5), Partido.TipoPartido.CUARTOS, "CUARTOS_4"));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(0), clasificacion.get(7), Partido.TipoPartido.CUARTOS, "CUARTOS_1", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(3), clasificacion.get(4), Partido.TipoPartido.CUARTOS, "CUARTOS_2", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(1), clasificacion.get(6), Partido.TipoPartido.CUARTOS, "CUARTOS_3", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(2), clasificacion.get(5), Partido.TipoPartido.CUARTOS, "CUARTOS_4", ligaId));
 
         return ResponseEntity.ok(partidoRepository.saveAll(cuartos));
     }
 
-    private Partido crearPartidoPlayoff(Equipo local, Equipo visitante, Partido.TipoPartido tipo, String codigo) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarPartido(@PathVariable Long id) {
+        Long ligaId = SecurityUtils.getLigaId();
+        return partidoRepository.findById(id)
+                .filter(p -> ligaId.equals(p.getLigaId()))
+                .map(p -> { partidoRepository.delete(p); return ResponseEntity.noContent().<Void>build(); })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private boolean esLigaDeBaloncesto(Long ligaId) {
+        return ligaRepository.findById(ligaId)
+                .map(l -> l.getDeporte() == Deporte.BALONCESTO)
+                .orElse(false);
+    }
+
+    /** Fútbol: V=3, E=1, D=0 | Baloncesto (FIBA): V=2, D=1, sin empates */
+    private void actualizarClasificacion(Equipo equipo, int golesF, int golesC, boolean esBasket) {
+        equipo.setPj(safe(equipo.getPj()) + 1);
+        equipo.setGf(safe(equipo.getGf()) + golesF);
+        equipo.setGc(safe(equipo.getGc()) + golesC);
+        if (golesF > golesC) {
+            equipo.setPg(safe(equipo.getPg()) + 1);
+            equipo.setPts(safe(equipo.getPts()) + (esBasket ? 2 : 3));
+        } else if (!esBasket && golesF == golesC) {
+            equipo.setPe(safe(equipo.getPe()) + 1);
+            equipo.setPts(safe(equipo.getPts()) + 1);
+        } else {
+            equipo.setPp(safe(equipo.getPp()) + 1);
+            if (esBasket) equipo.setPts(safe(equipo.getPts()) + 1);
+        }
+    }
+
+    private void procesarIncidencia(Jugador j, String tipo, StringBuilder resumen, boolean esBasket) {
+        switch (tipo.toUpperCase()) {
+            case "GOL":
+            case "PUNTOS":
+                j.setGoles(safe(j.getGoles()) + 1);
+                resumen.append(j.getNombre()).append(esBasket ? " (puntos), " : " (gol), ");
+                break;
+            case "TRIPLE":
+                j.setTriples(safe(j.getTriples()) + 1);
+                j.setGoles(safe(j.getGoles()) + 1);
+                resumen.append(j.getNombre()).append(" (triple), ");
+                break;
+            case "REBOTE":
+                j.setRebotes(safe(j.getRebotes()) + 1);
+                break;
+            case "ASIST":
+                j.setAsist(safe(j.getAsist()) + 1);
+                break;
+            case "AMARILLA":
+                j.setAmarillas(safe(j.getAmarillas()) + 1);
+                aplicarMulta(j.getEquipo(), MULTA_AMARILLA);
+                break;
+            case "ROJA":
+                j.setRojas(safe(j.getRojas()) + 1);
+                aplicarMulta(j.getEquipo(), MULTA_ROJA);
+                break;
+        }
+    }
+
+    private void procesarIncidenciaFirma(Jugador jugador, String tipo, StringBuilder resumen, boolean esBasket) {
+        switch (tipo.toUpperCase()) {
+            case "GOL":
+            case "PUNTOS":
+                jugador.setGoles(safe(jugador.getGoles()) + 1);
+                resumen.append(jugador.getNombre()).append(esBasket ? " (puntos), " : " (gol), ");
+                break;
+            case "TRIPLE":
+                jugador.setTriples(safe(jugador.getTriples()) + 1);
+                jugador.setGoles(safe(jugador.getGoles()) + 1);
+                resumen.append(jugador.getNombre()).append(" (triple), ");
+                break;
+            case "REBOTE":
+                jugador.setRebotes(safe(jugador.getRebotes()) + 1);
+                break;
+            case "ASIST":
+                jugador.setAsist(safe(jugador.getAsist()) + 1);
+                break;
+            case "AMARILLA":
+                jugador.setAmarillas(safe(jugador.getAmarillas()) + 1);
+                int acumuladas = safe(jugador.getTarjetasAmarillasAcumuladas()) + 1;
+                jugador.setTarjetasAmarillasAcumuladas(acumuladas);
+                if (acumuladas >= AMARILLAS_PARA_SANCION) {
+                    jugador.setEstadoDisciplinario(Jugador.EstadoDisciplinario.SANCIONADO);
+                    jugador.setTarjetasAmarillasAcumuladas(0);
+                }
+                aplicarMulta(jugador.getEquipo(), MULTA_AMARILLA);
+                break;
+            case "ROJA":
+                jugador.setRojas(safe(jugador.getRojas()) + 1);
+                jugador.setEstadoDisciplinario(Jugador.EstadoDisciplinario.SANCIONADO);
+                aplicarMulta(jugador.getEquipo(), MULTA_ROJA);
+                break;
+        }
+    }
+
+    private void aplicarMulta(Equipo equipo, double multa) {
+        if (equipo == null) return;
+        equipo.setDeudaAcumulada((equipo.getDeudaAcumulada() != null ? equipo.getDeudaAcumulada() : 0.0) + multa);
+    }
+
+    private void publicarNoticia(Partido partido, Long ligaId, boolean esBasket) {
+        String nombreLocal = partido.getLocal() != null ? partido.getLocal().getNombre() : "Local";
+        String nombreVisitante = partido.getVisitante() != null ? partido.getVisitante().getNombre() : "Visitante";
+        String marcador = partido.getGolesLocal() + " - " + partido.getGolesVisitante();
+        String titulo = "Resultado: " + nombreLocal + " " + marcador + " " + nombreVisitante;
+        String incidenciasLabel = esBasket ? "Puntos: " : "Goles: ";
+        String contenido = "Jornada " + partido.getJornada() + ". " + titulo +
+                (partido.getGoleadores() != null ? ". " + incidenciasLabel + partido.getGoleadores() : "");
+
+        Noticia noticia = new Noticia();
+        noticia.setTitulo(titulo);
+        noticia.setContenido(contenido);
+        noticia.setFecha(LocalDate.now().toString());
+        noticia.setLigaId(ligaId);
+        noticiaRepository.save(noticia);
+    }
+
+    private Partido crearPartidoPlayoff(Equipo local, Equipo visitante, Partido.TipoPartido tipo, String codigo, Long ligaId) {
         Partido p = new Partido();
-        p.setLocal(local);
-        p.setVisitante(visitante);
-        p.setTipoPartido(tipo);
-        p.setCodigoEliminatoria(codigo);
+        p.setLocal(local); p.setVisitante(visitante);
+        p.setTipoPartido(tipo); p.setCodigoEliminatoria(codigo);
         p.setFecha(LocalDate.now().plusDays(7).toString());
         p.setEstado(Partido.EstadoPartido.PENDIENTE);
+        p.setLigaId(ligaId);
         return p;
     }
 
-    private void avanzarGanador(String codigoActual, Equipo ganador) {
+    private void avanzarGanador(String codigoActual, Equipo ganador, Long ligaId) {
         if (codigoActual == null) return;
-
-        String siguienteCodigo;
-        boolean esLocal;
-        Partido.TipoPartido siguienteTipo;
-
+        String siguienteCodigo; boolean esLocal; Partido.TipoPartido siguienteTipo;
         switch (codigoActual) {
             case "CUARTOS_1": siguienteCodigo = "SEMI_1"; esLocal = true;  siguienteTipo = Partido.TipoPartido.SEMIFINAL; break;
             case "CUARTOS_2": siguienteCodigo = "SEMI_1"; esLocal = false; siguienteTipo = Partido.TipoPartido.SEMIFINAL; break;
@@ -445,28 +399,19 @@ public class PartidoController {
             case "SEMI_2":    siguienteCodigo = "FINAL";  esLocal = false; siguienteTipo = Partido.TipoPartido.FINAL;     break;
             default: return;
         }
-
-        Optional<Partido> siguienteOpt = partidoRepository.findByCodigoEliminatoria(siguienteCodigo);
-        Partido siguiente = siguienteOpt.orElseGet(() -> {
-            Partido nuevo = new Partido();
-            nuevo.setCodigoEliminatoria(siguienteCodigo);
-            nuevo.setTipoPartido(siguienteTipo);
-            nuevo.setEstado(Partido.EstadoPartido.PENDIENTE);
-            nuevo.setFecha(LocalDate.now().plusDays(14).toString());
-            return nuevo;
-        });
-
-        if (esLocal) {
-            siguiente.setLocal(ganador);
-        } else {
-            siguiente.setVisitante(ganador);
-        }
-
+        Partido siguiente = partidoRepository.findByCodigoEliminatoriaAndLigaId(siguienteCodigo, ligaId)
+                .orElseGet(() -> {
+                    Partido nuevo = new Partido();
+                    nuevo.setCodigoEliminatoria(siguienteCodigo);
+                    nuevo.setTipoPartido(siguienteTipo);
+                    nuevo.setEstado(Partido.EstadoPartido.PENDIENTE);
+                    nuevo.setFecha(LocalDate.now().plusDays(14).toString());
+                    nuevo.setLigaId(ligaId);
+                    return nuevo;
+                });
+        if (esLocal) siguiente.setLocal(ganador); else siguiente.setVisitante(ganador);
         partidoRepository.save(siguiente);
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminarPartido(@PathVariable Long id) {
-        partidoRepository.deleteById(id);
-    }
+    private int safe(Integer val) { return val != null ? val : 0; }
 }

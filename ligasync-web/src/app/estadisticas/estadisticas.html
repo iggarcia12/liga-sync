@@ -55,7 +55,7 @@
         <!-- Pichichi -->
         <div class="card">
            <div class="card-header">
-              <h3>⚽ Top Goleadores</h3>
+              <h3>{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Top {{ authService.esBaloncesto() ? 'Anotadores' : 'Goleadores' }}</h3>
            </div>
            <div class="top-list">
               <div class="top-item" *ngFor="let j of topGoleadores; let i = index">
@@ -64,9 +64,9 @@
                     <h4>{{j.nombre}}</h4>
                     <span>{{j.equipo?.nombre || 'Libre'}}</span>
                  </div>
-                 <div class="top-stat">{{j.goles || 0}} <span>G</span></div >
+                 <div class="top-stat">{{j.goles || 0}} <span>{{ authService.esBaloncesto() ? 'Pts' : 'G' }}</span></div >
               </div>
-              <div class="estado-vacio" *ngIf="topGoleadores.length === 0">Sin info de goles</div>
+              <div class="estado-vacio" *ngIf="topGoleadores.length === 0">Sin info de {{ authService.esBaloncesto() ? 'puntos' : 'goles' }}</div>
            </div>
         </div>
 

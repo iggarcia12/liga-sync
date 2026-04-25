@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,6 +31,12 @@ export class DashboardComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(AuthService);
+
+  get esBasket(): boolean { return this.auth.esBaloncesto(); }
+  get labelGoleadores(): string { return this.esBasket ? 'Top Anotadores' : 'Top Goleadores'; }
+  get iconoDeporte(): string { return this.esBasket ? '🏀' : '⚽'; }
+  get labelGoles(): string { return this.esBasket ? 'Pts' : 'Goles'; }
 
   readonly urlBase = 'http://localhost:8080/api';
 

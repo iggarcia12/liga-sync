@@ -40,6 +40,7 @@ export class EquiposComponent implements OnInit {
   private authService = inject(AuthService);
 
   get esAdmin(): boolean { return this.authService.isAdmin(); }
+  get esBaloncesto(): boolean { return this.authService.esBaloncesto(); }
 
   ngOnInit() {
     this.cargarDatosGenerales();

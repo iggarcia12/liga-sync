@@ -3,6 +3,7 @@ package LigaSync.API.controller;
 import LigaSync.API.dto.RangoRequest;
 import LigaSync.API.model.Usuario;
 import LigaSync.API.repository.UsuarioRepository;
+import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,26 +23,30 @@ public class UsuarioController {
 
     @GetMapping
     public List<Usuario> obtenerTodosLosUsuarios() {
-        return usuarioRepository.findAll();
+        return usuarioRepository.findByLigaId(SecurityUtils.getLigaId());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerPorId(@PathVariable Long id) {
+        Long ligaId = SecurityUtils.getLigaId();
         return usuarioRepository.findById(id)
+                .filter(u -> ligaId.equals(u.getLigaId()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario nuevoUsuario) {
-        String hashPassword = passwordEncoder.encode(nuevoUsuario.getPass());
-        nuevoUsuario.setPass(hashPassword);
+        nuevoUsuario.setLigaId(SecurityUtils.getLigaId());
+        nuevoUsuario.setPass(passwordEncoder.encode(nuevoUsuario.getPass()));
         return usuarioRepository.save(nuevoUsuario);
     }
 
     @PutMapping("/{id}/rango")
     public ResponseEntity<Usuario> cambiarRango(@PathVariable Long id, @RequestBody RangoRequest request) {
+        Long ligaId = SecurityUtils.getLigaId();
         return usuarioRepository.findById(id)
+                .filter(u -> ligaId.equals(u.getLigaId()))
                 .map(usuario -> {
                     usuario.setRole(request.getRole());
                     usuario.setTeamId(request.getTeamId());
@@ -53,10 +58,13 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
-        if (!usuarioRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        usuarioRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        Long ligaId = SecurityUtils.getLigaId();
+        return usuarioRepository.findById(id)
+                .filter(u -> ligaId.equals(u.getLigaId()))
+                .map(u -> {
+                    usuarioRepository.delete(u);
+                    return ResponseEntity.noContent().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

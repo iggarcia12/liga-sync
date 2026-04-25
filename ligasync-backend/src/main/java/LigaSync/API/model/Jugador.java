@@ -17,12 +17,14 @@ public class Jugador {
     @Column(nullable = false)
     private String nombre;
 
-    private String pos; // POR, DEF, MED, DEL
+    private String pos; // fútbol: POR, DEF, MED, DEL | baloncesto: BASE, ESCOLTA, ALERO, ALA_PIVOT, PIVOT
     private Integer media;
     private Integer valor;
 
-    private Integer goles = 0;
-    private Integer asist = 0;
+    private Integer goles = 0;    // fútbol: goles | baloncesto: puntos
+    private Integer asist = 0;    // fútbol: asistencias | baloncesto: asistencias
+    private Integer rebotes = 0;  // baloncesto únicamente
+    private Integer triples = 0;  // baloncesto únicamente
     private Integer amarillas = 0;
     private Integer rojas = 0;
     private Boolean titular = false;
@@ -107,6 +109,22 @@ public class Jugador {
 
     public void setAsist(Integer asist) {
         this.asist = asist;
+    }
+
+    public Integer getRebotes() {
+        return rebotes;
+    }
+
+    public void setRebotes(Integer rebotes) {
+        this.rebotes = rebotes;
+    }
+
+    public Integer getTriples() {
+        return triples;
+    }
+
+    public void setTriples(Integer triples) {
+        this.triples = triples;
     }
 
     public Integer getAmarillas() {

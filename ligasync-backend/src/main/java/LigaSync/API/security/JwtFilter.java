@@ -28,6 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
         String email = null;
         String rol = null;
+        Long ligaId = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
@@ -39,19 +40,30 @@ public class JwtFilter extends OncePerRequestFilter {
                         .getBody();
                 email = claims.getSubject();
                 rol = claims.get("rol", String.class);
+
+                // Extrae ligaId — JWT puede serializar IDs pequeños como Integer
+                Object rawLigaId = claims.get("ligaId");
+                if (rawLigaId instanceof Integer) {
+                    ligaId = ((Integer) rawLigaId).longValue();
+                } else if (rawLigaId instanceof Long) {
+                    ligaId = (Long) rawLigaId;
+                }
             } catch (Exception e) {
                 System.out.println("Token inválido o caducado: " + e.getMessage());
             }
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Spring Security necesita el prefijo ROLE_ para que funcionen los hasRole()
             String rolNormalizado = (rol != null && !rol.isEmpty()) ? rol.toUpperCase().replace("ROLE_", "") : "USER";
             String authority = "ROLE_" + rolNormalizado;
             SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);
 
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     email, null, Collections.singletonList(grantedAuthority));
+
+            // ligaId disponible en todos los controladores vía auth.getDetails()
+            auth.setDetails(ligaId);
+
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 

@@ -130,10 +130,7 @@
         <div class="grupo-input">
           <label>Posición</label>
           <select class="input-select" name="pos" [(ngModel)]="nuevoJugador.pos">
-            <option value="POR">Portero (POR)</option>
-            <option value="DEF">Defensa (DEF)</option>
-            <option value="MED">Centrocampista (MED)</option>
-            <option value="DEL">Delantero (DEL)</option>
+            <option *ngFor="let p of posicionesDisponibles" [value]="p">{{ p }}</option>
           </select>
         </div>
         <div class="grupo-input">

@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-clasificacion',
@@ -17,8 +18,19 @@ export class ClasificacionComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(AuthService);
 
   readonly urlBase = 'http://localhost:8080/api';
+
+  get esBasket(): boolean { return this.auth.esBaloncesto(); }
+
+  // Etiquetas dinámicas según deporte
+  get labelGF(): string { return this.esBasket ? 'PF' : 'GF'; }
+  get labelGC(): string { return this.esBasket ? 'PC' : 'GC'; }
+  get labelDG(): string { return this.esBasket ? 'DP' : 'DG'; }
+  get titleGF(): string { return this.esBasket ? 'Puntos a Favor' : 'Goles a Favor'; }
+  get titleGC(): string { return this.esBasket ? 'Puntos en Contra' : 'Goles en Contra'; }
+  get titleDG(): string { return this.esBasket ? 'Diferencia de Puntos' : 'Diferencia de Goles'; }
 
   ngOnInit() {
     this.cargarClasificacion();
@@ -55,5 +67,4 @@ export class ClasificacionComponent implements OnInit {
   diferenciaGoles(equipo: any): number {
     return (equipo.gf || 0) - (equipo.gc || 0);
   }
-
 }

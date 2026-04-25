@@ -3,22 +3,26 @@ package LigaSync.API.repository;
 import LigaSync.API.model.Partido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PartidoRepository extends JpaRepository<Partido, Long> {
 
-    List<Partido> findByJornada(Integer jornada);
+    // Versiones scoped por liga — usarlas siempre en lugar de las globales
+    List<Partido> findByLigaId(Long ligaId);
 
-    // Devuelve la última jornada que tiene resultado (goles registrados)
-    @Query("SELECT COALESCE(MAX(p.jornada), 0) FROM Partido p WHERE p.golesLocal IS NOT NULL")
-    Integer findJornadaActual();
+    List<Partido> findByJornadaAndLigaId(Integer jornada, Long ligaId);
 
-    List<Partido> findByTipoPartido(Partido.TipoPartido tipoPartido);
+    @Query("SELECT COALESCE(MAX(p.jornada), 0) FROM Partido p WHERE p.golesLocal IS NOT NULL AND p.ligaId = :ligaId")
+    Integer findJornadaActualByLiga(@Param("ligaId") Long ligaId);
 
-    boolean existsByTipoPartido(Partido.TipoPartido tipoPartido);
+    List<Partido> findByTipoPartidoAndLigaId(Partido.TipoPartido tipoPartido, Long ligaId);
 
-    java.util.Optional<Partido> findByCodigoEliminatoria(String codigoEliminatoria);
+    boolean existsByTipoPartidoAndLigaId(Partido.TipoPartido tipoPartido, Long ligaId);
+
+    Optional<Partido> findByCodigoEliminatoriaAndLigaId(String codigoEliminatoria, Long ligaId);
 }

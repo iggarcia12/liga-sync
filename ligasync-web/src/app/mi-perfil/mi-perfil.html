@@ -51,9 +51,9 @@
       <h2 class="seccion-titulo">Estadísticas de Temporada</h2>
       <div class="stats-grid">
         <div class="stat-card stat-card--goles">
-          <span class="stat-card__icono">⚽</span>
+          <span class="stat-card__icono">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span>
           <span class="stat-card__numero">{{ jugador.goles ?? 0 }}</span>
-          <span class="stat-card__label">Goles</span>
+          <span class="stat-card__label">{{ authService.esBaloncesto() ? 'Puntos' : 'Goles' }}</span>
         </div>
         <div class="stat-card stat-card--asist">
           <span class="stat-card__icono">🎯</span>

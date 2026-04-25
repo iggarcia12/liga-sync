@@ -4,6 +4,7 @@ import LigaSync.API.model.Mensaje;
 import LigaSync.API.model.Usuario;
 import LigaSync.API.repository.MensajeRepository;
 import LigaSync.API.repository.UsuarioRepository;
+import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,6 @@ public class MensajeController {
 
     @GetMapping("/usuarios")
     public List<Usuario> obtenerTodosUsuarios() {
-        return usuarioRepository.findAll();
+        return usuarioRepository.findByLigaId(SecurityUtils.getLigaId());
     }
 }

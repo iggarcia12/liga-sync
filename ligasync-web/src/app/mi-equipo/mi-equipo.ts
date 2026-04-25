@@ -28,6 +28,7 @@ export class MiEquipoComponent implements OnInit {
 
   get esJugador(): boolean { return this.authService.isJugador() || !!this.authService.getJugadorId(); }
   get esEntrenador(): boolean { return this.authService.isEntrenador(); }
+  get esBaloncesto(): boolean { return this.authService.esBaloncesto(); }
 
   sortField: string = 'pos';
   sortDirection: 'asc' | 'desc' = 'asc';

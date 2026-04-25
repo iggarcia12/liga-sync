@@ -3,14 +3,16 @@ package LigaSync.API.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "equipos")
+@Table(name = "equipos", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"nombre", "liga_id"})
+})
 public class Equipo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nombre;
 
     private String escudo; // El emoji o la URL de la imagen
@@ -22,6 +24,9 @@ public class Equipo {
     private Double deudaAcumulada = 0.0;
 
     private String formacion = "4-4-2";
+
+    @Column(name = "liga_id")
+    private Long ligaId;
 
     // Estadísticas de la liga
     private Integer pts = 0;
@@ -143,5 +148,13 @@ public class Equipo {
 
     public void setFormacion(String formacion) {
         this.formacion = formacion;
+    }
+
+    public Long getLigaId() {
+        return ligaId;
+    }
+
+    public void setLigaId(Long ligaId) {
+        this.ligaId = ligaId;
     }
 }

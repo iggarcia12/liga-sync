@@ -2,6 +2,7 @@ package LigaSync.API.controller;
 
 import LigaSync.API.model.Noticia;
 import LigaSync.API.repository.NoticiaRepository;
+import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,20 +18,24 @@ public class NoticiaController {
 
     @GetMapping
     public List<Noticia> obtenerNoticias() {
-        return noticiaRepository.findAllByOrderByIdDesc();
+        return noticiaRepository.findByLigaIdOrderByIdDesc(SecurityUtils.getLigaId());
     }
 
     @PostMapping
     public Noticia crearNoticia(@RequestBody Noticia noticia) {
+        noticia.setLigaId(SecurityUtils.getLigaId());
         return noticiaRepository.save(noticia);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarNoticia(@PathVariable Long id) {
-        if (!noticiaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        noticiaRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        Long ligaId = SecurityUtils.getLigaId();
+        return noticiaRepository.findById(id)
+                .filter(n -> ligaId.equals(n.getLigaId()))
+                .map(n -> {
+                    noticiaRepository.delete(n);
+                    return ResponseEntity.noContent().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

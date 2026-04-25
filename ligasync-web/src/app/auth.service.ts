@@ -30,6 +30,19 @@ export class AuthService {
     return id ? parseInt(id, 10) : null;
   }
 
+  getLigaId(): number | null {
+    const id = localStorage.getItem('ligaId');
+    return id ? parseInt(id, 10) : null;
+  }
+
+  getDeporte(): 'FUTBOL' | 'BALONCESTO' {
+    return (localStorage.getItem('deporte') as 'FUTBOL' | 'BALONCESTO') ?? 'FUTBOL';
+  }
+
+  esBaloncesto(): boolean {
+    return this.getDeporte() === 'BALONCESTO';
+  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
@@ -65,6 +78,8 @@ export class AuthService {
     localStorage.removeItem('userId');
     localStorage.removeItem('nombre');
     localStorage.removeItem('jugadorId');
+    localStorage.removeItem('ligaId');
+    localStorage.removeItem('deporte');
     this.router.navigate(['/login']);
   }
 }

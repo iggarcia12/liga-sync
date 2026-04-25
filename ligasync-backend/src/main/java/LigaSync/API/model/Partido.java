@@ -44,6 +44,9 @@ public class Partido {
     @Column(name = "codigo_eliminatoria")
     private String codigoEliminatoria;
 
+    @Column(name = "liga_id")
+    private Long ligaId;
+
     @ManyToOne
     @JoinColumn(name = "local_id")
     private Equipo local;
@@ -147,5 +150,13 @@ public class Partido {
 
     public void setCodigoEliminatoria(String codigoEliminatoria) {
         this.codigoEliminatoria = codigoEliminatoria;
+    }
+
+    public Long getLigaId() {
+        return ligaId;
+    }
+
+    public void setLigaId(Long ligaId) {
+        this.ligaId = ligaId;
     }
 }

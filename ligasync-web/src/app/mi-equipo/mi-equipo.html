@@ -208,12 +208,14 @@
       </div>
 
       <div class="pizarra-container">
-        <!-- Campo de fútbol -->
-        <div class="campo-futbol">
+        <!-- Campo de juego -->
+        <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'campo-futbol'">
           <div class="linea-medio"></div>
           <div class="circulo-central"></div>
           <div class="area-grande area-grande--arriba"></div>
           <div class="area-grande area-grande--abajo"></div>
+          <div *ngIf="esBaloncesto" class="linea-triple linea-triple--arriba"></div>
+          <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
 
           <!-- Jugadores Titulares -->
           <div class="jugador-spot" 

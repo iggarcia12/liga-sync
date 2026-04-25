@@ -3,7 +3,7 @@
   <!-- Panel lateral visual -->
   <div class="login-lateral">
     <div class="login-lateral__contenido">
-      <span class="login-lateral__icono">⚽</span>
+      <span class="login-lateral__icono">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span>
       <h1 class="login-lateral__marca">LIGA<span>SYNC</span></h1>
       <p class="login-lateral__lema">El panel de alto rendimiento para la gestión deportiva profesional.</p>
       <div class="login-lateral__deco">
@@ -19,7 +19,7 @@
     <div class="tarjeta-login">
 
       <div class="login-brand-movil">
-        <span>⚽</span>
+        <span>{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span>
         <strong>LigaSync</strong>
       </div>
 

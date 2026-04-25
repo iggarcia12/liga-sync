@@ -12,7 +12,7 @@
     <aside class="sidebar" [class.mobile-open]="isMobileOpen">
 
       <div class="sidebar-brand">
-        <span class="brand-icon">⚽</span>
+        <span class="brand-icon">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span>
         <span class="brand-name">Liga<strong>Sync</strong></span>
       </div>
 
@@ -29,7 +29,7 @@
             <span class="nav-icon">🏆</span> <span class="nav-text">Clasificación</span>
           </a>
           <a routerLink="/partidos" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">⚽</span> <span class="nav-text">Partidos</span>
+            <span class="nav-icon">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span> <span class="nav-text">Partidos</span>
           </a>
           <a routerLink="/equipos" routerLinkActive="active-link" (click)="closeSidebar()">
             <span class="nav-icon">🛡️</span> <span class="nav-text">Plantillas</span>

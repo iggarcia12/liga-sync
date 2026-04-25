@@ -49,7 +49,7 @@
         <p class="stat-label">Partidos Jugados</p>
         <h3 class="stat-value">{{ partidosJugados }} / {{ partidos.length }}</h3>
       </div>
-      <div class="stat-icono">⚽</div>
+      <div class="stat-icono">{{ iconoDeporte }}</div>
     </div>
   </div>
 
@@ -73,11 +73,11 @@
                 <th class="th-equipo">Equipo</th>
                 <th class="th-pj">PJ</th>
                 <th class="th-pg">PG</th>
-                <th class="th-pe">PE</th>
+                <th *ngIf="!esBasket" class="th-pe">PE</th>
                 <th class="th-pp">PP</th>
-                <th class="th-gf">GF</th>
-                <th class="th-gc">GC</th>
-                <th class="th-dg">DG</th>
+                <th class="th-gf">{{ esBasket ? 'PF' : 'GF' }}</th>
+                <th class="th-gc">{{ esBasket ? 'PC' : 'GC' }}</th>
+                <th class="th-dg">{{ esBasket ? 'DP' : 'DG' }}</th>
                 <th class="th-pts">Pts</th>
               </tr>
             </thead>
@@ -95,7 +95,7 @@
                 <td class="col-equipo">{{ equipo.nombre }}</td>
                 <td class="col-pj">{{ equipo.pj || 0 }}</td>
                 <td class="col-pg">{{ equipo.pg || 0 }}</td>
-                <td class="col-pe">{{ equipo.pe || 0 }}</td>
+                <td *ngIf="!esBasket" class="col-pe">{{ equipo.pe || 0 }}</td>
                 <td class="col-pp">{{ equipo.pp || 0 }}</td>
                 <td class="col-gf">{{ equipo.gf || 0 }}</td>
                 <td class="col-gc">{{ equipo.gc || 0 }}</td>
@@ -127,7 +127,7 @@
       <!-- Mini-card: Último Resultado -->
       <div class="card card-resultado">
         <div class="card-header-kpi">
-          <span class="card-tag">⚽</span>
+          <span class="card-tag">{{ iconoDeporte }}</span>
           <h3>Último Resultado</h3>
         </div>
 
@@ -156,11 +156,11 @@
         </ng-template>
       </div>
 
-      <!-- Mini-card: Top Goleadores -->
+      <!-- Mini-card: Top Goleadores / Anotadores -->
       <div class="card card-goleadores">
         <div class="card-header-kpi">
           <span class="card-tag">🔥</span>
-          <h3>Top Goleadores</h3>
+          <h3>{{ labelGoleadores }}</h3>
         </div>
 
         <div class="lista-goleadores" *ngIf="topGoleadores.length > 0; else sinGoleadores">
@@ -173,7 +173,7 @@
             >#{{ i + 1 }}</span>
             <span class="goleador-nombre">{{ jugador.nombre }}</span>
             <span class="goleador-goles">
-              {{ jugador.goles || 0 }}<small>G</small>
+              {{ jugador.goles || 0 }}<small>{{ labelGoles }}</small>
             </span>
           </div>
         </div>
@@ -181,7 +181,7 @@
         <ng-template #sinGoleadores>
           <div class="estado-vacio-mini">
             <span class="icon-vacio">📊</span>
-            <p>Sin estadísticas de goles</p>
+            <p>Sin estadísticas disponibles</p>
           </div>
         </ng-template>
       </div>

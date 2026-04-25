@@ -36,11 +36,13 @@
         <h3>Alineación Titular — {{ equipoActualDetalles.formacion || '4-4-2' }}</h3>
       </div>
       
-      <div class="soccer-pitch">
+      <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'soccer-pitch'">
         <div class="linea-medio"></div>
         <div class="circulo-central"></div>
         <div class="area-grande area-grande--arriba"></div>
         <div class="area-grande area-grande--abajo"></div>
+        <div *ngIf="esBaloncesto" class="linea-triple linea-triple--arriba"></div>
+        <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
 
         <!-- Jugadores Titulares -->
         <div class="jugador-spot-read" 

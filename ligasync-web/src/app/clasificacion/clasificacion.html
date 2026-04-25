@@ -7,7 +7,9 @@
         <span>←</span> Volver
       </a>
       <div>
-        <h1 class="page-titulo">Clasificación</h1>
+        <h1 class="page-titulo">
+          {{ esBasket ? '🏀' : '⚽' }} Clasificación
+        </h1>
         <p class="page-subtitulo">Temporada actual · Todas las jornadas</p>
       </div>
     </div>
@@ -41,18 +43,16 @@
           <th class="th-equipo">Equipo</th>
           <th class="th-num" title="Partidos Jugados">PJ</th>
           <th class="th-num" title="Partidos Ganados">PG</th>
-          <th class="th-num" title="Partidos Empatados">PE</th>
+          <th *ngIf="!esBasket" class="th-num" title="Partidos Empatados">PE</th>
           <th class="th-num" title="Partidos Perdidos">PP</th>
-          <th class="th-num" title="Goles a Favor">GF</th>
-          <th class="th-num" title="Goles en Contra">GC</th>
-          <th class="th-num" title="Diferencia de Goles">DG</th>
+          <th class="th-num" [title]="titleGF">{{ labelGF }}</th>
+          <th class="th-num" [title]="titleGC">{{ labelGC }}</th>
+          <th class="th-num" [title]="titleDG">{{ labelDG }}</th>
           <th class="th-pts">Pts</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let equipo of equiposOrdenados; let i = index"
-        >
+        <tr *ngFor="let equipo of equiposOrdenados; let i = index">
           <td class="col-pos">
             <span
               class="pos-badge"
@@ -69,11 +69,13 @@
           </td>
           <td class="col-num">{{ equipo.pj || 0 }}</td>
           <td class="col-num col-pg">{{ equipo.pg || 0 }}</td>
-          <td class="col-num">{{ equipo.pe || 0 }}</td>
+          <td *ngIf="!esBasket" class="col-num">{{ equipo.pe || 0 }}</td>
           <td class="col-num col-pp">{{ equipo.pp || 0 }}</td>
           <td class="col-num">{{ equipo.gf || 0 }}</td>
           <td class="col-num">{{ equipo.gc || 0 }}</td>
-          <td class="col-num col-dg" [class.dg-positivo]="diferenciaGoles(equipo) > 0" [class.dg-negativo]="diferenciaGoles(equipo) < 0">
+          <td class="col-num col-dg"
+              [class.dg-positivo]="diferenciaGoles(equipo) > 0"
+              [class.dg-negativo]="diferenciaGoles(equipo) < 0">
             {{ diferenciaGoles(equipo) > 0 ? '+' : '' }}{{ diferenciaGoles(equipo) }}
           </td>
           <td class="col-pts">{{ equipo.pts || 0 }}</td>

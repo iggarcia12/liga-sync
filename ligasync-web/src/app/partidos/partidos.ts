@@ -40,7 +40,7 @@ export class PartidosComponent implements OnInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
 
   get esAdmin(): boolean { return this.authService.isAdmin(); }
   get esArbitro(): boolean { return this.authService.isArbitro(); }
@@ -189,7 +189,7 @@ export class PartidosComponent implements OnInit {
   }
 
   tipoIcono(tipo: string): string {
-    const iconos: Record<string, string> = { GOL: '⚽', ASIST: '🎯', AMARILLA: '🟨', ROJA: '🟥' };
+    const iconos: Record<string, string> = { GOL: this.authService.esBaloncesto() ? '🏀' : '⚽', ASIST: '🎯', AMARILLA: '🟨', ROJA: '🟥' };
     return iconos[tipo] ?? '📋';
   }
 

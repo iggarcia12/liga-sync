@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ export class LoginComponent {
 
   private http = inject(HttpClient);
   private router = inject(Router);
+  public authService = inject(AuthService);
 
   hacerLogin() {
     const urlBackend = 'http://localhost:8080/api/login'; 
@@ -30,8 +32,10 @@ export class LoginComponent {
         localStorage.setItem('userId', respuesta.userId?.toString() ?? '');
         localStorage.setItem('nombre', respuesta.usuario);
         localStorage.setItem('jugadorId', respuesta.jugadorId?.toString() ?? '');
-        
-        this.router.navigate(['/dashboard']); 
+        localStorage.setItem('ligaId', respuesta.ligaId?.toString() ?? '');
+        localStorage.setItem('deporte', respuesta.deporte ?? 'FUTBOL');
+
+        this.router.navigate(['/dashboard']);
       },
       error: () => {
         this.mensajeError = 'Credenciales incorrectas. Inténtalo de nuevo.';

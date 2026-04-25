@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js/auto';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-estadisticas',
@@ -25,6 +26,7 @@ export class EstadisticasComponent implements OnInit, AfterViewInit {
 
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+  public authService = inject(AuthService);
 
   ngOnInit() {
     this.cargarDatos();

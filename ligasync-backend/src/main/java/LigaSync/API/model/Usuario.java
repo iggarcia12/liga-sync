@@ -29,6 +29,9 @@ public class Usuario {
 
     private String avatar;
 
+    @Column(name = "liga_id")
+    private Long ligaId;
+
     // --- GETTERS Y SETTERS ---
     // En Java puro (sin Lombok) necesitamos escribir esto para que Spring pueda
     // leer y guardar los datos.
@@ -95,5 +98,13 @@ public class Usuario {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public Long getLigaId() {
+        return ligaId;
+    }
+
+    public void setLigaId(Long ligaId) {
+        this.ligaId = ligaId;
     }
 }

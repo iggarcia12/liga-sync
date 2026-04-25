@@ -27,6 +27,13 @@ export class MercadoComponent implements OnInit {
   jugadorParaOfertar: any = null;
   montoOferta = 0;
 
+  posicionesFutbol = ['POR', 'DEF', 'MED', 'DEL'];
+  posicionesBasket = ['BASE', 'ESCOLTA', 'ALERO', 'ALA-PÍVOT', 'PÍVOT'];
+
+  get posicionesDisponibles(): string[] {
+    return this.authService.esBaloncesto() ? this.posicionesBasket : this.posicionesFutbol;
+  }
+
   get ventanaAbierta(): boolean {
     return this.jornadaActual === 0 || this.jornadaActual % 3 === 0;
   }
@@ -118,7 +125,7 @@ export class MercadoComponent implements OnInit {
 
   abrirModal() {
     this.mostrarModalFichaje = true;
-    this.nuevoJugador = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
+    this.nuevoJugador = { nombre: '', pos: this.posicionesDisponibles[0], media: 70, valor: 5000000, equipo: null };
   }
 
   cerrarModal() { this.mostrarModalFichaje = false; }
@@ -139,7 +146,8 @@ export class MercadoComponent implements OnInit {
         if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
       },
       error: (err) => {
-        alert('Error al registrar el jugador. Revisa la consola.');
+        const errorMsg = typeof err.error === 'string' ? err.error : (err.message || 'Error desconocido');
+        alert('Error al registrar el jugador: ' + errorMsg);
         console.error(err);
       }
     });
