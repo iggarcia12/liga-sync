@@ -15,7 +15,11 @@
             "name": "LigasyncBackendApplication",
             "request": "launch",
             "mainClass": "LigaSync.API.LigasyncBackendApplication",
-            "projectName": "ligasync-backend"
+            "projectName": "ligasync-backend",
+            "env": {
+                "EMAIL_USER": "notificaciones.ligasync@gmail.com",
+                "EMAIL_PASSWORD": "kphcdudyvpkfurga"
+            }
         }
     ]
 }
