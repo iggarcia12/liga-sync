@@ -473,3 +473,29 @@
   flex-shrink: 0;
   font-size: 0.85rem;
 }
+
+.btn-presupuesto {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff;
+  border: none;
+}
+
+.btn-presupuesto:hover {
+  background: linear-gradient(135deg, #15803d, #166534);
+}
+
+.presupuesto-stat {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.presupuesto-stat strong {
+  color: #16a34a;
+}
+
+.modal-subtitulo {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}

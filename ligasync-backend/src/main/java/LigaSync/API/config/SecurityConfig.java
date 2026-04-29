@@ -53,7 +53,8 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PUT, "/api/equipos/**").hasAnyRole("ADMIN", "ENTRENADOR")
                         // El jugador puede actualizar su propia convocatoria
-                        .requestMatchers(HttpMethod.PUT, "/api/jugadores/**").hasAnyRole("ADMIN", "ENTRENADOR", "JUGADOR")
+                        .requestMatchers(HttpMethod.PUT, "/api/jugadores/**")
+                        .hasAnyRole("ADMIN", "ENTRENADOR", "JUGADOR")
 
                         .requestMatchers(HttpMethod.POST, "/api/ofertas").hasAnyRole("ADMIN", "ENTRENADOR")
                         .requestMatchers(HttpMethod.PUT, "/api/ofertas/**").hasAnyRole("ADMIN", "ENTRENADOR")
@@ -64,6 +65,7 @@ public class SecurityConfig {
                         // Reglas por defecto según el verbo HTTP
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated());
@@ -76,14 +78,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Permitimos todo en desarrollo para no pelearnos con los puertos
         configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
-        
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(
+                Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
+
         // Sin cookies, solo JWT manual en headers
-        configuration.setAllowCredentials(false); 
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

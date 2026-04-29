@@ -200,10 +200,11 @@ export class MercadoComponent implements OnInit {
       monto:           this.montoOferta
     };
 
+    const nombreJugador = this.jugadorParaOfertar.nombre;
     this.http.post<any>('http://localhost:8080/api/ofertas', payload).subscribe({
       next: () => {
-        alert(`Oferta enviada por ${this.jugadorParaOfertar.nombre}. El entrenador rival deberá aceptarla.`);
         this.cerrarModalOferta();
+        alert(`Oferta enviada por ${nombreJugador}. El entrenador rival deberá aceptarla.`);
       },
       error: (err) => {
         const msg = err.error || 'No se pudo enviar la oferta.';

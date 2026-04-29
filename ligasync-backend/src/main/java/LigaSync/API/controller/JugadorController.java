@@ -31,7 +31,7 @@ public class JugadorController {
 
     @GetMapping
     public List<Jugador> obtenerJugadores() {
-        return jugadorRepository.findByEquipo_LigaId(SecurityUtils.getLigaId());
+        return jugadorRepository.findAllByLiga(SecurityUtils.getLigaId());
     }
 
     @GetMapping("/{id}")
@@ -60,15 +60,16 @@ public class JugadorController {
 
     @PostMapping
     public ResponseEntity<?> crearJugador(@RequestBody Jugador nuevoJugador) {
+        Long ligaId = SecurityUtils.getLigaId();
+        nuevoJugador.setLigaId(ligaId);
+
         if (nuevoJugador.getEquipo() != null && nuevoJugador.getEquipo().getId() != null) {
-            Long ligaId = SecurityUtils.getLigaId();
             Optional<Equipo> equipoOpt = equipoRepository.findById(nuevoJugador.getEquipo().getId());
             if (equipoOpt.isPresent()) {
                 Equipo e = equipoOpt.get();
                 if (!ligaId.equals(e.getLigaId())) {
                     return ResponseEntity.status(403).body("El equipo no pertenece a tu liga.");
                 }
-                // Los administradores pueden crear jugadores directamente en un equipo sin descontar presupuesto
                 nuevoJugador.setEquipo(e);
             }
         }
@@ -136,6 +137,7 @@ public class JugadorController {
                 Optional<Equipo> eqNuevoOpt = equipoRepository.findById(equipoNuevo.getId());
                 if (eqNuevoOpt.isPresent()) {
                     Equipo eqN = eqNuevoOpt.get();
+                    jugadorAActualizar.setLigaId(eqN.getLigaId());
                     int precio = jugadorAActualizar.getValor() != null ? jugadorAActualizar.getValor() : 0;
                     if (eqN.getPresupuesto() < precio) {
                         return ResponseEntity.badRequest().body("Presupuesto insuficiente en el equipo destino.");

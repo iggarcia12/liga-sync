@@ -35,6 +35,10 @@ export class EquiposComponent implements OnInit {
   equipoSeleccionadoId: number | null = null;
   nuevoEquipo: any = { nombre: '', ciudad: '' };
 
+  // Modal inyectar presupuesto
+  mostrarModalPresupuesto: boolean = false;
+  montoInyectar: number = 0;
+
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
@@ -140,38 +144,61 @@ export class EquiposComponent implements OnInit {
     if (!formacionStr) return [];
     const parts = formacionStr.split('-').map(Number);
     const slots: any[] = [];
-    slots.push({ type: 'POR', x: 50, y: 7 });
-    const yRange = 63;
-    const yBase = 25;
-    const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
-    parts.forEach((count, lineIdx) => {
-      let type = 'MED';
-      if (lineIdx === 0) type = 'DEF';
-      else if (lineIdx === parts.length - 1) type = 'DEL';
-      const y = yBase + (lineIdx * yStep);
-      const xStep = count > 1 ? 70 / (count - 1) : 0;
-      for (let i = 0; i < count; i++) {
-        const x = count > 1 ? 15 + (i * xStep) : 50;
-        slots.push({ type, x, y });
-      }
-    });
+
+    if (this.esBaloncesto) {
+      const yRange = 70;
+      const yBase = 15;
+      const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
+      parts.forEach((count, lineIdx) => {
+        const y = yBase + (lineIdx * yStep);
+        const xStep = count > 1 ? 70 / (count - 1) : 0;
+        for (let i = 0; i < count; i++) {
+          const x = count > 1 ? 15 + (i * xStep) : 50;
+          slots.push({ type: 'BASKET', x, y });
+        }
+      });
+    } else {
+      slots.push({ type: 'POR', x: 50, y: 7 });
+      const yRange = 63;
+      const yBase = 25;
+      const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
+      parts.forEach((count, lineIdx) => {
+        let type = 'MED';
+        if (lineIdx === 0) type = 'DEF';
+        else if (lineIdx === parts.length - 1) type = 'DEL';
+        const y = yBase + (lineIdx * yStep);
+        const xStep = count > 1 ? 70 / (count - 1) : 0;
+        for (let i = 0; i < count; i++) {
+          const x = count > 1 ? 15 + (i * xStep) : 50;
+          slots.push({ type, x, y });
+        }
+      });
+    }
+
     return slots;
   }
 
   estaFueraDePosicion(jugador: any, index: number): boolean {
-    // En la vista pública, forzamos que siempre parezca correcto
     return false;
   }
 
   getPosicionEstilo(jugador: any, index: number) {
     if (!this.equipoActualDetalles) return {};
-    
-    // Calculamos una formación "natural" basada en los titulares reales para que se vea perfecto
+
     const titulares = this.titulares;
-    const nDef = titulares.filter(j => j.pos === 'DEF').length;
-    const nMed = titulares.filter(j => j.pos === 'MED').length;
-    const nDel = titulares.filter(j => j.pos === 'DEL').length;
-    const formacionNatural = (nDef || nMed || nDel) ? `${nDef}-${nMed}-${nDel}` : '4-4-2';
+    let formacionNatural: string;
+
+    if (this.esBaloncesto) {
+      const nGuards = titulares.filter(j => j.pos === 'BASE' || j.pos === 'ESCOLTA').length;
+      const nWings  = titulares.filter(j => j.pos === 'ALERO').length;
+      const nBigs   = titulares.filter(j => j.pos === 'ALA-PÍVOT' || j.pos === 'PÍVOT').length;
+      formacionNatural = (nGuards || nWings || nBigs) ? `${nGuards}-${nWings}-${nBigs}` : '2-1-2';
+    } else {
+      const nDef = titulares.filter(j => j.pos === 'DEF').length;
+      const nMed = titulares.filter(j => j.pos === 'MED').length;
+      const nDel = titulares.filter(j => j.pos === 'DEL').length;
+      formacionNatural = (nDef || nMed || nDel) ? `${nDef}-${nMed}-${nDel}` : '4-4-2';
+    }
 
     const slots = this.getSlots(formacionNatural);
     const slot = slots[index];
@@ -226,6 +253,32 @@ export class EquiposComponent implements OnInit {
         this.cargarDatosGenerales();
       });
     }
+  }
+
+  abrirModalPresupuesto() {
+    this.montoInyectar = 0;
+    this.mostrarModalPresupuesto = true;
+  }
+
+  cerrarModalPresupuesto() {
+    this.mostrarModalPresupuesto = false;
+  }
+
+  inyectarPresupuesto() {
+    if (!this.equipoActualSeleccionado || this.montoInyectar === 0) return;
+    this.http.patch<any>(
+      `http://localhost:8080/api/equipos/${this.equipoActualSeleccionado}/presupuesto`,
+      { monto: this.montoInyectar }
+    ).subscribe({
+      next: (equipoActualizado) => {
+        const idx = this.equipos.findIndex(e => e.id === equipoActualizado.id);
+        if (idx !== -1) this.equipos[idx] = equipoActualizado;
+        this.equipoActualDetalles = equipoActualizado;
+        this.cerrarModalPresupuesto();
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al ajustar presupuesto:', err)
+    });
   }
 
   eliminarEquipo(id: number) {

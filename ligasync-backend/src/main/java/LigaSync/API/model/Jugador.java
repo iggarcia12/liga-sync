@@ -36,9 +36,9 @@ public class Jugador {
 
     private Boolean convocado = false;
 
-    // --- LA MAGIA DE LAS RELACIONES ---
-    // @ManyToOne indica que "Muchos" jugadores pertenecen a "Un" Equipo
-    // @JoinColumn crea la columna "equipo_id" en la base de datos (Clave Foránea)
+    // Liga a la que pertenece el jugador (persiste aunque sea agente libre)
+    private Long ligaId;
+
     @ManyToOne
     @JoinColumn(name = "equipo_id")
     private Equipo equipo;
@@ -150,6 +150,9 @@ public class Jugador {
     public void setTitular(Boolean titular) {
         this.titular = titular;
     }
+
+    public Long getLigaId() { return ligaId; }
+    public void setLigaId(Long ligaId) { this.ligaId = ligaId; }
 
     public Equipo getEquipo() {
         return equipo;

@@ -210,20 +210,20 @@
       <div class="pizarra-container">
         <!-- Campo de juego -->
         <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'campo-futbol'">
-          <div class="linea-medio"></div>
-          <div class="circulo-central"></div>
-          <div class="area-grande area-grande--arriba"></div>
+          <div *ngIf="!esBaloncesto" class="linea-medio"></div>
+          <div *ngIf="!esBaloncesto" class="circulo-central"></div>
+          <div *ngIf="!esBaloncesto" class="area-grande area-grande--arriba"></div>
           <div class="area-grande area-grande--abajo"></div>
-          <div *ngIf="esBaloncesto" class="linea-triple linea-triple--arriba"></div>
           <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
 
           <!-- Jugadores Titulares -->
-          <div class="jugador-spot" 
-               *ngFor="let j of titulares; let i = index" 
+          <div class="jugador-spot"
+               *ngFor="let j of titulares; let i = index"
                [ngStyle]="getPosicionEstilo(j, i)"
                [class.seleccionado]="jugadorSeleccionado?.id === j.id"
                [class.fuera-de-posicion]="estaFueraDePosicion(j, i)"
                (click)="seleccionarJugador(j)">
+            <button class="btn-quitar-titular" (click)="$event.stopPropagation(); hacerSuplente(j)" title="Pasar al banquillo">×</button>
             <div class="jugador-circulo">
               <span class="jugador-media">{{ j.media }}</span>
             </div>
@@ -238,13 +238,14 @@
         <div class="suplentes-container">
           <h3>Banquillo (Suplentes)</h3>
           <div class="lista-suplentes-pizarra">
-            <div class="suplente-card" 
-                 *ngFor="let s of suplentes" 
+            <div class="suplente-card"
+                 *ngFor="let s of suplentes"
                  [class.seleccionado]="jugadorSeleccionado?.id === s.id"
                  (click)="seleccionarJugador(s)">
               <span class="suplente-pos">{{ s.pos }}</span>
               <span class="suplente-nombre">{{ s.nombre }}</span>
               <span class="suplente-media">{{ s.media }}</span>
+              <button *ngIf="!campoLleno" class="btn-hacer-titular" (click)="$event.stopPropagation(); hacerTitular(s)" title="Poner de titular">+</button>
             </div>
           </div>
           <p class="instruccion-intercambio" *ngIf="!jugadorSeleccionado">

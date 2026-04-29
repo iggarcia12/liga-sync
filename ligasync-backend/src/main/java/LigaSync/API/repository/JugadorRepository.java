@@ -2,6 +2,8 @@ package LigaSync.API.repository;
 
 import LigaSync.API.model.Jugador;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +13,9 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
     List<Jugador> findByEquipoId(Long equipoId);
 
-    // Navega equipo.ligaId para filtrar jugadores de una liga sin añadir ligaId a Jugador
+    // Incluye agentes libres (equipo IS NULL con ligaId propio) y jugadores con equipo de la liga
+    @Query("SELECT j FROM Jugador j LEFT JOIN j.equipo e WHERE j.ligaId = :ligaId OR e.ligaId = :ligaId")
+    List<Jugador> findAllByLiga(@Param("ligaId") Long ligaId);
+
     List<Jugador> findByEquipo_LigaId(Long ligaId);
 }

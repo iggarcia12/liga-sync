@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/equipos")
@@ -68,6 +69,20 @@ public class EquipoController {
                     }
                     equipo.setPresupuesto(presupuesto - (int) deuda);
                     equipo.setDeudaAcumulada(0.0);
+                    return ResponseEntity.ok(equipoRepository.save(equipo));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/presupuesto")
+    public ResponseEntity<?> ajustarPresupuesto(@PathVariable Long id, @RequestBody Map<String, Integer> body) {
+        Long ligaId = SecurityUtils.getLigaId();
+        return equipoRepository.findById(id)
+                .filter(e -> ligaId.equals(e.getLigaId()))
+                .map(equipo -> {
+                    int monto = body.getOrDefault("monto", 0);
+                    int actual = equipo.getPresupuesto() != null ? equipo.getPresupuesto() : 0;
+                    equipo.setPresupuesto(actual + monto);
                     return ResponseEntity.ok(equipoRepository.save(equipo));
                 })
                 .orElse(ResponseEntity.notFound().build());

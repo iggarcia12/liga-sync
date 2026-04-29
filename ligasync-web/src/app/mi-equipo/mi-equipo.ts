@@ -37,7 +37,12 @@ export class MiEquipoComponent implements OnInit {
   escudoEdicion = '';
 
   pestanaActiva: 'plantilla' | 'ofertas' | 'tactica' | 'convocatoria' | 'asistencia' = 'plantilla';
-  formaciones = ['4-4-2', '4-3-3', '3-4-3', '3-5-2', '5-3-2', '4-5-1', '5-4-1', '4-2-3-1', '4-1-4-1'];
+  get formaciones(): string[] {
+    if (this.esBaloncesto) {
+      return ['2-3', '3-2', '1-3-1', '2-1-2', '1-2-2', '4-1', '1-4'];
+    }
+    return ['4-4-2', '4-3-3', '3-4-3', '3-5-2', '5-3-2', '4-5-1', '5-4-1', '4-2-3-1', '4-1-4-1'];
+  }
   jugadorSeleccionado: any = null;
   
   ofertas: any[] = [];
@@ -299,6 +304,27 @@ export class MiEquipoComponent implements OnInit {
     return this.jugadores.filter(j => !j.titular);
   }
 
+  get maxTitulares(): number {
+    return this.esBaloncesto ? 5 : 11;
+  }
+
+  get campoLleno(): boolean {
+    return this.titulares.length >= this.maxTitulares;
+  }
+
+  hacerTitular(j: any) {
+    if (this.campoLleno) return;
+    j.titular = true;
+    this.jugadorSeleccionado = null;
+    this.cdr.detectChanges();
+  }
+
+  hacerSuplente(j: any) {
+    j.titular = false;
+    this.jugadorSeleccionado = null;
+    this.cdr.detectChanges();
+  }
+
   seleccionarJugador(j: any) {
     if (!this.jugadorSeleccionado) {
       this.jugadorSeleccionado = j;
@@ -348,41 +374,70 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  // Distribución dinámica de slots en el campo según la formación elegida
+  // Distribución dinámica de slots según la formación y el deporte
   getSlots(formacionStr: string) {
     if (!formacionStr) return [];
     const parts = formacionStr.split('-').map(Number);
     const slots: any[] = [];
-    
-    slots.push({ type: 'POR', x: 50, y: 7 });
 
-    const yRange = 63;
-    const yBase = 25;
-    const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
+    if (this.esBaloncesto) {
+      // Baloncesto: jugadores dentro del área de triple (bottom 7% → 49%)
+      const yRange = 42;
+      const yBase = 7;
+      const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
 
-    parts.forEach((count, lineIdx) => {
-      let type = 'MED';
-      if (lineIdx === 0) type = 'DEF';
-      else if (lineIdx === parts.length - 1) type = 'DEL';
+      parts.forEach((count, lineIdx) => {
+        let type = 'ALERO';
+        if (lineIdx === 0) type = 'PIVOT';
+        else if (lineIdx === parts.length - 1) type = 'BASE';
 
-      const y = yBase + (lineIdx * yStep);
-      const xStep = count > 1 ? 70 / (count - 1) : 0;
-      
-      for (let i = 0; i < count; i++) {
-        const x = count > 1 ? 15 + (i * xStep) : 50;
-        slots.push({ type, x, y });
-      }
-    });
+        const y = yBase + (lineIdx * yStep);
+        const xStep = count > 1 ? 70 / (count - 1) : 0;
+        for (let i = 0; i < count; i++) {
+          const x = count > 1 ? 15 + (i * xStep) : 50;
+          slots.push({ type, x, y });
+        }
+      });
+    } else {
+      // Fútbol: portero + líneas de jugadores
+      slots.push({ type: 'POR', x: 50, y: 7 });
+
+      const yRange = 63;
+      const yBase = 25;
+      const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
+
+      parts.forEach((count, lineIdx) => {
+        let type = 'MED';
+        if (lineIdx === 0) type = 'DEF';
+        else if (lineIdx === parts.length - 1) type = 'DEL';
+
+        const y = yBase + (lineIdx * yStep);
+        const xStep = count > 1 ? 70 / (count - 1) : 0;
+        for (let i = 0; i < count; i++) {
+          const x = count > 1 ? 15 + (i * xStep) : 50;
+          slots.push({ type, x, y });
+        }
+      });
+    }
 
     return slots;
   }
 
   estaFueraDePosicion(jugador: any, index: number): boolean {
     if (!this.equipo) return false;
-    const formacion = this.equipo.formacion || '4-4-2';
+    const formacionDefault = this.esBaloncesto ? '2-1-2' : '4-4-2';
+    const formacion = this.equipo.formacion || formacionDefault;
     const slots = this.getSlots(formacion);
     const slot = slots[index];
     if (!slot) return false;
+
+    if (this.esBaloncesto) {
+      const pos = jugador.pos;
+      if (slot.type === 'PIVOT') return pos !== 'PIVOT' && pos !== 'ALA_PIVOT';
+      if (slot.type === 'ALERO') return pos !== 'ALERO' && pos !== 'ALA_PIVOT';
+      if (slot.type === 'BASE')  return pos !== 'BASE'  && pos !== 'ESCOLTA';
+      return false;
+    }
 
     if (slot.type === 'POR') return jugador.pos !== 'POR';
     return jugador.pos !== slot.type;
@@ -390,7 +445,8 @@ export class MiEquipoComponent implements OnInit {
 
   getPosicionEstilo(jugador: any, index: number) {
     if (!this.equipo) return {};
-    const formacion = this.equipo.formacion || '4-4-2';
+    const formacionDefault = this.esBaloncesto ? '2-1-2' : '4-4-2';
+    const formacion = this.equipo.formacion || formacionDefault;
     const slots = this.getSlots(formacion);
     const slot = slots[index];
 

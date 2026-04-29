@@ -1,13 +1,18 @@
 package LigaSync.API.controller;
 
+import LigaSync.API.model.Deporte;
 import LigaSync.API.model.Equipo;
 import LigaSync.API.model.Jugador;
+import LigaSync.API.model.Liga;
 import LigaSync.API.model.Oferta;
 import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
+import LigaSync.API.repository.LigaRepository;
 import LigaSync.API.repository.OfertaRepository;
 import LigaSync.API.repository.PartidoRepository;
+import LigaSync.API.repository.UsuarioRepository;
 import LigaSync.API.security.SecurityUtils;
+import LigaSync.API.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +28,9 @@ public class OfertaController {
     @Autowired private JugadorRepository jugadorRepository;
     @Autowired private EquipoRepository equipoRepository;
     @Autowired private PartidoRepository partidoRepository;
+    @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired private LigaRepository ligaRepository;
+    @Autowired private EmailService emailService;
 
     @GetMapping("/recibidas/{equipoId}")
     public List<Oferta> ofertasRecibidas(@PathVariable Long equipoId) {
@@ -36,9 +44,15 @@ public class OfertaController {
 
     @PostMapping
     public ResponseEntity<?> crearOferta(@RequestBody Oferta oferta) {
-        Integer jornadaActual = partidoRepository.findJornadaActualByLiga(SecurityUtils.getLigaId());
-        if (jornadaActual == null || jornadaActual == 0 || jornadaActual % 3 != 0) {
-            return ResponseEntity.badRequest().body("La ventana de fichajes está cerrada. Los traspasos solo se permiten en las jornadas 3, 6, 9...");
+        Long ligaId = SecurityUtils.getLigaId();
+        Optional<Liga> ligaOpt = ligaRepository.findById(ligaId);
+        boolean esFutbol = ligaOpt.map(l -> l.getDeporte() == Deporte.FUTBOL).orElse(true);
+
+        if (esFutbol) {
+            Integer jornadaActual = partidoRepository.findJornadaActualByLiga(ligaId);
+            if (jornadaActual == null || jornadaActual == 0 || jornadaActual % 3 != 0) {
+                return ResponseEntity.badRequest().body("La ventana de fichajes está cerrada. Los traspasos solo se permiten en las jornadas 3, 6, 9...");
+            }
         }
 
         Optional<Jugador> jugadorOpt = jugadorRepository.findById(oferta.getJugadorId());
@@ -62,7 +76,23 @@ public class OfertaController {
         }
 
         oferta.setEstado(Oferta.Estado.PENDIENTE);
-        return ResponseEntity.ok(ofertaRepository.save(oferta));
+        Oferta ofertaGuardada = ofertaRepository.save(oferta);
+
+        // Notificación async al entrenador del equipo vendedor (no bloquea la respuesta HTTP)
+        var entrenadorOpt = usuarioRepository.findByTeamIdAndRole(oferta.getEquipoDestinoId().intValue(), "entrenador");
+        if (entrenadorOpt.isEmpty()) {
+            System.err.println("[OfertaController] No se encontró entrenador para equipo ID=" + oferta.getEquipoDestinoId() + " con role='entrenador'");
+        } else {
+            System.out.println("[OfertaController] Enviando email a: " + entrenadorOpt.get().getEmail());
+            emailService.enviarNotificacionOferta(
+                entrenadorOpt.get().getEmail(),
+                jugador.getNombre(),
+                origenOpt.get().getNombre(),
+                oferta.getMonto().doubleValue()
+            );
+        }
+
+        return ResponseEntity.ok(ofertaGuardada);
     }
 
     @PutMapping("/{id}/aceptar")
