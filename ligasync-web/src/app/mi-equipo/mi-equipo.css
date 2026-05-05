@@ -88,6 +88,46 @@
   font-size: 0.95rem;
 }
 
+.equipo-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.btn-pagar-cuota {
+  padding: 0.65rem 1.25rem;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.btn-pagar-cuota:hover:not(:disabled) { opacity: 0.85; }
+
+.btn-pagar-cuota:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.badge-cuota-pagada {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .btn-editar {
   padding: 0.65rem 1.25rem;
   background: transparent;

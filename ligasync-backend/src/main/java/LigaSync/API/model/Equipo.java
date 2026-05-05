@@ -23,6 +23,8 @@ public class Equipo {
 
     private Double deudaAcumulada = 0.0;
 
+    private Boolean cuotaPagada = false;
+
     private String formacion = "4-4-2";
 
     @Column(name = "liga_id")
@@ -156,5 +158,13 @@ public class Equipo {
 
     public void setLigaId(Long ligaId) {
         this.ligaId = ligaId;
+    }
+
+    public Boolean getCuotaPagada() {
+        return cuotaPagada;
+    }
+
+    public void setCuotaPagada(Boolean cuotaPagada) {
+        this.cuotaPagada = cuotaPagada;
     }
 }

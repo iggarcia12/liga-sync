@@ -12,12 +12,15 @@ public class FirmarActaRequest {
 
     public static class IncidenciaDTO {
         private Long jugadorId;
-        private String tipo; // GOL, ASIST, AMARILLA, ROJA
+        private String tipo; // GOL, ASIST, AMARILLA, ROJA, TRIPLE, REBOTE, PUNTOS
+        private Integer valorAnotacion; // 1 = Tiro Libre, 2 = Canasta, 3 = Triple. null → 1 (compatibilidad fútbol)
 
         public Long getJugadorId() { return jugadorId; }
         public void setJugadorId(Long jugadorId) { this.jugadorId = jugadorId; }
         public String getTipo() { return tipo; }
         public void setTipo(String tipo) { this.tipo = tipo; }
+        public Integer getValorAnotacion() { return valorAnotacion; }
+        public void setValorAnotacion(Integer valorAnotacion) { this.valorAnotacion = valorAnotacion; }
     }
 
     public Integer getGolesLocal() { return golesLocal; }

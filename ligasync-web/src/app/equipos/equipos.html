@@ -19,7 +19,9 @@
     <div class="selector-equipo">
       <label>Seleccionar Equipo: </label>
       <select class="input-select" [(ngModel)]="equipoActualSeleccionado" (ngModelChange)="onEquipoChange($event)">
-        <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+        <option *ngFor="let eq of equipos" [value]="eq.id">
+          {{ eq.nombre }}
+        </option>
       </select>
     </div>
     <div class="acciones-equipo" *ngIf="esAdmin">
@@ -37,25 +39,26 @@
         <h3>Alineación Titular — {{ equipoActualDetalles.formacion || (esBaloncesto ? '2-1-2' : '4-4-2') }}</h3>
       </div>
       
-      <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'soccer-pitch'">
-        <div class="linea-medio"></div>
-        <div class="circulo-central"></div>
-        <div class="area-grande area-grande--arriba"></div>
-        <div class="area-grande area-grande--abajo"></div>
-        <div *ngIf="esBaloncesto" class="linea-triple linea-triple--arriba"></div>
-        <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
+      <div class="campo-preview">
+        <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'campo-futbol'">
+          <div *ngIf="!esBaloncesto" class="linea-medio"></div>
+          <div *ngIf="!esBaloncesto" class="circulo-central"></div>
+          <div *ngIf="!esBaloncesto" class="area-grande area-grande--arriba"></div>
+          <div class="area-grande area-grande--abajo"></div>
+          <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
 
-        <!-- Jugadores Titulares -->
-        <div class="jugador-spot-read" 
-             *ngFor="let j of titulares; let i = index" 
-             [ngStyle]="getPosicionEstilo(j, i)"
-             [class.fuera-de-posicion]="estaFueraDePosicion(j, i)">
-          <div class="jugador-circulo-read">
-            <span class="jugador-media-read">{{ j.media }}</span>
-          </div>
-          <div class="jugador-info-read">
-            <span class="jugador-nombre-read">{{ j.nombre.split(' ')[0] }}</span>
-            <span class="jugador-pos-read">{{ j.pos }}</span>
+          <!-- Jugadores Titulares -->
+          <div class="jugador-spot-read"
+               *ngFor="let j of titulares; let i = index"
+               [ngStyle]="getPosicionEstilo(j, i)"
+               [class.fuera-de-posicion]="estaFueraDePosicion(j, i)">
+            <div class="jugador-circulo-read">
+              <span class="jugador-media-read">{{ j.media }}</span>
+            </div>
+            <div class="jugador-info-read">
+              <span class="jugador-nombre-read">{{ j.nombre.split(' ')[0] }}</span>
+              <span class="jugador-pos-read">{{ j.pos }}</span>
+            </div>
           </div>
         </div>
       </div>

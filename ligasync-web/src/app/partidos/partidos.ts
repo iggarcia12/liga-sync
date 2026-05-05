@@ -9,6 +9,7 @@ interface IncidenciaItem {
   nombre: string;
   equipo: 'local' | 'visitante';
   tipo: string;
+  valorAnotacion?: number;
 }
 
 @Component({
@@ -107,7 +108,7 @@ export class PartidosComponent implements OnInit {
     const body = {
       golesLocal: this.golesLocalActa,
       golesVisitante: this.golesVisitanteActa,
-      incidencias: this.incidencias.map(i => ({ jugadorId: i.jugadorId, tipo: i.tipo }))
+      incidencias: this.incidencias.map(i => ({ jugadorId: i.jugadorId, tipo: i.tipo, valorAnotacion: i.valorAnotacion }))
     };
 
     this.http.put<any>(`${this.urlBase}/partidos/${this.partidoEnActa.id}/resultado`, body).subscribe({
@@ -138,16 +139,36 @@ export class PartidosComponent implements OnInit {
     this.mensajeErrorActa = '';
   }
 
-  anadirIncidencia(jugador: any, equipo: 'local' | 'visitante', tipo: string) {
-    this.incidencias.push({ jugadorId: jugador.id, nombre: jugador.nombre, equipo, tipo });
+  anadirIncidencia(jugador: any, equipo: 'local' | 'visitante', tipo: string, valorAnotacion?: number) {
+    this.incidencias.push({ jugadorId: jugador.id, nombre: jugador.nombre, equipo, tipo, valorAnotacion });
   }
 
   quitarIncidencia(index: number) {
     this.incidencias.splice(index, 1);
   }
 
-  contarIncidencias(jugadorId: number, tipo: string): number {
-    return this.incidencias.filter(i => i.jugadorId === jugadorId && i.tipo === tipo).length;
+  contarIncidencias(jugadorId: number, tipo: string, valorAnotacion?: number): number {
+    return this.incidencias.filter(i =>
+      i.jugadorId === jugadorId &&
+      i.tipo === tipo &&
+      (valorAnotacion === undefined || i.valorAnotacion === valorAnotacion)
+    ).length;
+  }
+
+  incidenciaEtiqueta(inc: IncidenciaItem): string {
+    switch (inc.tipo) {
+      case 'GOL':      return '⚽';
+      case 'PUNTOS':
+        if (inc.valorAnotacion === 2) return '🏀 +2 pts (Canasta)';
+        if (inc.valorAnotacion === 3) return '🏀 +3 pts';
+        return '🏀 +1 pt (T. Libre)';
+      case 'TRIPLE':   return '🏀 +3 pts (Triple)';
+      case 'REBOTE':   return '🔄 Rebote';
+      case 'ASIST':    return '🎯';
+      case 'AMARILLA': return '🟨';
+      case 'ROJA':     return '🟥';
+      default:         return '📋';
+    }
   }
 
   private actualizarTodosLosJugadores() {
@@ -166,7 +187,7 @@ export class PartidosComponent implements OnInit {
       golesVisitante: this.golesVisitanteActa,
       mvpId: this.mvpIdActa,
       asistentesIds: [],
-      incidencias: this.incidencias.map(i => ({ jugadorId: i.jugadorId, tipo: i.tipo }))
+      incidencias: this.incidencias.map(i => ({ jugadorId: i.jugadorId, tipo: i.tipo, valorAnotacion: i.valorAnotacion }))
     };
 
     this.http.put<any>(`${this.urlBase}/partidos/${this.partidoEnActa.id}/firmar`, body).subscribe({
@@ -195,5 +216,32 @@ export class PartidosComponent implements OnInit {
 
   esFirmado(partido: any): boolean {
     return partido.estado === 'FINALIZADO_Y_FIRMADO';
+  }
+
+  descargandoActa: Record<number, boolean> = {};
+
+  descargarActa(partidoId: number) {
+    if (this.descargandoActa[partidoId]) return;
+    this.descargandoActa[partidoId] = true;
+
+    this.http.get(`${this.urlBase}/partidos/${partidoId}/acta-pdf`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `acta_partido_${partidoId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.descargandoActa[partidoId] = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(`Error al descargar el acta del partido #${partidoId}`, err);
+        this.descargandoActa[partidoId] = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

@@ -10,7 +10,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let peticionFinal = req;
 
-  const esLogin = req.url.includes('/api/login') || req.url.includes('/api/auth/registro');
+  const esLogin = req.url.includes('/api/login')
+    || req.url.includes('/api/auth/registro')
+    || req.url.includes('/api/auth/google');
   if (miToken && !esLogin) {
     peticionFinal = req.clone({
       setHeaders: {

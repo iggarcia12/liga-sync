@@ -12,8 +12,11 @@ import LigaSync.API.repository.NoticiaRepository;
 import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
 import LigaSync.API.repository.LigaRepository;
+import LigaSync.API.service.PdfService;
 import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +34,7 @@ public class PartidoController {
     @Autowired private EquipoRepository equipoRepository;
     @Autowired private JugadorRepository jugadorRepository;
     @Autowired private LigaRepository ligaRepository;
+    @Autowired private PdfService pdfService;
 
     private static final double MULTA_AMARILLA = 500_000.0;
     private static final double MULTA_ROJA = 1_000_000.0;
@@ -142,13 +146,13 @@ public class PartidoController {
                 Optional<Jugador> jugOpt = jugadorRepository.findById(inc.getJugadorId());
                 if (jugOpt.isEmpty()) continue;
                 Jugador j = jugOpt.get();
-                procesarIncidencia(j, inc.getTipo(), resumen, esBasket);
+                procesarIncidencia(j, inc.getTipo(), inc.getValorAnotacion(), resumen, esBasket);
                 jugadorRepository.save(j);
             }
         }
 
-        if (resumen.length() > 2)
-            partido.setGoleadores(resumen.substring(0, resumen.length() - 2));
+        if (resumen.length() > 1)
+            partido.setGoleadores(resumen.substring(0, resumen.length() - 1));
 
         int gL = safe(request.getGolesLocal());
         int gV = safe(request.getGolesVisitante());
@@ -199,14 +203,14 @@ public class PartidoController {
                 Optional<Jugador> jugOpt = jugadorRepository.findById(inc.getJugadorId());
                 if (jugOpt.isEmpty()) continue;
                 Jugador jugador = jugOpt.get();
-                procesarIncidenciaFirma(jugador, inc.getTipo(), resumen, esBasket);
+                procesarIncidenciaFirma(jugador, inc.getTipo(), inc.getValorAnotacion(), resumen, esBasket);
                 if (jugador.getEquipo() != null) equipoRepository.save(jugador.getEquipo());
                 jugadorRepository.save(jugador);
             }
         }
 
-        if (resumen.length() > 2)
-            partido.setGoleadores(resumen.substring(0, resumen.length() - 2));
+        if (resumen.length() > 1)
+            partido.setGoleadores(resumen.substring(0, resumen.length() - 1));
 
         if (!esPlayoff) {
             if (partido.getLocal() != null) {
@@ -265,7 +269,28 @@ public class PartidoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    @GetMapping("/{id}/acta-pdf")
+    public ResponseEntity<byte[]> descargarActaPdf(@PathVariable Long id) {
+        Long ligaId = SecurityUtils.getLigaId();
+        Optional<Partido> partidoOpt = partidoRepository.findById(id);
+
+        if (partidoOpt.isEmpty() || !ligaId.equals(partidoOpt.get().getLigaId()))
+            return ResponseEntity.notFound().build();
+
+        Partido partido = partidoOpt.get();
+        if (partido.getEstado() != Partido.EstadoPartido.FINALIZADO_Y_FIRMADO)
+            return ResponseEntity.badRequest().build();
+
+        byte[] pdf = pdfService.generarActaPartidoPdf(partido);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "acta_partido_" + id + ".pdf");
+
+        return ResponseEntity.ok().headers(headers).body(pdf);
+    }
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
 
     private boolean esLigaDeBaloncesto(Long ligaId) {
         return ligaRepository.findById(ligaId)
@@ -290,17 +315,23 @@ public class PartidoController {
         }
     }
 
-    private void procesarIncidencia(Jugador j, String tipo, StringBuilder resumen, boolean esBasket) {
+    private void procesarIncidencia(Jugador j, String tipo, Integer valorAnotacion, StringBuilder resumen, boolean esBasket) {
         switch (tipo.toUpperCase()) {
             case "GOL":
             case "PUNTOS":
-                j.setGoles(safe(j.getGoles()) + 1);
-                resumen.append(j.getNombre()).append(esBasket ? " (puntos), " : " (gol), ");
+                int pts = (valorAnotacion != null && valorAnotacion > 0) ? valorAnotacion : 1;
+                j.setGoles(safe(j.getGoles()) + pts);
+                if (esBasket) {
+                    String etiqueta = pts == 1 ? "+1 pt (Tiro Libre)" : pts == 2 ? "+2 pts (Canasta)" : "+3 pts";
+                    resumen.append(j.getNombre()).append(" - ").append(etiqueta).append("\n");
+                } else {
+                    resumen.append(j.getNombre()).append(" - Gol\n");
+                }
                 break;
             case "TRIPLE":
                 j.setTriples(safe(j.getTriples()) + 1);
-                j.setGoles(safe(j.getGoles()) + 1);
-                resumen.append(j.getNombre()).append(" (triple), ");
+                j.setGoles(safe(j.getGoles()) + 3);
+                resumen.append(j.getNombre()).append(" - +3 pts (Triple)\n");
                 break;
             case "REBOTE":
                 j.setRebotes(safe(j.getRebotes()) + 1);
@@ -319,17 +350,23 @@ public class PartidoController {
         }
     }
 
-    private void procesarIncidenciaFirma(Jugador jugador, String tipo, StringBuilder resumen, boolean esBasket) {
+    private void procesarIncidenciaFirma(Jugador jugador, String tipo, Integer valorAnotacion, StringBuilder resumen, boolean esBasket) {
         switch (tipo.toUpperCase()) {
             case "GOL":
             case "PUNTOS":
-                jugador.setGoles(safe(jugador.getGoles()) + 1);
-                resumen.append(jugador.getNombre()).append(esBasket ? " (puntos), " : " (gol), ");
+                int pts = (valorAnotacion != null && valorAnotacion > 0) ? valorAnotacion : 1;
+                jugador.setGoles(safe(jugador.getGoles()) + pts);
+                if (esBasket) {
+                    String etiqueta = pts == 1 ? "+1 pt (Tiro Libre)" : pts == 2 ? "+2 pts (Canasta)" : "+3 pts";
+                    resumen.append(jugador.getNombre()).append(" - ").append(etiqueta).append("\n");
+                } else {
+                    resumen.append(jugador.getNombre()).append(" - Gol\n");
+                }
                 break;
             case "TRIPLE":
                 jugador.setTriples(safe(jugador.getTriples()) + 1);
-                jugador.setGoles(safe(jugador.getGoles()) + 1);
-                resumen.append(jugador.getNombre()).append(" (triple), ");
+                jugador.setGoles(safe(jugador.getGoles()) + 3);
+                resumen.append(jugador.getNombre()).append(" - +3 pts (Triple)\n");
                 break;
             case "REBOTE":
                 jugador.setRebotes(safe(jugador.getRebotes()) + 1);

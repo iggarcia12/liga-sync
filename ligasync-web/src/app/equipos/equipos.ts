@@ -39,6 +39,7 @@ export class EquiposComponent implements OnInit {
   mostrarModalPresupuesto: boolean = false;
   montoInyectar: number = 0;
 
+
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private authService = inject(AuthService);

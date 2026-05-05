@@ -12,6 +12,8 @@ import { MiPerfilComponent } from './mi-perfil/mi-perfil';
 import { MiEquipoComponent } from './mi-equipo/mi-equipo';
 import { ClasificacionComponent } from './clasificacion/clasificacion';
 import { PlayoffsComponent } from './playoffs/playoffs';
+import { PagoExitoComponent } from './pago-exito/pago-exito';
+import { PagoCanceladoComponent } from './pago-cancelado/pago-cancelado';
 import { authGuard } from './auth-guard';
 import { adminGuard } from './admin-guard';
 
@@ -19,6 +21,8 @@ export const routes: Routes = [
   // Rutas públicas
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
+  { path: 'pago-exito', component: PagoExitoComponent },
+  { path: 'pago-cancelado', component: PagoCanceladoComponent },
 
   // Rutas privadas normales
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },

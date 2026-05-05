@@ -40,6 +40,13 @@ export class AdminComponent implements OnInit {
   jugadoresSinUsuario: any[] = [];
   mensajeRango = '';
   mensajeRangoError = '';
+  busquedaUsuario: string = '';
+
+  get usuariosFiltrados(): any[] {
+    const filtro = this.busquedaUsuario.trim().toLowerCase();
+    if (!filtro) return this.usuarios;
+    return this.usuarios.filter(u => u.nombre?.toLowerCase().includes(filtro));
+  }
 
   // Estado del editor de resultados (pantalla completa)
   editorActivo: boolean = false;
@@ -287,6 +294,35 @@ export class AdminComponent implements OnInit {
         this.mensajeRango = '';
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  get equiposPagados(): number {
+    return this.equipos.filter(e => e.cuotaPagada).length;
+  }
+
+  get equiposPendientes(): number {
+    return this.equipos.filter(e => !e.cuotaPagada).length;
+  }
+
+  marcarCuotaPagada(equipo: any) {
+    this.http.patch(`${this.urlBase}/pagos/confirmar-cuota/${equipo.id}`, {}).subscribe({
+      next: () => {
+        equipo.cuotaPagada = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al marcar cuota como pagada:', err)
+    });
+  }
+
+  resetearCuota(equipo: any) {
+    if (!confirm(`¿Resetear la cuota de "${equipo.nombre}"? El equipo tendrá que volver a pagar.`)) return;
+    this.http.patch(`${this.urlBase}/pagos/resetear-cuota/${equipo.id}`, {}).subscribe({
+      next: () => {
+        equipo.cuotaPagada = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al resetear cuota:', err)
     });
   }
 

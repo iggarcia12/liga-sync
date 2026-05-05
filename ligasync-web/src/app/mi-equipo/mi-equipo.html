@@ -73,7 +73,14 @@
           <p class="equipo-presupuesto">💰 Presupuesto: <strong>{{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
         </div>
       </div>
-      <button class="btn-editar" *ngIf="esEntrenador" (click)="abrirEdicion()">✏️ Editar equipo</button>
+      <div class="equipo-acciones">
+        <button class="btn-editar" (click)="abrirEdicion()">✏️ Editar equipo</button>
+        <button class="btn-pagar-cuota" *ngIf="!equipo.cuotaPagada"
+          (click)="pagarCuotaInscripcion()" [disabled]="procesandoPago">
+          {{ procesandoPago ? 'Redirigiendo...' : '💳 Pagar Cuota (50€)' }}
+        </button>
+        <span class="badge-cuota-pagada" *ngIf="equipo.cuotaPagada">✅ Cuota pagada</span>
+      </div>
     </div>
 
     <!-- ===== CARD TESORERÍA (solo entrenador) ===== -->

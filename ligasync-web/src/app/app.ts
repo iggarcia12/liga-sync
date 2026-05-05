@@ -52,8 +52,9 @@ export class App implements OnInit {
   }
 
   mostrarMenu(): boolean {
+    const ruta = this.router.url.split('?')[0];
     const rutasSinMenu = ['/login', '/registro', '/'];
-    return !rutasSinMenu.includes(this.router.url);
+    return !rutasSinMenu.includes(ruta);
   }
 
   toggleSidebar() {

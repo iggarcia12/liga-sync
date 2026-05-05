@@ -204,6 +204,37 @@
   text-decoration: underline;
 }
 
+/* --- OAuth / Google ----------------------------------------- */
+.separador-oauth {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.separador-oauth::before,
+.separador-oauth::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color, rgba(0, 0, 0, 0.12));
+}
+
+.google-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.google-btn-wrapper > div {
+  width: 100% !important;
+}
+
 /* --- Responsivo -------------------------------------------- */
 @media (max-width: 900px) {
   .pagina-login {

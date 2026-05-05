@@ -87,6 +87,24 @@
               <div class="estado-vacio" *ngIf="topAsistencias.length === 0">Sin info de asistencias</div>
            </div>
         </div>
+
+        <!-- Top Rebotes — solo baloncesto -->
+        <div class="card mt-4" *ngIf="authService.esBaloncesto()">
+           <div class="card-header">
+              <h3>💪 Top Reboteadores</h3>
+           </div>
+           <div class="top-list">
+              <div class="top-item" *ngFor="let j of topRebotes; let i = index">
+                 <div class="top-rank" [ngClass]="{'rank-gold': i===0, 'rank-silver': i===1, 'rank-bronze': i===2}">{{ i + 1 }}</div>
+                 <div class="top-info">
+                    <h4>{{j.nombre}}</h4>
+                    <span>{{j.equipo?.nombre || 'Libre'}}</span>
+                 </div>
+                 <div class="top-stat">{{j.rebotes || 0}} <span>REB</span></div>
+              </div>
+              <div class="estado-vacio" *ngIf="topRebotes.length === 0">Sin rebotes registrados</div>
+           </div>
+        </div>
      </div>
   </div>
 </div>

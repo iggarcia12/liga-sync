@@ -52,6 +52,9 @@
       <div class="acta-firmada-info" *ngIf="esFirmado(partido)">
         <span>Acta firmada y sellada</span>
         <span *ngIf="partido.goleadores" class="goleadores-label">⚽ {{ partido.goleadores }}</span>
+        <button class="btn-descargar-acta" (click)="descargarActa(partido.id)" [disabled]="descargandoActa[partido.id]">
+          {{ descargandoActa[partido.id] ? '⏳ Generando...' : '📄 Descargar Acta' }}
+        </button>
       </div>
 
     </div>
@@ -82,13 +85,13 @@
       <div class="acta-score-editor">
         <div class="score-control">
           <button class="btn-score" (click)="golesLocalActa = golesLocalActa > 0 ? golesLocalActa - 1 : 0">−</button>
-          <span class="score-numero">{{ golesLocalActa }}</span>
+          <input class="score-input" type="number" min="0" [(ngModel)]="golesLocalActa" />
           <button class="btn-score" (click)="golesLocalActa = golesLocalActa + 1">+</button>
         </div>
         <span class="score-sep">:</span>
         <div class="score-control">
           <button class="btn-score" (click)="golesVisitanteActa = golesVisitanteActa > 0 ? golesVisitanteActa - 1 : 0">−</button>
-          <span class="score-numero">{{ golesVisitanteActa }}</span>
+          <input class="score-input" type="number" min="0" [(ngModel)]="golesVisitanteActa" />
           <button class="btn-score" (click)="golesVisitanteActa = golesVisitanteActa + 1">+</button>
         </div>
       </div>
@@ -106,11 +109,31 @@
             <span class="pos-badge">{{ j.pos }}</span>
           </div>
           <div class="acta-jugador__acciones">
-            <button class="btn-inc btn-gol"
-              (click)="anadirIncidencia(j, 'local', 'GOL')"
-              title="Añadir gol">
+            <!-- Fútbol: botón único de gol -->
+            <button *ngIf="!authService.esBaloncesto()" class="btn-inc btn-gol"
+              (click)="anadirIncidencia(j, 'local', 'GOL', 1)" title="Gol">
               ⚽<span *ngIf="contarIncidencias(j.id, 'GOL') > 0" class="inc-count">{{ contarIncidencias(j.id, 'GOL') }}</span>
             </button>
+            <!-- Baloncesto: tres botones de anotación + rebote -->
+            <ng-container *ngIf="authService.esBaloncesto()">
+              <button class="btn-inc btn-1pt"
+                (click)="anadirIncidencia(j, 'local', 'PUNTOS', 1)" title="Tiro Libre (+1 pt)">
+                +1<span *ngIf="contarIncidencias(j.id, 'PUNTOS', 1) > 0" class="inc-count">{{ contarIncidencias(j.id, 'PUNTOS', 1) }}</span>
+              </button>
+              <button class="btn-inc btn-2pt"
+                (click)="anadirIncidencia(j, 'local', 'PUNTOS', 2)" title="Canasta (+2 pts)">
+                +2<span *ngIf="contarIncidencias(j.id, 'PUNTOS', 2) > 0" class="inc-count">{{ contarIncidencias(j.id, 'PUNTOS', 2) }}</span>
+              </button>
+              <button class="btn-inc btn-triple"
+                (click)="anadirIncidencia(j, 'local', 'TRIPLE', 3)" title="Triple (+3 pts)">
+                +3<span *ngIf="contarIncidencias(j.id, 'TRIPLE', 3) > 0" class="inc-count">{{ contarIncidencias(j.id, 'TRIPLE', 3) }}</span>
+              </button>
+              <button class="btn-inc btn-rebote"
+                (click)="anadirIncidencia(j, 'local', 'REBOTE')" title="Rebote">
+                🔄<span *ngIf="contarIncidencias(j.id, 'REBOTE') > 0" class="inc-count">{{ contarIncidencias(j.id, 'REBOTE') }}</span>
+              </button>
+            </ng-container>
+            <!-- Comunes a ambos deportes -->
             <button class="btn-inc btn-asist"
               (click)="anadirIncidencia(j, 'local', 'ASIST')"
               title="Añadir asistencia">
@@ -135,11 +158,31 @@
             <span class="pos-badge">{{ j.pos }}</span>
           </div>
           <div class="acta-jugador__acciones">
-            <button class="btn-inc btn-gol"
-              (click)="anadirIncidencia(j, 'visitante', 'GOL')"
-              title="Añadir gol">
+            <!-- Fútbol: botón único de gol -->
+            <button *ngIf="!authService.esBaloncesto()" class="btn-inc btn-gol"
+              (click)="anadirIncidencia(j, 'visitante', 'GOL', 1)" title="Gol">
               ⚽<span *ngIf="contarIncidencias(j.id, 'GOL') > 0" class="inc-count">{{ contarIncidencias(j.id, 'GOL') }}</span>
             </button>
+            <!-- Baloncesto: tres botones de anotación + rebote -->
+            <ng-container *ngIf="authService.esBaloncesto()">
+              <button class="btn-inc btn-1pt"
+                (click)="anadirIncidencia(j, 'visitante', 'PUNTOS', 1)" title="Tiro Libre (+1 pt)">
+                +1<span *ngIf="contarIncidencias(j.id, 'PUNTOS', 1) > 0" class="inc-count">{{ contarIncidencias(j.id, 'PUNTOS', 1) }}</span>
+              </button>
+              <button class="btn-inc btn-2pt"
+                (click)="anadirIncidencia(j, 'visitante', 'PUNTOS', 2)" title="Canasta (+2 pts)">
+                +2<span *ngIf="contarIncidencias(j.id, 'PUNTOS', 2) > 0" class="inc-count">{{ contarIncidencias(j.id, 'PUNTOS', 2) }}</span>
+              </button>
+              <button class="btn-inc btn-triple"
+                (click)="anadirIncidencia(j, 'visitante', 'TRIPLE', 3)" title="Triple (+3 pts)">
+                +3<span *ngIf="contarIncidencias(j.id, 'TRIPLE', 3) > 0" class="inc-count">{{ contarIncidencias(j.id, 'TRIPLE', 3) }}</span>
+              </button>
+              <button class="btn-inc btn-rebote"
+                (click)="anadirIncidencia(j, 'visitante', 'REBOTE')" title="Rebote">
+                🔄<span *ngIf="contarIncidencias(j.id, 'REBOTE') > 0" class="inc-count">{{ contarIncidencias(j.id, 'REBOTE') }}</span>
+              </button>
+            </ng-container>
+            <!-- Comunes a ambos deportes -->
             <button class="btn-inc btn-asist"
               (click)="anadirIncidencia(j, 'visitante', 'ASIST')"
               title="Añadir asistencia">
@@ -173,7 +216,7 @@
       <h4 class="acta-log__titulo">Incidencias registradas</h4>
       <div class="acta-log__lista">
         <div class="acta-log__item" *ngFor="let inc of incidencias; let i = index">
-          <span>{{ tipoIcono(inc.tipo) }} <strong>{{ inc.nombre }}</strong></span>
+          <span>{{ incidenciaEtiqueta(inc) }} <strong>{{ inc.nombre }}</strong></span>
           <button class="btn-quitar-inc" (click)="quitarIncidencia(i)" title="Quitar">✕</button>
         </div>
       </div>

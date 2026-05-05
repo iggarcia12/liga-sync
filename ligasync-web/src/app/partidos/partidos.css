@@ -292,6 +292,36 @@
 .goleadores-label {
   color: var(--text-primary);
   font-weight: 600;
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.btn-descargar-acta {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.78rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1.5px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.btn-descargar-acta:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.btn-descargar-acta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 /* ============================================================
@@ -309,6 +339,7 @@
   justify-content: center;
   padding: 1rem;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .modal-acta {
@@ -317,9 +348,10 @@
   border: 1px solid var(--border-color);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
   width: 100%;
-  max-width: 860px;
+  max-width: min(95vw, 1100px);
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -446,6 +478,30 @@
   line-height: 1;
 }
 
+.score-input {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 3rem;
+  text-align: center;
+  line-height: 1;
+  -moz-appearance: textfield;
+}
+
+.score-input::-webkit-outer-spin-button,
+.score-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.score-input:focus {
+  background: rgba(75, 159, 255, 0.08);
+  border-radius: 4px;
+}
+
 .score-sep {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
@@ -524,8 +580,11 @@
 
 .acta-jugador__acciones {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.25rem;
   flex-shrink: 0;
+  justify-content: flex-end;
+  max-width: 55%;
 }
 
 .btn-inc {
@@ -545,6 +604,39 @@
 
 .btn-inc:hover { transform: scale(1.15); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 .btn-inc:active { transform: scale(0.95); }
+
+/* Botones de anotación basket */
+.btn-1pt, .btn-2pt, .btn-triple {
+  width: auto;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 0.35rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.btn-1pt {
+  background: rgba(249, 115, 22, 0.1);
+  border-color: rgba(249, 115, 22, 0.35);
+  color: #f97316;
+}
+.btn-1pt:hover { background: #f97316; color: white; border-color: #f97316; }
+
+.btn-2pt {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: var(--accent-color);
+}
+.btn-2pt:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+.btn-triple {
+  background: rgba(234, 179, 8, 0.1);
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #ca8a04;
+}
+.btn-triple:hover { background: #eab308; color: white; border-color: #eab308; }
 
 .inc-count {
   position: absolute;

@@ -9,6 +9,7 @@
     <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥 Usuarios</button>
     <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Partidos y Calendario</button>
     <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅ Convocatoria</button>
+    <button class="tab-btn" [class.active]="tabActiva === 'pagos'" (click)="activarTab('pagos')">💳 Pagos</button>
   </div>
 
   <div class="admin-grid">
@@ -17,6 +18,17 @@
       <div class="card-header">
         <h3>Gestión de Usuarios</h3>
         <span class="badge badge-espectador">{{ usuarios.length }} usuarios</span>
+      </div>
+
+      <div class="buscador-usuarios">
+        <span class="buscador-icono">🔍</span>
+        <input
+          type="text"
+          class="buscador-input"
+          placeholder="Buscar por nombre..."
+          [(ngModel)]="busquedaUsuario"
+        />
+        <button class="buscador-clear" *ngIf="busquedaUsuario" (click)="busquedaUsuario = ''">×</button>
       </div>
 
       <div class="caja-exito-rango" *ngIf="mensajeRango">{{ mensajeRango }}</div>
@@ -37,7 +49,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let u of usuarios">
+            <tr *ngFor="let u of usuariosFiltrados">
               <td>
                 <div class="usuario-cell">
                   <div class="usuario-avatar">{{ getInitial(u.nombre) }}</div>
@@ -98,6 +110,11 @@
                     🗑️
                   </button>
                 </div>
+              </td>
+            </tr>
+            <tr *ngIf="usuariosFiltrados.length === 0 && !cargandoUsuarios">
+              <td colspan="6" class="sin-resultados-busqueda">
+                Sin usuarios que coincidan con "{{ busquedaUsuario }}"
               </td>
             </tr>
           </tbody>
@@ -255,7 +272,68 @@
 
     </div>
 
+    <!-- ─── TAB PAGOS ──────────────────────────────────────────── -->
+    <div class="card panel-pagos" *ngIf="tabActiva === 'pagos'">
+      <div class="card-header">
+        <h3>Gestión de Cuotas de Inscripción</h3>
+        <div class="pagos-resumen-badges">
+          <span class="badge badge-pagado">✅ {{ equiposPagados }} pagados</span>
+          <span class="badge badge-pendiente">⏳ {{ equiposPendientes }} pendientes</span>
+        </div>
+      </div>
+
+      <div class="pagos-progress-bar">
+        <div class="pagos-progress-fill"
+          [style.width.%]="equipos.length > 0 ? (equiposPagados / equipos.length * 100) : 0">
+        </div>
+      </div>
+      <p class="pagos-progress-label">
+        {{ equiposPagados }} de {{ equipos.length }} equipos han pagado la cuota de inscripción
+      </p>
+
+      <div class="estado-vacio" *ngIf="equipos.length === 0">
+        <p>No hay equipos registrados en la liga.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="equipos.length > 0">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Equipo</th>
+              <th>Ciudad</th>
+              <th>Estado cuota</th>
+              <th>Acción admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let eq of equipos" [class.fila-pagada]="eq.cuotaPagada">
+              <td><strong>{{ eq.nombre }}</strong></td>
+              <td>{{ eq.ciudad || '—' }}</td>
+              <td>
+                <span class="badge" [ngClass]="eq.cuotaPagada ? 'badge-pagado' : 'badge-pendiente'">
+                  {{ eq.cuotaPagada ? '✅ Pagada' : '⏳ Pendiente' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-small btn-success"
+                  *ngIf="!eq.cuotaPagada"
+                  (click)="marcarCuotaPagada(eq)">
+                  Marcar como pagada
+                </button>
+                <button class="btn btn-small btn-danger"
+                  *ngIf="eq.cuotaPagada"
+                  (click)="resetearCuota(eq)">
+                  Resetear
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
+
 </div>
 
 <!-- EDITOR DE RESULTADOS FULL-SCREEN -->

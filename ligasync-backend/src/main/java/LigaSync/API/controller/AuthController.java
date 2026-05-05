@@ -1,7 +1,11 @@
 package LigaSync.API.controller;
 
+import LigaSync.API.dto.AsignarLigaRequest;
+import LigaSync.API.dto.GoogleLoginRequest;
 import LigaSync.API.dto.LoginRequest;
 import LigaSync.API.dto.RegistroRequest;
+import LigaSync.API.service.AuthService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import LigaSync.API.model.Deporte;
 import LigaSync.API.model.Liga;
 import LigaSync.API.model.Usuario;
@@ -34,6 +38,40 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/auth/asignar-liga")
+    public ResponseEntity<?> asignarLiga(@RequestBody AsignarLigaRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            Map<String, Object> response = authService.asignarLiga(
+                email, request.getTipoAccion(), request.getNombreLiga(), request.getDeporte()
+            );
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
+        } catch (java.util.NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al asignar la liga."));
+        }
+    }
+
+    @PostMapping("/auth/google")
+    public ResponseEntity<?> loginConGoogle(@RequestBody GoogleLoginRequest request) {
+        try {
+            Map<String, Object> response = authService.loginWithGoogle(request.getToken());
+            return ResponseEntity.ok(response);
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al procesar el login con Google."));
+        }
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {

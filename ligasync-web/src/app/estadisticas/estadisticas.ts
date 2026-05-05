@@ -19,6 +19,7 @@ export class EstadisticasComponent implements OnInit, AfterViewInit {
   
   topGoleadores: any[] = [];
   topAsistencias: any[] = [];
+  topRebotes: any[] = [];
   sancionados: any[] = [];
 
   @ViewChild('chartEquipos') chartCanvas!: ElementRef;
@@ -65,12 +66,14 @@ export class EstadisticasComponent implements OnInit, AfterViewInit {
        ...j,
        goles: j.goles !== undefined ? j.goles : 0,
        asistencias: j.asist !== undefined ? j.asist : 0,
+       rebotes: j.rebotes !== undefined ? j.rebotes : 0,
        tarjetasAmarillas: j.amarillas !== undefined ? j.amarillas : 0,
        tarjetasRojas: j.rojas !== undefined ? j.rojas : 0
     }));
 
     this.topGoleadores = [...jugadoresProcesados].sort((a, b) => b.goles - a.goles).slice(0, 5);
     this.topAsistencias = [...jugadoresProcesados].sort((a, b) => b.asistencias - a.asistencias).slice(0, 5);
+    this.topRebotes = [...jugadoresProcesados].sort((a, b) => b.rebotes - a.rebotes).slice(0, 5);
     this.sancionados = [...jugadoresProcesados]
       .filter(j => j.tarjetasRojas > 0 || j.tarjetasAmarillas >= 1) // Bajamos a 1 para que se vea algo si hay pocas
       .sort((a, b) => (b.tarjetasRojas * 3 + b.tarjetasAmarillas) - (a.tarjetasRojas * 3 + a.tarjetasAmarillas))

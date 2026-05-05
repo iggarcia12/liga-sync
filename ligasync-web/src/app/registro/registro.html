@@ -9,8 +9,10 @@
         <strong>LigaSync</strong>
       </div>
 
-      <h2>Crear cuenta</h2>
-      <p class="registro-descripcion">Únete a LigaSync y sigue tu liga en tiempo real.</p>
+      <h2>{{ modoLiga ? 'Elige tu liga' : 'Crear cuenta' }}</h2>
+      <p class="registro-descripcion">
+        {{ modoLiga ? 'Ya tienes cuenta con Google. Solo necesitas unirte o crear una liga.' : 'Únete a LigaSync y sigue tu liga en tiempo real.' }}
+      </p>
 
       <!-- Selector CREAR / UNIRSE -->
       <div class="selector-accion">
@@ -93,30 +95,37 @@
           </div>
         </div>
 
-        <div class="separador-seccion"></div>
+        <ng-container *ngIf="!modoLiga">
+          <div class="separador-seccion"></div>
 
-        <div class="grupo-input">
-          <label>Nombre completo</label>
-          <input type="text" name="nombre" [(ngModel)]="nombre" required placeholder="Ej: Carlos García" />
-        </div>
+          <div class="grupo-input">
+            <label>Nombre completo</label>
+            <input type="text" name="nombre" [(ngModel)]="nombre" required placeholder="Ej: Carlos García" />
+          </div>
 
-        <div class="grupo-input">
-          <label>Email</label>
-          <input type="email" name="email" [(ngModel)]="email" required placeholder="tu@email.com" />
-        </div>
+          <div class="grupo-input">
+            <label>Email</label>
+            <input type="email" name="email" [(ngModel)]="email" required placeholder="tu@email.com" />
+          </div>
 
-        <div class="grupo-input">
-          <label>Contraseña</label>
-          <input type="password" name="pass" [(ngModel)]="pass" required placeholder="Mínimo 6 caracteres" />
-        </div>
+          <div class="grupo-input">
+            <label>Contraseña</label>
+            <input type="password" name="pass" [(ngModel)]="pass" required placeholder="Mínimo 6 caracteres" />
+          </div>
 
-        <div class="grupo-input">
-          <label>Confirmar contraseña</label>
-          <input type="password" name="confirmarPass" [(ngModel)]="confirmarPass" required placeholder="Repite la contraseña" />
-        </div>
+          <div class="grupo-input">
+            <label>Confirmar contraseña</label>
+            <input type="password" name="confirmarPass" [(ngModel)]="confirmarPass" required placeholder="Repite la contraseña" />
+          </div>
+        </ng-container>
 
         <button type="submit" class="btn-registrar" [disabled]="cargando">
-          {{ cargando ? 'Procesando...' : (tipoAccion === 'CREAR' ? 'Crear liga y cuenta' : 'Unirme a la liga') }}
+          <ng-container *ngIf="!cargando">
+            {{ modoLiga
+              ? (tipoAccion === 'CREAR' ? 'Crear liga y entrar' : 'Unirme y entrar al panel')
+              : (tipoAccion === 'CREAR' ? 'Crear liga y cuenta' : 'Unirme a la liga') }}
+          </ng-container>
+          <ng-container *ngIf="cargando">Procesando...</ng-container>
         </button>
       </form>
 

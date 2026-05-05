@@ -972,3 +972,155 @@
   font-style: italic;
   text-align: center;
 }
+
+/* ── Buscador de Usuarios ─────────────────────────────────── */
+.buscador-usuarios {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.buscador-usuarios:focus-within {
+  border-color: var(--accent-color, #4b9fff);
+  box-shadow: 0 0 0 3px rgba(75,159,255,0.12);
+}
+
+.buscador-icono {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.buscador-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+}
+
+.buscador-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.buscador-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  padding: 0 0.25rem;
+  line-height: 1;
+  border-radius: 50%;
+  transition: color 0.15s, background 0.15s;
+}
+
+.buscador-clear:hover {
+  color: #ef4444;
+  background: rgba(239,68,68,0.08);
+}
+
+.sin-resultados-busqueda {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #64748b);
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+/* ============================================================
+   PANEL PAGOS
+   ============================================================ */
+.panel-pagos {
+  width: 100%;
+}
+
+.panel-pagos .card-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.panel-pagos .card-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.pagos-resumen-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge-pagado {
+  background-color: rgba(16,185,129,0.12);
+  color: #059669;
+  border: 1px solid rgba(16,185,129,0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-ui);
+}
+
+.badge-pendiente {
+  background-color: rgba(245,158,11,0.12);
+  color: #b45309;
+  border: 1px solid rgba(245,158,11,0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-ui);
+}
+
+.pagos-progress-bar {
+  height: 8px;
+  background: var(--bg-surface);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.pagos-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.pagos-progress-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin: 0 0 1.25rem 0;
+  font-family: var(--font-ui);
+}
+
+.fila-pagada td {
+  background: rgba(16,185,129,0.03);
+}
+
+.btn-success {
+  background: rgba(16,185,129,0.15);
+  color: #059669;
+  border: 1px solid rgba(16,185,129,0.35);
+}
+.btn-success:hover {
+  background: rgba(16,185,129,0.25);
+}

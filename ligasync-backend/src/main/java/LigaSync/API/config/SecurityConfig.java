@@ -41,7 +41,9 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/registro").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/google").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/asignar-liga").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/ligas/buscar").permitAll()
 
@@ -55,6 +57,10 @@ public class SecurityConfig {
                         // El jugador puede actualizar su propia convocatoria
                         .requestMatchers(HttpMethod.PUT, "/api/jugadores/**")
                         .hasAnyRole("ADMIN", "ENTRENADOR", "JUGADOR")
+
+                        .requestMatchers(HttpMethod.POST, "/api/pagos/crear-sesion").hasAnyRole("ADMIN", "ENTRENADOR")
+                        .requestMatchers(HttpMethod.PATCH, "/api/pagos/confirmar-cuota/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/pagos/resetear-cuota/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/api/ofertas").hasAnyRole("ADMIN", "ENTRENADOR")
                         .requestMatchers(HttpMethod.PUT, "/api/ofertas/**").hasAnyRole("ADMIN", "ENTRENADOR")

@@ -48,6 +48,7 @@ export class MiEquipoComponent implements OnInit {
   ofertas: any[] = [];
   equiposTodos: any[] = [];
   cargandoOfertas = false;
+  procesandoPago = false;
 
   get ofertasPendientes(): number {
     return this.ofertas.filter(o => o.estado === 'PENDIENTE').length;
@@ -266,6 +267,23 @@ export class MiEquipoComponent implements OnInit {
     this.http.put<any>(`http://localhost:8080/api/ofertas/${oferta.id}/rechazar`, {}).subscribe({
       next: () => { if (this.equipo) this.cargarOfertas(this.equipo.id); },
       error: (err) => console.error('Error al rechazar oferta:', err)
+    });
+  }
+
+  pagarCuotaInscripcion() {
+    if (!this.equipo || this.procesandoPago) return;
+    this.procesandoPago = true;
+
+    this.http.post<{ url: string }>('http://localhost:8080/api/pagos/crear-sesion', {
+      equipoId: this.equipo.id,
+      nombreEquipo: this.equipo.nombre,
+      precioCentimos: 5000
+    }).subscribe({
+      next: (resp) => { window.location.href = resp.url; },
+      error: (err) => {
+        console.error('Error al crear sesión de pago:', err);
+        this.procesandoPago = false;
+      }
     });
   }
 
