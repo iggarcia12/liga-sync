@@ -24,6 +24,7 @@ export class DashboardComponent implements OnInit {
   cargandoNoticias: boolean = true;
   generandoPlayoffs = false;
   mensajePlayoffs = '';
+  hayErrorPlayoffs = false;
 
   get isAdmin(): boolean {
     return localStorage.getItem('role') === 'ADMIN';
@@ -140,15 +141,18 @@ export class DashboardComponent implements OnInit {
   generarPlayoffs() {
     this.generandoPlayoffs = true;
     this.mensajePlayoffs = '';
+    this.hayErrorPlayoffs = false;
     this.http.post(`${this.urlBase}/partidos/generar-playoffs`, {}).subscribe({
       next: () => {
         this.mensajePlayoffs = '¡Play-offs generados! 4 partidos de cuartos listos.';
+        this.hayErrorPlayoffs = false;
         this.generandoPlayoffs = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al generar play-offs:', err);
         this.mensajePlayoffs = err.error || 'Error al generar los play-offs.';
+        this.hayErrorPlayoffs = true;
         this.generandoPlayoffs = false;
         this.cdr.detectChanges();
       }

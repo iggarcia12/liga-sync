@@ -49,9 +49,12 @@ public class OfertaController {
         boolean esFutbol = ligaOpt.map(l -> l.getDeporte() == Deporte.FUTBOL).orElse(true);
 
         if (esFutbol) {
-            Integer jornadaActual = partidoRepository.findJornadaActualByLiga(ligaId);
-            if (jornadaActual == null || jornadaActual == 0 || jornadaActual % 3 != 0) {
-                return ResponseEntity.badRequest().body("La ventana de fichajes está cerrada. Los traspasos solo se permiten en las jornadas 3, 6, 9...");
+            boolean mercadoForzadoAbierto = ligaOpt.map(Liga::isMercadoAbierto).orElse(false);
+            if (!mercadoForzadoAbierto) {
+                Integer jornadaActual = partidoRepository.findJornadaActualByLiga(ligaId);
+                if (jornadaActual == null || jornadaActual == 0 || jornadaActual % 3 != 0) {
+                    return ResponseEntity.badRequest().body("La ventana de fichajes está cerrada. Los traspasos solo se permiten en las jornadas 3, 6, 9...");
+                }
             }
         }
 

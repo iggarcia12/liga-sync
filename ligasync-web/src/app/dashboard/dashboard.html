@@ -21,8 +21,8 @@
           <a routerLink="/playoffs" class="btn-ver-playoffs">Ver cuadro →</a>
         </div>
       </div>
-      <p class="admin-action-msg msg-ok"  *ngIf="mensajePlayoffs && !mensajePlayoffs.startsWith('Error')">✓ {{ mensajePlayoffs }}</p>
-      <p class="admin-action-msg msg-err" *ngIf="mensajePlayoffs &&  mensajePlayoffs.startsWith('Error')">⚠ {{ mensajePlayoffs }}</p>
+      <p class="admin-action-msg msg-ok"  *ngIf="mensajePlayoffs && !hayErrorPlayoffs">✓ {{ mensajePlayoffs }}</p>
+      <p class="admin-action-msg msg-err" *ngIf="mensajePlayoffs &&  hayErrorPlayoffs">⚠ {{ mensajePlayoffs }}</p>
     </div>
   </div>
 

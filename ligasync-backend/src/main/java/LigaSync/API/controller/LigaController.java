@@ -4,7 +4,9 @@ import LigaSync.API.dto.LigaBuscadaDto;
 import LigaSync.API.model.Deporte;
 import LigaSync.API.model.Liga;
 import LigaSync.API.repository.LigaRepository;
+import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,5 +33,22 @@ public class LigaController {
                 .map(l -> new LigaBuscadaDto(l.getId(), l.getNombre(), l.getDeporte()))
                 .limit(8)
                 .toList();
+    }
+
+    @GetMapping("/actual")
+    public ResponseEntity<Liga> getLigaActual() {
+        Long ligaId = SecurityUtils.getLigaId();
+        return ligaRepository.findById(ligaId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/mercado-estado")
+    public ResponseEntity<?> setMercadoAbierto(@RequestParam boolean abierto) {
+        Long ligaId = SecurityUtils.getLigaId();
+        return ligaRepository.findById(ligaId).map(liga -> {
+            liga.setMercadoAbierto(abierto);
+            return ResponseEntity.ok(ligaRepository.save(liga));
+        }).orElse(ResponseEntity.notFound().build());
     }
 }

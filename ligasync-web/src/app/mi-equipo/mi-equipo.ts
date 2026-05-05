@@ -164,12 +164,31 @@ export class MiEquipoComponent implements OnInit {
     this.aplicarOrdenacion();
   }
 
+  private normalizarPos(pos: string): string {
+    if (!pos) return '';
+    const map: Record<string, string> = {
+      'pívot': 'PIVOT', 'pivot': 'PIVOT',
+      'ala-pívot': 'ALA_PIVOT', 'ala-pivot': 'ALA_PIVOT', 'ala_pivot': 'ALA_PIVOT',
+      'alero': 'ALERO',
+      'base': 'BASE',
+      'escolta': 'ESCOLTA',
+      'por': 'POR', 'portero': 'POR',
+      'def': 'DEF', 'defensa': 'DEF',
+      'med': 'MED', 'mediocampista': 'MED', 'centrocampista': 'MED',
+      'del': 'DEL', 'delantero': 'DEL',
+    };
+    return map[pos.toLowerCase()] ?? pos.toUpperCase();
+  }
+
   private aplicarOrdenacion() {
-    const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
+    const posOrder: Record<string, number> = {
+      'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4,
+      'PIVOT': 1, 'ALA_PIVOT': 2, 'ALERO': 2, 'ESCOLTA': 3, 'BASE': 3
+    };
     this.jugadores.sort((a, b) => {
       if (this.sortField === 'pos') {
-        let valA = posOrder[a.pos] || 99;
-        let valB = posOrder[b.pos] || 99;
+        let valA = posOrder[this.normalizarPos(a.pos)] || 99;
+        let valB = posOrder[this.normalizarPos(b.pos)] || 99;
         if (valA !== valB) return this.sortDirection === 'asc' ? valA - valB : valB - valA;
       }
 
@@ -449,16 +468,17 @@ export class MiEquipoComponent implements OnInit {
     const slot = slots[index];
     if (!slot) return false;
 
+    const pos = this.normalizarPos(jugador.pos);
+
     if (this.esBaloncesto) {
-      const pos = jugador.pos;
       if (slot.type === 'PIVOT') return pos !== 'PIVOT' && pos !== 'ALA_PIVOT';
       if (slot.type === 'ALERO') return pos !== 'ALERO' && pos !== 'ALA_PIVOT';
       if (slot.type === 'BASE')  return pos !== 'BASE'  && pos !== 'ESCOLTA';
       return false;
     }
 
-    if (slot.type === 'POR') return jugador.pos !== 'POR';
-    return jugador.pos !== slot.type;
+    if (slot.type === 'POR') return pos !== 'POR';
+    return pos !== slot.type;
   }
 
   getPosicionEstilo(jugador: any, index: number) {

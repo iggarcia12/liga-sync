@@ -99,45 +99,57 @@ export class EquiposComponent implements OnInit {
     this.procesarJugadoresDelEquipoActivo();
   }
 
+  private normalizarPos(pos: string): string {
+    if (!pos) return '';
+    const map: Record<string, string> = {
+      'pívot': 'PIVOT', 'pivot': 'PIVOT',
+      'ala-pívot': 'ALA_PIVOT', 'ala-pivot': 'ALA_PIVOT', 'ala_pivot': 'ALA_PIVOT',
+      'alero': 'ALERO',
+      'base': 'BASE',
+      'escolta': 'ESCOLTA',
+      'por': 'POR', 'portero': 'POR',
+      'def': 'DEF', 'defensa': 'DEF',
+      'med': 'MED', 'mediocampista': 'MED', 'centrocampista': 'MED',
+      'del': 'DEL', 'delantero': 'DEL',
+    };
+    return map[pos.toLowerCase()] ?? pos.toUpperCase();
+  }
+
+  private posOrder: Record<string, number> = {
+    'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4,
+    'PIVOT': 1, 'ALA_PIVOT': 2, 'ALERO': 2, 'ESCOLTA': 3, 'BASE': 3
+  };
+
   procesarJugadoresDelEquipoActivo() {
     if (!this.equipoActualSeleccionado || this.jugadores.length === 0) return;
 
     const todosLosDelEquipo = this.jugadores.filter(j => j.equipo && j.equipo.id == this.equipoActualSeleccionado);
-    
-    // Titulares reales según el backend
+
     this.jugadoresFiltrados = todosLosDelEquipo.sort((a, b) => {
-      // Orden de posiciones: POR -> DEF -> MED -> DEL
-      const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
-      const orderA = posOrder[a.pos] || 99;
-      const orderB = posOrder[b.pos] || 99;
+      const orderA = this.posOrder[this.normalizarPos(a.pos)] || 99;
+      const orderB = this.posOrder[this.normalizarPos(b.pos)] || 99;
       if (orderA !== orderB) return orderA - orderB;
-      
-      // Dentro de la misma posición, titulares primero
       if (a.titular && !b.titular) return -1;
       if (!a.titular && b.titular) return 1;
-
       return (b.media || 0) - (a.media || 0);
     });
   }
 
   get titulares() {
     const reales = this.jugadoresFiltrados.filter(j => j.titular);
-    
-    // Si hay titulares reales, los usamos (ordenados por posición para los slots)
+
     if (reales.length > 0) {
-      return reales.sort((a, b) => {
-        const posOrder: Record<string, number> = { 'POR': 1, 'DEF': 2, 'MED': 3, 'DEL': 4 };
-        return (posOrder[a.pos] || 99) - (posOrder[b.pos] || 99);
-      });
+      return reales.sort((a, b) =>
+        (this.posOrder[this.normalizarPos(a.pos)] || 99) - (this.posOrder[this.normalizarPos(b.pos)] || 99)
+      );
     }
 
-    // Si NO hay titulares (equipos sin configurar), generamos un "11 Ideal" automático
-    const ideal: any[] = [];
-    const por = this.jugadoresFiltrados.filter(j => j.pos === 'POR').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 1);
-    const def = this.jugadoresFiltrados.filter(j => j.pos === 'DEF').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
-    const med = this.jugadoresFiltrados.filter(j => j.pos === 'MED').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
-    const del = this.jugadoresFiltrados.filter(j => j.pos === 'DEL').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 2);
-    
+    // Sin titulares configurados: generamos un equipo ideal automático
+    const por = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'POR').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 1);
+    const def = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEF').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
+    const med = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'MED').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
+    const del = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEL').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 2);
+
     return [...por, ...def, ...med, ...del];
   }
 
@@ -147,8 +159,8 @@ export class EquiposComponent implements OnInit {
     const slots: any[] = [];
 
     if (this.esBaloncesto) {
-      const yRange = 70;
-      const yBase = 15;
+      const yRange = 42;
+      const yBase = 7;
       const yStep = parts.length > 1 ? yRange / (parts.length - 1) : 0;
       parts.forEach((count, lineIdx) => {
         const y = yBase + (lineIdx * yStep);
@@ -186,27 +198,14 @@ export class EquiposComponent implements OnInit {
   getPosicionEstilo(jugador: any, index: number) {
     if (!this.equipoActualDetalles) return {};
 
-    const titulares = this.titulares;
-    let formacionNatural: string;
-
-    if (this.esBaloncesto) {
-      const nGuards = titulares.filter(j => j.pos === 'BASE' || j.pos === 'ESCOLTA').length;
-      const nWings  = titulares.filter(j => j.pos === 'ALERO').length;
-      const nBigs   = titulares.filter(j => j.pos === 'ALA-PÍVOT' || j.pos === 'PÍVOT').length;
-      formacionNatural = (nGuards || nWings || nBigs) ? `${nGuards}-${nWings}-${nBigs}` : '2-1-2';
-    } else {
-      const nDef = titulares.filter(j => j.pos === 'DEF').length;
-      const nMed = titulares.filter(j => j.pos === 'MED').length;
-      const nDel = titulares.filter(j => j.pos === 'DEL').length;
-      formacionNatural = (nDef || nMed || nDel) ? `${nDef}-${nMed}-${nDel}` : '4-4-2';
-    }
-
-    const slots = this.getSlots(formacionNatural);
+    const formacionDefault = this.esBaloncesto ? '2-1-2' : '4-4-2';
+    const formacion = this.equipoActualDetalles.formacion || formacionDefault;
+    const slots = this.getSlots(formacion);
     const slot = slots[index];
     if (!slot) return { display: 'none' };
 
-    return { 
-      bottom: `${slot.y}%`, 
+    return {
+      bottom: `${slot.y}%`,
       left: `${slot.x}%`,
       transform: 'translateX(-50%)'
     };

@@ -21,6 +21,9 @@ public class Liga {
     @Column(nullable = false)
     private Deporte deporte = Deporte.FUTBOL;
 
+    @Column(name = "mercado_abierto", nullable = false)
+    private boolean mercadoAbierto = false;
+
     // --- GETTERS Y SETTERS ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -33,4 +36,7 @@ public class Liga {
 
     public Deporte getDeporte() { return deporte; }
     public void setDeporte(Deporte deporte) { this.deporte = deporte; }
+
+    public boolean isMercadoAbierto() { return mercadoAbierto; }
+    public void setMercadoAbierto(boolean mercadoAbierto) { this.mercadoAbierto = mercadoAbierto; }
 }

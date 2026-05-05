@@ -39,7 +39,7 @@
         <h3>Alineación Titular — {{ equipoActualDetalles.formacion || (esBaloncesto ? '2-1-2' : '4-4-2') }}</h3>
       </div>
       
-      <div class="campo-preview">
+      <div [ngClass]="{'campo-preview': true, 'campo-preview--basket': esBaloncesto}">
         <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'campo-futbol'">
           <div *ngIf="!esBaloncesto" class="linea-medio"></div>
           <div *ngIf="!esBaloncesto" class="circulo-central"></div>

@@ -45,14 +45,9 @@
         </div>
       </div>
 
-      <div class="card-footer" *ngIf="puedeGestionarActas && !esFirmado(partido)">
-        <button class="btn-editar" (click)="abrirActa(partido)">🖊️ Gestionar Acta</button>
-      </div>
-
-      <div class="acta-firmada-info" *ngIf="esFirmado(partido)">
-        <span>Acta firmada y sellada</span>
-        <span *ngIf="partido.goleadores" class="goleadores-label">⚽ {{ partido.goleadores }}</span>
-        <button class="btn-descargar-acta" (click)="descargarActa(partido.id)" [disabled]="descargandoActa[partido.id]">
+      <div class="card-footer" *ngIf="(puedeGestionarActas && !esFirmado(partido)) || esFirmado(partido)">
+        <button class="btn-editar" *ngIf="puedeGestionarActas && !esFirmado(partido)" (click)="abrirActa(partido)">🖊️ Gestionar Acta</button>
+        <button class="btn-descargar-acta" *ngIf="esFirmado(partido)" (click)="descargarActa(partido.id)" [disabled]="descargandoActa[partido.id]">
           {{ descargandoActa[partido.id] ? '⏳ Generando...' : '📄 Descargar Acta' }}
         </button>
       </div>

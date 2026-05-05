@@ -229,6 +229,11 @@ public class PartidoController {
         if (esPlayoff) {
             Equipo ganador = (gL > gV) ? partido.getLocal() : partido.getVisitante();
             avanzarGanador(partido.getCodigoEliminatoria(), ganador, ligaId);
+        } else {
+            boolean todosFinalizados = partidoRepository.findByLigaId(ligaId).stream()
+                    .filter(p -> p.getTipoPartido() == null || p.getTipoPartido() == Partido.TipoPartido.REGULAR)
+                    .allMatch(p -> p.getEstado() == Partido.EstadoPartido.FINALIZADO_Y_FIRMADO);
+            if (todosFinalizados) generarCuartosDeFinSiProcede(ligaId);
         }
 
         publicarNoticia(guardado, ligaId, esBasket);
@@ -240,24 +245,11 @@ public class PartidoController {
         Long ligaId = SecurityUtils.getLigaId();
         if (partidoRepository.existsByTipoPartidoAndLigaId(Partido.TipoPartido.CUARTOS, ligaId))
             return ResponseEntity.badRequest().body("Los play-offs ya han sido generados.");
-
-        List<Equipo> clasificacion = equipoRepository.findByLigaId(ligaId);
-        clasificacion.sort((a, b) -> {
-            int ptsDiff = safe(b.getPts()) - safe(a.getPts());
-            if (ptsDiff != 0) return ptsDiff;
-            return (safe(b.getGf()) - safe(b.getGc())) - (safe(a.getGf()) - safe(a.getGc()));
-        });
-
-        if (clasificacion.size() < 8)
+        if (equipoRepository.findByLigaId(ligaId).size() < 8)
             return ResponseEntity.badRequest().body("Se necesitan al menos 8 equipos para generar los play-offs.");
 
-        List<Partido> cuartos = new ArrayList<>();
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(0), clasificacion.get(7), Partido.TipoPartido.CUARTOS, "CUARTOS_1", ligaId));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(3), clasificacion.get(4), Partido.TipoPartido.CUARTOS, "CUARTOS_2", ligaId));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(1), clasificacion.get(6), Partido.TipoPartido.CUARTOS, "CUARTOS_3", ligaId));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(2), clasificacion.get(5), Partido.TipoPartido.CUARTOS, "CUARTOS_4", ligaId));
-
-        return ResponseEntity.ok(partidoRepository.saveAll(cuartos));
+        generarCuartosDeFinSiProcede(ligaId);
+        return ResponseEntity.ok(partidoRepository.findByTipoPartidoAndLigaId(Partido.TipoPartido.CUARTOS, ligaId));
     }
 
     @DeleteMapping("/{id}")
@@ -422,6 +414,33 @@ public class PartidoController {
         p.setEstado(Partido.EstadoPartido.PENDIENTE);
         p.setLigaId(ligaId);
         return p;
+    }
+
+    private void generarCuartosDeFinSiProcede(Long ligaId) {
+        if (partidoRepository.existsByTipoPartidoAndLigaId(Partido.TipoPartido.CUARTOS, ligaId)) return;
+
+        List<Equipo> clasificacion = new ArrayList<>(equipoRepository.findByLigaId(ligaId));
+        if (clasificacion.size() < 8) return;
+
+        clasificacion.sort((a, b) -> {
+            int ptsDiff = safe(b.getPts()) - safe(a.getPts());
+            if (ptsDiff != 0) return ptsDiff;
+            return (safe(b.getGf()) - safe(b.getGc())) - (safe(a.getGf()) - safe(a.getGc()));
+        });
+
+        List<Partido> cuartos = new ArrayList<>();
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(0), clasificacion.get(7), Partido.TipoPartido.CUARTOS, "CUARTOS_1", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(3), clasificacion.get(4), Partido.TipoPartido.CUARTOS, "CUARTOS_2", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(1), clasificacion.get(6), Partido.TipoPartido.CUARTOS, "CUARTOS_3", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(2), clasificacion.get(5), Partido.TipoPartido.CUARTOS, "CUARTOS_4", ligaId));
+        partidoRepository.saveAll(cuartos);
+
+        Noticia noticia = new Noticia();
+        noticia.setTitulo("¡Comienzan los Play-offs!");
+        noticia.setContenido("La fase regular ha concluido. Los cuartos de final ya están disponibles.");
+        noticia.setFecha(LocalDate.now().toString());
+        noticia.setLigaId(ligaId);
+        noticiaRepository.save(noticia);
     }
 
     private void avanzarGanador(String codigoActual, Equipo ganador, Long ligaId) {

@@ -39,6 +39,9 @@
     </div>
     <div class="presupuesto-acciones" *ngIf="esAdmin">
       <button class="btn btn-primary" (click)="abrirModal()">+ Registrar jugador</button>
+      <button class="btn btn-warning" (click)="toggleMercadoAdmin()" style="margin-left: 10px; background-color: #f39c12; color: white;">
+        {{ mercadoForzadoAbierto ? 'Restaurar Mercado (Cerrar)' : 'Forzar Apertura Mercado' }}
+      </button>
     </div>
   </div>
 

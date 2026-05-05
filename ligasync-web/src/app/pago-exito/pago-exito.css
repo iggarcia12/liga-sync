@@ -3,17 +3,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary, #f8fafc);
+  background: var(--bg-color);
 }
 
 .resultado-card {
   text-align: center;
   padding: 3rem 4rem;
   border-radius: 1.5rem;
-  background: #fff;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-lg);
   max-width: 480px;
   width: 90%;
+  border: 1px solid var(--border-color);
 }
 
 .icono {

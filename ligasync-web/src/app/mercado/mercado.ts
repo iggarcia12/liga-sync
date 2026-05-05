@@ -19,6 +19,7 @@ export class MercadoComponent implements OnInit {
   jugadoresConEquipo: any[] = [];
   equipos: any[] = [];
   jornadaActual = 0;
+  mercadoForzadoAbierto = false;
 
   mostrarModalFichaje = false;
   nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
@@ -35,7 +36,7 @@ export class MercadoComponent implements OnInit {
   }
 
   get ventanaAbierta(): boolean {
-    return this.jornadaActual === 0 || this.jornadaActual % 3 === 0;
+    return this.mercadoForzadoAbierto || this.jornadaActual === 0 || this.jornadaActual % 3 === 0;
   }
 
   private http = inject(HttpClient);
@@ -54,6 +55,10 @@ export class MercadoComponent implements OnInit {
     this.http.get<number>('http://localhost:8080/api/partidos/jornada-actual').subscribe({
       next: (j) => { this.jornadaActual = j; this.cdr.detectChanges(); },
       error: (err) => console.error('Error al cargar jornada actual:', err)
+    });
+    this.http.get<any>('http://localhost:8080/api/ligas/actual').subscribe({
+      next: (liga) => { this.mercadoForzadoAbierto = liga.mercadoAbierto; this.cdr.detectChanges(); },
+      error: (err) => console.error('Error al cargar la liga actual:', err)
     });
   }
 
@@ -129,6 +134,21 @@ export class MercadoComponent implements OnInit {
   }
 
   cerrarModal() { this.mostrarModalFichaje = false; }
+
+  toggleMercadoAdmin() {
+    const nuevoEstado = !this.mercadoForzadoAbierto;
+    this.http.put(`http://localhost:8080/api/ligas/mercado-estado?abierto=${nuevoEstado}`, {}).subscribe({
+      next: () => {
+        this.mercadoForzadoAbierto = nuevoEstado;
+        alert(nuevoEstado ? 'El mercado se ha forzado a ABIERTO.' : 'El mercado ha vuelto a su estado normal.');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado del mercado:', err);
+        alert('Error al cambiar el estado del mercado');
+      }
+    });
+  }
 
   crearJugadorNuevo() {
     const jugadorAEnviar = { ...this.nuevoJugador };
