@@ -13,10 +13,12 @@ interface IncidenciaItem {
   valorAnotacion?: number;
 }
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-partidos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './partidos.html',
   styleUrl: './partidos.css'
 })

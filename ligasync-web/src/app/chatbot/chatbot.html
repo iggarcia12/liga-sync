@@ -1,0 +1,92 @@
+<div class="chatbot-contenedor">
+
+  <!-- Ventana de chat -->
+  <div class="chatbot-ventana" *ngIf="isOpen">
+
+    <!-- Cabecera -->
+    <div class="chatbot-cabecera">
+      <div class="chatbot-cabecera__info">
+        <div class="chatbot-cabecera__avatar">⚡</div>
+        <div>
+          <p class="chatbot-cabecera__nombre">Asistente LigaSync</p>
+          <p class="chatbot-cabecera__estado">
+            <span class="chatbot-cabecera__dot"></span>
+            {{ isTyping ? 'Escribiendo...' : 'En línea' }}
+          </p>
+        </div>
+      </div>
+      <button class="chatbot-cabecera__cerrar" (click)="toggleChat()" aria-label="Cerrar chat">✕</button>
+    </div>
+
+    <!-- Zona de mensajes -->
+    <div class="chatbot-mensajes" #mensajesRef>
+      <div
+        *ngFor="let msg of historial"
+        class="burbuja"
+        [class.burbuja--bot]="msg.emisor === 'bot'"
+        [class.burbuja--user]="msg.emisor === 'user'"
+      >
+        {{ msg.texto }}
+      </div>
+
+      <!-- Indicador "Escribiendo..." -->
+      <div class="chatbot-typing" *ngIf="isTyping">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Preguntas frecuentes por categoría -->
+    <div class="chatbot-faq">
+      <p class="chatbot-faq__titulo">Preguntas frecuentes</p>
+      <div *ngFor="let cat of categorias" class="chatbot-categoria">
+        <p class="chatbot-categoria__nombre">
+          <span>{{ cat.icono }}</span> {{ cat.nombre }}
+        </p>
+        <button
+          *ngFor="let op of cat.opciones"
+          class="chatbot-opcion-btn"
+          (click)="seleccionarOpcion(op)"
+          [disabled]="isTyping"
+        >
+          {{ op.pregunta }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Input de texto -->
+    <div class="chatbot-input-area">
+      <input
+        class="chatbot-input"
+        type="text"
+        [(ngModel)]="inputTexto"
+        (keyup.enter)="enviarMensaje()"
+        placeholder="Escribe tu pregunta..."
+        [disabled]="isTyping"
+        maxlength="200"
+      />
+      <button
+        class="chatbot-send-btn"
+        (click)="enviarMensaje()"
+        [disabled]="isTyping || !inputTexto.trim()"
+        aria-label="Enviar mensaje"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Botón FAB -->
+  <button
+    class="chatbot-fab"
+    (click)="toggleChat()"
+    [class.chatbot-fab--abierto]="isOpen"
+    aria-label="Abrir asistente"
+  >
+    <span *ngIf="!isOpen">💬</span>
+    <span *ngIf="isOpen">✕</span>
+  </button>
+
+</div>

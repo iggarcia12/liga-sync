@@ -1,51 +1,52 @@
 <div class="mercado-page">
   <div class="header-section">
-    <h1 class="page-title">Mercado de Fichajes</h1>
-    <p class="page-subtitle">Explora agentes libres, ficha jugadores o negocia traspasos con otros equipos.</p>
+    <h1 class="page-title">{{ 'MERCADO.TITULO' | translate }}</h1>
+    <p class="page-subtitle">{{ 'MERCADO.SUBTITULO' | translate }}</p>
   </div>
 
   <div class="estado-mensaje" *ngIf="cargando">
-    <p>⏳ Buscando talentos...</p>
+    <p>{{ 'MERCADO.CARGANDO' | translate }}</p>
   </div>
 
   <!-- Banner ventana de mercado -->
   <div class="ventana-banner" [class.ventana-banner--abierta]="ventanaAbierta" [class.ventana-banner--cerrada]="!ventanaAbierta" *ngIf="!cargando">
     <span class="ventana-icono">{{ ventanaAbierta ? '🟢' : '🔴' }}</span>
     <div class="ventana-texto">
-      <strong>{{ ventanaAbierta ? 'Ventana de Fichajes ABIERTA' : 'Ventana de Fichajes CERRADA' }}</strong>
+      <strong>{{ (ventanaAbierta ? 'MERCADO.VENTANA_ABIERTA' : 'MERCADO.VENTANA_CERRADA') | translate }}</strong>
       <span *ngIf="jornadaActual > 0">
-        — Jornada {{ jornadaActual }}.
-        {{ ventanaAbierta ? 'Puedes negociar traspasos con otros equipos.' : 'Solo puedes fichar agentes libres. La siguiente ventana se abre en la jornada ' + ((jornadaActual - (jornadaActual % 3)) + 3) + '.' }}
+        — {{ 'COMUN.JORNADA' | translate }} {{ jornadaActual }}.
+        {{ (ventanaAbierta ? 'MERCADO.VENTANA_ABIERTA_DESC' : 'MERCADO.VENTANA_CERRADA_DESC_1') | translate }}
+        <ng-container *ngIf="!ventanaAbierta"> {{ ((jornadaActual - (jornadaActual % 3)) + 3) }}.</ng-container>
       </span>
-      <span *ngIf="jornadaActual === 0">— La liga aún no ha comenzado. Aprovecha el mercado de pretemporada para construir tu plantilla.</span>
+      <span *ngIf="jornadaActual === 0">{{ 'MERCADO.VENTANA_PRETEMPORADA' | translate }}</span>
     </div>
   </div>
 
   <!-- Panel de Presupuesto -->
   <div class="presupuesto-panel card" *ngIf="!cargando && (esAdmin || esEntrenador)">
     <div class="presupuesto-info">
-      <h3 *ngIf="esAdmin">Simular equipo:
+      <h3 *ngIf="esAdmin">{{ 'MERCADO.SIMULAR_EQUIPO' | translate }}
         <select [(ngModel)]="miEquipoId" class="team-selector-inline">
-          <option [ngValue]="null">--- Selecciona un Equipo ---</option>
+          <option [ngValue]="null">{{ 'MERCADO.SIN_EQUIPO_SEL' | translate }}</option>
           <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
         </select>
       </h3>
-      <h3 *ngIf="esEntrenador">Tu Equipo: <strong>{{ miEquipoNombre || 'Sin equipo asignado' }}</strong></h3>
+      <h3 *ngIf="esEntrenador">{{ 'MERCADO.TU_EQUIPO' | translate }} <strong>{{ miEquipoNombre || ('MERCADO.SIN_EQUIPO' | translate) }}</strong></h3>
       <div class="saldo">
         <span class="currency">€</span>
         <span class="amount">{{ miEquipoPresupuesto | number:'1.0-0' }}</span>
       </div>
-      <p class="text-sm">Presupuesto disponible</p>
+      <p class="text-sm">{{ 'MERCADO.PRESUPUESTO_DISPONIBLE' | translate }}</p>
     </div>
     <div class="presupuesto-acciones" *ngIf="esAdmin">
-      <button class="btn btn-primary" (click)="abrirModal()">+ Registrar jugador</button>
+      <button class="btn btn-primary" (click)="abrirModal()">{{ 'MERCADO.BTN_REGISTRAR_JUGADOR' | translate }}</button>
       <button class="btn btn-warning" (click)="toggleMercadoAdmin()" style="margin-left: 10px; background-color: #f39c12; color: white;">
-        {{ mercadoForzadoAbierto ? 'Restaurar Mercado (Cerrar)' : 'Forzar Apertura Mercado' }}
+        {{ (mercadoForzadoAbierto ? 'MERCADO.RESTAURAR_MERCADO' : 'MERCADO.FORZAR_APERTURA') | translate }}
       </button>
     </div>
   </div>
 
-  <!-- ===== BUSCADOR ===== -->
+  <!-- BUSCADOR -->
   <div class="buscador-mercado" *ngIf="!cargando">
     <div class="buscador-wrapper">
       <span class="buscador-icono">🔍</span>
@@ -54,25 +55,25 @@
         class="buscador-input"
         [(ngModel)]="terminoBusqueda"
         (ngModelChange)="filtrar()"
-        placeholder="Buscar por nombre, posición o equipo..."
+        [placeholder]="'MERCADO.BUSCADOR_PH' | translate"
         autocomplete="off"
       />
       <button class="buscador-limpiar" *ngIf="terminoBusqueda" (click)="terminoBusqueda = ''; filtrar()">✕</button>
     </div>
   </div>
 
-  <!-- ===== SECCIÓN 1: AGENTES LIBRES ===== -->
+  <!-- SECCIÓN 1: AGENTES LIBRES -->
   <div class="seccion-agentes" *ngIf="!cargando">
     <h3 class="seccion-mercado-titulo">
-      Agentes Libres
+      {{ 'MERCADO.AGENTES_LIBRES' | translate }}
       <span class="contador-badge">{{ agentesLibresFiltrados.length }}</span>
     </h3>
 
     <div *ngIf="agentesLibres.length === 0" class="estado-mensaje vacio">
-      <p>No hay agentes libres en el mercado actualmente.</p>
+      <p>{{ 'MERCADO.SIN_AGENTES' | translate }}</p>
     </div>
     <div *ngIf="agentesLibres.length > 0 && agentesLibresFiltrados.length === 0" class="estado-mensaje vacio">
-      <p>Sin resultados para "<strong>{{ terminoBusqueda }}</strong>" en agentes libres.</p>
+      <p>{{ 'MERCADO.SIN_AGENTES_BUSQUEDA' | translate }}</p>
     </div>
 
     <div class="grid-jugadores-mercado" *ngIf="agentesLibresFiltrados.length > 0">
@@ -84,30 +85,30 @@
           <h4>{{ j.nombre }}</h4>
           <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
           <div class="market-price">
-            <span>Valor</span>
+            <span>{{ 'MERCADO.VALOR' | translate }}</span>
             <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
           </div>
           <button class="btn btn-primary btn-block" *ngIf="esAdmin || esEntrenador" (click)="ficharAgenteLibre(j)">
-            Fichar
+            {{ 'MERCADO.BTN_FICHAR' | translate }}
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== SECCIÓN 2: JUGADORES EN ACTIVO ===== -->
+  <!-- SECCIÓN 2: JUGADORES EN ACTIVO -->
   <div class="seccion-agentes" *ngIf="!cargando">
     <h3 class="seccion-mercado-titulo">
-      Jugadores en Activo
+      {{ 'MERCADO.JUGADORES_ACTIVO' | translate }}
       <span class="contador-badge contador-badge--azul">{{ jugadoresConEquipoFiltrados.length }}</span>
     </h3>
-    <p class="seccion-subtitulo">¿Quieres un jugador que ya pertenece a otro equipo? Envíales una oferta económica.</p>
+    <p class="seccion-subtitulo">{{ 'MERCADO.SUBTITULO_ACTIVO' | translate }}</p>
 
     <div *ngIf="jugadoresConEquipo.length === 0" class="estado-mensaje vacio">
-      <p>No hay jugadores fichados por otros equipos. Cuando los equipos tengan plantilla, aparecerán aquí.</p>
+      <p>{{ 'MERCADO.SIN_JUGADORES_ACTIVO' | translate }}</p>
     </div>
     <div *ngIf="jugadoresConEquipo.length > 0 && jugadoresConEquipoFiltrados.length === 0" class="estado-mensaje vacio">
-      <p>Sin resultados para "<strong>{{ terminoBusqueda }}</strong>" en jugadores en activo.</p>
+      <p>{{ 'MERCADO.SIN_JUGADORES_BUSQUEDA' | translate }}</p>
     </div>
 
     <div class="grid-jugadores-mercado" *ngIf="jugadoresConEquipoFiltrados.length > 0">
@@ -118,25 +119,19 @@
         <div class="market-info">
           <h4>{{ j.nombre }}</h4>
           <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
-          <div class="equipo-actual-badge">
-            🏟️ {{ j.equipo?.nombre }}
-          </div>
+          <div class="equipo-actual-badge">🏟️ {{ j.equipo?.nombre }}</div>
           <div class="market-price">
-            <span>Valor estimado</span>
+            <span>{{ 'MERCADO.VALOR_ESTIMADO' | translate }}</span>
             <strong>{{ (j.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</strong>
           </div>
           <ng-container *ngIf="esAdmin || esEntrenador">
             <button class="btn btn-oferta btn-block"
               *ngIf="miEquipoId && ventanaAbierta"
               (click)="abrirModalOferta(j)">
-              Hacer Oferta
+              {{ 'MERCADO.BTN_HACER_OFERTA' | translate }}
             </button>
-            <p class="sin-equipo-msg" *ngIf="!miEquipoId">
-              Asigna un equipo para ofertar
-            </p>
-            <p class="ventana-cerrada-msg" *ngIf="miEquipoId && !ventanaAbierta">
-              🔒 Ventana cerrada
-            </p>
+            <p class="sin-equipo-msg" *ngIf="!miEquipoId">{{ 'MERCADO.SIN_EQUIPO_OFERTAR' | translate }}</p>
+            <p class="ventana-cerrada-msg" *ngIf="miEquipoId && !ventanaAbierta">{{ 'MERCADO.VENTANA_CERRADA_BTN' | translate }}</p>
           </ng-container>
         </div>
       </div>
@@ -146,32 +141,32 @@
   <!-- MODAL: Crear jugador (Admin) -->
   <div class="modal-overlay" *ngIf="mostrarModalFichaje" (click)="cerrarModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-      <h3>Registrar nuevo jugador</h3>
+      <h3>{{ 'MERCADO.MODAL_REGISTRAR_TITULO' | translate }}</h3>
       <form (ngSubmit)="crearJugadorNuevo()">
         <div class="grupo-input">
-          <label>Nombre del Jugador</label>
-          <input type="text" name="nombre" [(ngModel)]="nuevoJugador.nombre" required placeholder="Ej: Lionel Messi" />
+          <label>{{ 'MERCADO.MODAL_NOMBRE' | translate }}</label>
+          <input type="text" name="nombre" [(ngModel)]="nuevoJugador.nombre" required [placeholder]="'MERCADO.MODAL_NOMBRE_PH' | translate" />
         </div>
         <div class="grupo-input">
-          <label>Posición</label>
+          <label>{{ 'MERCADO.MODAL_POSICION' | translate }}</label>
           <select class="input-select" name="pos" [(ngModel)]="nuevoJugador.pos">
             <option *ngFor="let p of posicionesDisponibles" [value]="p">{{ p }}</option>
           </select>
         </div>
         <div class="grupo-input">
-          <label>Media</label>
+          <label>{{ 'MERCADO.MODAL_MEDIA' | translate }}</label>
           <input type="number" name="media" [(ngModel)]="nuevoJugador.media" required max="99" min="40" />
         </div>
         <div class="grupo-input">
-          <label>Destino Inicial</label>
+          <label>{{ 'MERCADO.MODAL_DESTINO' | translate }}</label>
           <select class="input-select" name="equipo" [(ngModel)]="nuevoJugador.equipo">
-            <option value="null">Agente Libre (Mercado)</option>
+            <option value="null">{{ 'MERCADO.MODAL_DESTINO_LIBRE' | translate }}</option>
             <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
           </select>
         </div>
         <div class="modal-acciones">
-          <button type="button" class="btn" (click)="cerrarModal()">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Registrar</button>
+          <button type="button" class="btn" (click)="cerrarModal()">{{ 'COMUN.CANCELAR' | translate }}</button>
+          <button type="submit" class="btn btn-primary">{{ 'COMUN.REGISTRAR' | translate }}</button>
         </div>
       </form>
     </div>
@@ -188,17 +183,17 @@
         </div>
       </div>
       <div class="grupo-input">
-        <label>Oferta económica (€)</label>
-        <input type="number" [(ngModel)]="montoOferta" min="1" placeholder="Ej: 25000000" />
-        <span class="input-hint">Valor estimado: {{ (jugadorParaOfertar.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</span>
+        <label>{{ 'MERCADO.MODAL_OFERTA_LABEL' | translate }}</label>
+        <input type="number" [(ngModel)]="montoOferta" min="1" [placeholder]="'MERCADO.MODAL_OFERTA_PH' | translate" />
+        <span class="input-hint">{{ 'MERCADO.VALOR_ESTIMADO_LABEL' | translate }} {{ (jugadorParaOfertar.valor || 0) | currency:'EUR':'symbol':'1.0-0' }}</span>
       </div>
       <p class="modal-aviso">
-        Tu presupuesto: <strong>{{ miEquipoPresupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong>
+        {{ 'MERCADO.TU_PRESUPUESTO' | translate }} <strong>{{ miEquipoPresupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong>
       </p>
       <div class="modal-acciones">
-        <button type="button" class="btn" (click)="cerrarModalOferta()">Cancelar</button>
+        <button type="button" class="btn" (click)="cerrarModalOferta()">{{ 'COMUN.CANCELAR' | translate }}</button>
         <button type="button" class="btn btn-primary" [disabled]="montoOferta <= 0" (click)="enviarOferta()">
-          Enviar Oferta
+          {{ 'MERCADO.BTN_ENVIAR_OFERTA' | translate }}
         </button>
       </div>
     </div>

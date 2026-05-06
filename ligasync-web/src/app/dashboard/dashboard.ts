@@ -5,10 +5,12 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })

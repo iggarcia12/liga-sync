@@ -2,22 +2,22 @@
 
   <div class="resultado-card" *ngIf="confirmando">
     <div class="icono confirmando">⏳</div>
-    <h1>Confirmando pago...</h1>
-    <p>Espera un momento mientras registramos tu cuota.</p>
+    <h1>{{ 'PAGO.CONFIRMANDO_TITULO' | translate }}</h1>
+    <p>{{ 'PAGO.CONFIRMANDO_DESC' | translate }}</p>
   </div>
 
   <div class="resultado-card exito" *ngIf="!confirmando && !error">
     <div class="icono">✓</div>
-    <h1>¡Pago completado!</h1>
-    <p>La cuota de inscripción se ha procesado correctamente. El equipo queda inscrito en la liga.</p>
-    <a class="btn-volver" routerLink="/mi-equipo">Volver a Mi Equipo</a>
+    <h1>{{ 'PAGO.EXITO_TITULO' | translate }}</h1>
+    <p>{{ 'PAGO.EXITO_DESC' | translate }}</p>
+    <a class="btn-volver" routerLink="/mi-equipo">{{ 'PAGO.BTN_VOLVER_EQUIPO' | translate }}</a>
   </div>
 
   <div class="resultado-card cancelado" *ngIf="!confirmando && error">
     <div class="icono">⚠️</div>
-    <h1>Pago recibido</h1>
-    <p>El pago se procesó pero no pudimos registrarlo. Contacta con el administrador.</p>
-    <a class="btn-volver" routerLink="/mi-equipo">Volver a Mi Equipo</a>
+    <h1>{{ 'PAGO.ERROR_TITULO' | translate }}</h1>
+    <p>{{ 'PAGO.ERROR_DESC' | translate }}</p>
+    <a class="btn-volver" routerLink="/mi-equipo">{{ 'PAGO.BTN_VOLVER_EQUIPO' | translate }}</a>
   </div>
 
 </div>

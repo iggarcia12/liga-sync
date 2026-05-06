@@ -2,56 +2,56 @@
 
   <div *ngIf="cargando" class="estado-carga">
     <div class="spinner"></div>
-    <p>Cargando tu equipo...</p>
+    <p>{{ 'MI_EQUIPO.CARGANDO' | translate }}</p>
   </div>
 
   <div *ngIf="!cargando && !equipo && !esJugador" class="estado-vacio">
     <span>🛡️</span>
-    <h2>Sin equipo asignado</h2>
-    <p>El administrador aún no te ha asignado un equipo. Contacta con él para que lo configure.</p>
+    <h2>{{ 'MI_EQUIPO.SIN_EQUIPO_TITULO' | translate }}</h2>
+    <p>{{ 'MI_EQUIPO.SIN_EQUIPO_DESC' | translate }}</p>
   </div>
 
   <section class="seccion-convocatoria" *ngIf="!cargando && esJugador">
     <div *ngIf="!miJugador" class="estado-vacio">
-      <p>Aún no tienes un perfil de jugador asignado o cargando datos...</p>
+      <p>{{ 'MI_EQUIPO.SIN_PERFIL' | translate }}</p>
     </div>
 
     <div class="card-convocatoria" *ngIf="miJugador">
       <div class="convocatoria-header">
-        <span class="convocatoria-titulo">📅 Próximo Partido</span>
+        <span class="convocatoria-titulo">{{ 'MI_EQUIPO.PROXIMO_PARTIDO' | translate }}</span>
         <span class="convocatoria-estado"
           [class.convocatoria-estado--si]="miJugador.convocado"
           [class.convocatoria-estado--no]="!miJugador.convocado">
-          {{ miJugador.convocado ? '✅ Confirmado' : '❌ Sin confirmar' }}
+          {{ (miJugador.convocado ? 'MI_EQUIPO.CONFIRMADO' : 'MI_EQUIPO.SIN_CONFIRMAR') | translate }}
         </span>
       </div>
 
       <div class="convocatoria-partido" *ngIf="proximoPartido; else sinPartido">
         <div class="conv-enfrentamiento">
           <span class="conv-equipo">{{ proximoPartido.local?.nombre || '—' }}</span>
-          <span class="conv-vs">VS</span>
+          <span class="conv-vs">{{ 'COMUN.VS' | translate }}</span>
           <span class="conv-equipo">{{ proximoPartido.visitante?.nombre || '—' }}</span>
         </div>
-        <p class="conv-jornada">Jornada {{ proximoPartido.jornada }}</p>
+        <p class="conv-jornada">{{ 'COMUN.JORNADA' | translate }} {{ proximoPartido.jornada }}</p>
       </div>
       <ng-template #sinPartido>
-        <p class="conv-sin-partido">No hay partidos pendientes programados.</p>
+        <p class="conv-sin-partido">{{ 'MI_EQUIPO.SIN_PARTIDO' | translate }}</p>
       </ng-template>
 
       <div class="convocatoria-sancion" *ngIf="miJugador.estadoDisciplinario === 'SANCIONADO'">
-        🚫 Estás sancionado y no puedes participar en el próximo partido.
+        {{ 'MI_EQUIPO.SANCIONADO' | translate }}
       </div>
 
       <div class="convocatoria-acciones" *ngIf="miJugador.estadoDisciplinario !== 'SANCIONADO'">
         <button class="btn-asistire"
           [class.btn-asistire--activo]="miJugador.convocado"
           (click)="toggleConvocatoria(true)">
-          ✅ Asistiré
+          {{ 'MI_EQUIPO.BTN_ASISTIRE' | translate }}
         </button>
         <button class="btn-no-asistire"
           [class.btn-no-asistire--activo]="!miJugador.convocado"
           (click)="toggleConvocatoria(false)">
-          ❌ No Asistiré
+          {{ 'MI_EQUIPO.BTN_NO_ASISTIRE' | translate }}
         </button>
       </div>
     </div>
@@ -66,46 +66,45 @@
         <span *ngIf="!equipo.escudo">🛡️</span>
       </div>
       <div class="equipo-info">
-        <span class="equipo-badge">Tu Equipo</span>
+        <span class="equipo-badge">{{ 'MI_EQUIPO.BADGE_TU_EQUIPO' | translate }}</span>
         <h1 class="equipo-nombre">{{ equipo.nombre }}</h1>
         <div class="equipo-meta">
-          <p class="equipo-jugadores-count">👥 {{ jugadores.length }} jugadores</p>
-          <p class="equipo-presupuesto">💰 Presupuesto: <strong>{{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
+          <p class="equipo-jugadores-count">👥 {{ jugadores.length }} {{ 'MI_EQUIPO.LABEL_JUGADORES' | translate }}</p>
+          <p class="equipo-presupuesto">{{ 'MI_EQUIPO.LABEL_PRESUPUESTO' | translate }} <strong>{{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
         </div>
       </div>
       <div class="equipo-acciones">
-        <button class="btn-editar" (click)="abrirEdicion()">✏️ Editar equipo</button>
+        <button class="btn-editar" (click)="abrirEdicion()">{{ 'MI_EQUIPO.BTN_EDITAR_EQUIPO' | translate }}</button>
         <button class="btn-pagar-cuota" *ngIf="!equipo.cuotaPagada"
           (click)="pagarCuotaInscripcion()" [disabled]="procesandoPago">
-          {{ procesandoPago ? 'Redirigiendo...' : '💳 Pagar Cuota (50€)' }}
+          {{ (procesandoPago ? 'MI_EQUIPO.BTN_REDIRIGIENDO' : 'MI_EQUIPO.BTN_PAGAR_CUOTA') | translate }}
         </button>
-        <span class="badge-cuota-pagada" *ngIf="equipo.cuotaPagada">✅ Cuota pagada</span>
+        <span class="badge-cuota-pagada" *ngIf="equipo.cuotaPagada">{{ 'MI_EQUIPO.CUOTA_PAGADA' | translate }}</span>
       </div>
     </div>
 
-    <!-- ===== CARD TESORERÍA (solo entrenador) ===== -->
+    <!-- CARD TESORERÍA -->
     <div class="card-tesoreria" *ngIf="esEntrenador && equipo.deudaAcumulada > 0">
       <div class="tesoreria-icono">⚠️</div>
       <div class="tesoreria-info">
-        <span class="tesoreria-label">Deuda por sanciones disciplinarias</span>
+        <span class="tesoreria-label">{{ 'MI_EQUIPO.DEUDA_LABEL' | translate }}</span>
         <span class="tesoreria-valor">{{ equipo.deudaAcumulada | currency:'EUR':'symbol':'1.0-0' }}</span>
         <span class="tesoreria-aviso" *ngIf="equipo.presupuesto < equipo.deudaAcumulada">
-          Presupuesto insuficiente ({{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }} disponibles)
+          {{ 'MI_EQUIPO.PRESUPUESTO_INSUFICIENTE' | translate }} ({{ equipo.presupuesto | currency:'EUR':'symbol':'1.0-0' }})
         </span>
       </div>
       <button class="btn-pagar-deuda" (click)="pagarDeuda()"
         [disabled]="equipo.presupuesto < equipo.deudaAcumulada">
-        Pagar deuda
+        {{ 'MI_EQUIPO.BTN_PAGAR_DEUDA' | translate }}
       </button>
     </div>
     <div class="card-tesoreria card-tesoreria--ok" *ngIf="esEntrenador && !(equipo.deudaAcumulada > 0)">
       <div class="tesoreria-icono">✅</div>
       <div class="tesoreria-info">
-        <span class="tesoreria-label">Sin deudas disciplinarias</span>
+        <span class="tesoreria-label">{{ 'MI_EQUIPO.SIN_DEUDAS' | translate }}</span>
         <span class="tesoreria-valor">0 €</span>
       </div>
     </div>
-
 
     <!-- Mensaje de éxito -->
     <div class="caja-exito" *ngIf="mensajeGuardado">{{ mensajeGuardado }}</div>
@@ -113,18 +112,18 @@
     <!-- Modal de edición del equipo -->
     <div class="modal-overlay" *ngIf="editando" (click)="cancelarEdicion()">
       <div class="modal-card" (click)="$event.stopPropagation()">
-        <h3 class="modal-titulo">Editar datos del equipo</h3>
+        <h3 class="modal-titulo">{{ 'MI_EQUIPO.MODAL_EDITAR_TITULO' | translate }}</h3>
         <div class="grupo-input">
-          <label>Nombre del equipo</label>
-          <input type="text" [(ngModel)]="nombreEdicion" placeholder="Nombre del equipo" />
+          <label>{{ 'MI_EQUIPO.MODAL_NOMBRE_EQUIPO' | translate }}</label>
+          <input type="text" [(ngModel)]="nombreEdicion" [placeholder]="'MI_EQUIPO.MODAL_NOMBRE_EQUIPO' | translate" />
         </div>
         <div class="grupo-input">
-          <label>URL del escudo</label>
-          <input type="text" [(ngModel)]="escudoEdicion" placeholder="https://..." />
+          <label>{{ 'MI_EQUIPO.MODAL_URL_ESCUDO' | translate }}</label>
+          <input type="text" [(ngModel)]="escudoEdicion" [placeholder]="'MI_EQUIPO.MODAL_URL_PH' | translate" />
         </div>
         <div class="modal-acciones">
-          <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
-          <button class="btn-guardar" (click)="guardarCambios()">Guardar cambios</button>
+          <button class="btn-cancelar" (click)="cancelarEdicion()">{{ 'COMUN.CANCELAR' | translate }}</button>
+          <button class="btn-guardar" (click)="guardarCambios()">{{ 'COMUN.GUARDAR_CAMBIOS' | translate }}</button>
         </div>
       </div>
     </div>
@@ -132,49 +131,47 @@
     <!-- Navegación de pestañas -->
     <nav class="tabs-nav" *ngIf="esEntrenador">
       <button class="tab-btn" *ngIf="esJugador" [class.tab-btn--active]="pestanaActiva === 'convocatoria'" (click)="cambiarPestana('convocatoria')">
-        📅<span class="tab-text"> Convocatoria</span>
+        📅<span class="tab-text"> {{ 'MI_EQUIPO.TABS_CONVOCATORIA' | translate }}</span>
       </button>
       <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'plantilla'" (click)="cambiarPestana('plantilla')">
-        👥<span class="tab-text"> Plantilla</span>
+        👥<span class="tab-text"> {{ 'MI_EQUIPO.TABS_PLANTILLA' | translate }}</span>
       </button>
       <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'tactica'" (click)="cambiarPestana('tactica')">
-        📋<span class="tab-text"> Pizarra</span>
+        📋<span class="tab-text"> {{ 'MI_EQUIPO.TABS_PIZARRA' | translate }}</span>
       </button>
       <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'ofertas'" (click)="cambiarPestana('ofertas')">
-        📬<span class="tab-text"> Ofertas</span>
+        📬<span class="tab-text"> {{ 'MI_EQUIPO.TABS_OFERTAS' | translate }}</span>
         <span class="tab-badge" *ngIf="ofertasPendientes > 0">{{ ofertasPendientes }}</span>
       </button>
       <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'asistencia'" (click)="cambiarPestana('asistencia')">
-        ✅<span class="tab-text"> Asistencia</span>
+        ✅<span class="tab-text"> {{ 'MI_EQUIPO.TABS_ASISTENCIA' | translate }}</span>
         <span class="tab-badge tab-badge--verde" *ngIf="jugadoresConfirmados.length > 0">{{ jugadoresConfirmados.length }}</span>
       </button>
     </nav>
 
-
-
-    <!-- ===== PESTAÑA: PLANTILLA ===== -->
+    <!-- PESTAÑA: PLANTILLA -->
     <section class="seccion-plantilla" *ngIf="pestanaActiva === 'plantilla'">
 
       <div *ngIf="jugadores.length === 0" class="plantilla-vacia">
-        <p>No hay jugadores registrados en este equipo todavía.</p>
+        <p>{{ 'MI_EQUIPO.PLANTILLA_VACIA' | translate }}</p>
       </div>
 
       <div class="plantilla-tabla" *ngIf="jugadores.length > 0">
         <div class="tabla-header">
           <span (click)="ordenar('nombre')" [class.active]="sortField === 'nombre'">
-            Jugador <i *ngIf="sortField === 'nombre'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            {{ 'MI_EQUIPO.COL_JUGADOR' | translate }} <i *ngIf="sortField === 'nombre'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('pos')" [class.active]="sortField === 'pos'">
-            Pos. <i *ngIf="sortField === 'pos'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            {{ 'MI_EQUIPO.COL_POS' | translate }} <i *ngIf="sortField === 'pos'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('media')" [class.active]="sortField === 'media'">
-            Media <i *ngIf="sortField === 'media'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            {{ 'MI_EQUIPO.COL_MEDIA' | translate }} <i *ngIf="sortField === 'media'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('goles')" [class.active]="sortField === 'goles'">
-            Goles <i *ngIf="sortField === 'goles'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            {{ 'MI_EQUIPO.COL_GOLES' | translate }} <i *ngIf="sortField === 'goles'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('asist')" [class.active]="sortField === 'asist'">
-            Asist. <i *ngIf="sortField === 'asist'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
+            {{ 'MI_EQUIPO.COL_ASIST' | translate }} <i *ngIf="sortField === 'asist'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
           <span (click)="ordenar('amarillas')" [class.active]="sortField === 'amarillas'">
             <span class="icono-tarjeta icono-tarjeta--amarilla">■</span>
@@ -184,7 +181,7 @@
             <span class="icono-tarjeta icono-tarjeta--roja">■</span>
             <i *ngIf="sortField === 'rojas'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</i>
           </span>
-          <span>Acción</span>
+          <span>{{ 'MI_EQUIPO.COL_ACCION' | translate }}</span>
         </div>
 
         <div class="tabla-fila" *ngFor="let j of jugadores">
@@ -196,26 +193,25 @@
           <span class="jugador-stat jugador-stat--amarilla">{{ j.amarillas ?? 0 }}</span>
           <span class="jugador-stat jugador-stat--roja">{{ j.rojas ?? 0 }}</span>
           <span class="jugador-accion" *ngIf="esEntrenador">
-            <button class="btn-despedir" (click)="despedirJugador(j)">Liberar</button>
+            <button class="btn-despedir" (click)="despedirJugador(j)">{{ 'MI_EQUIPO.BTN_LIBERAR' | translate }}</button>
           </span>
         </div>
       </div>
     </section>
 
-    <!-- ===== PESTAÑA: PIZARRA TÁCTICA ===== -->
+    <!-- PESTAÑA: PIZARRA TÁCTICA -->
     <section class="seccion-tactica" *ngIf="pestanaActiva === 'tactica'">
       <div class="tactica-controles">
         <div class="grupo-formacion">
-          <label>Formación:</label>
+          <label>{{ 'MI_EQUIPO.FORMACION' | translate }}</label>
           <select [(ngModel)]="equipo.formacion">
             <option *ngFor="let f of formaciones" [value]="f">{{ f }}</option>
           </select>
         </div>
-        <button class="btn-guardar-tactica" (click)="guardarTactica()">💾 Guardar Táctica</button>
+        <button class="btn-guardar-tactica" (click)="guardarTactica()">{{ 'MI_EQUIPO.BTN_GUARDAR_TACTICA' | translate }}</button>
       </div>
 
       <div class="pizarra-container">
-        <!-- Campo de juego -->
         <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'campo-futbol'">
           <div *ngIf="!esBaloncesto" class="linea-medio"></div>
           <div *ngIf="!esBaloncesto" class="circulo-central"></div>
@@ -223,7 +219,6 @@
           <div class="area-grande area-grande--abajo"></div>
           <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
 
-          <!-- Jugadores Titulares -->
           <div class="jugador-spot"
                *ngFor="let j of titulares; let i = index"
                [ngStyle]="getPosicionEstilo(j, i)"
@@ -241,9 +236,8 @@
           </div>
         </div>
 
-        <!-- Lista de Suplentes -->
         <div class="suplentes-container">
-          <h3>Banquillo (Suplentes)</h3>
+          <h3>{{ 'MI_EQUIPO.BANQUILLO' | translate }}</h3>
           <div class="lista-suplentes-pizarra">
             <div class="suplente-card"
                  *ngFor="let s of suplentes"
@@ -256,25 +250,25 @@
             </div>
           </div>
           <p class="instruccion-intercambio" *ngIf="!jugadorSeleccionado">
-            💡 Haz clic en un jugador para seleccionarlo e intercambiarlo.
+            {{ 'MI_EQUIPO.INSTRUCCION_SELECCIONAR' | translate }}
           </p>
           <p class="instruccion-intercambio seleccionando" *ngIf="jugadorSeleccionado">
-            🔄 Selecciona otro jugador para realizar el cambio.
+            {{ 'MI_EQUIPO.INSTRUCCION_INTERCAMBIO' | translate }}
           </p>
         </div>
       </div>
     </section>
 
-    <!-- ===== PESTAÑA: BANDEJA DE OFERTAS ===== -->
+    <!-- PESTAÑA: BANDEJA DE OFERTAS -->
     <section class="seccion-ofertas" *ngIf="pestanaActiva === 'ofertas'">
 
       <div *ngIf="cargandoOfertas" class="estado-carga">
         <div class="spinner"></div>
-        <p>Cargando ofertas...</p>
+        <p>{{ 'MI_EQUIPO.CARGANDO_OFERTAS' | translate }}</p>
       </div>
 
       <div *ngIf="!cargandoOfertas && ofertas.length === 0" class="plantilla-vacia">
-        <p>No hay ofertas recibidas por ninguno de tus jugadores.</p>
+        <p>{{ 'MI_EQUIPO.SIN_OFERTAS' | translate }}</p>
       </div>
 
       <div class="lista-ofertas" *ngIf="!cargandoOfertas && ofertas.length > 0">
@@ -293,8 +287,8 @@
               {{ o.estado }}
             </span>
             <div class="oferta-botones" *ngIf="o.estado === 'PENDIENTE'">
-              <button class="btn-aceptar" (click)="aceptarOferta(o)">Aceptar</button>
-              <button class="btn-rechazar" (click)="rechazarOferta(o)">Rechazar</button>
+              <button class="btn-aceptar" (click)="aceptarOferta(o)">{{ 'MI_EQUIPO.BTN_ACEPTAR' | translate }}</button>
+              <button class="btn-rechazar" (click)="rechazarOferta(o)">{{ 'MI_EQUIPO.BTN_RECHAZAR' | translate }}</button>
             </div>
           </div>
 
@@ -302,15 +296,15 @@
       </div>
     </section>
 
-    <!-- ===== PESTAÑA: ASISTENCIA ===== -->
+    <!-- PESTAÑA: ASISTENCIA -->
     <section class="seccion-asistencia" *ngIf="pestanaActiva === 'asistencia'">
 
       <div class="asistencia-grupo">
         <h3 class="asistencia-grupo__titulo asistencia-grupo__titulo--si">
-          ✅ Confirmados <span class="asistencia-count">{{ jugadoresConfirmados.length }}</span>
+          {{ 'MI_EQUIPO.CONFIRMADOS_TITULO' | translate }} <span class="asistencia-count">{{ jugadoresConfirmados.length }}</span>
         </h3>
         <div *ngIf="jugadoresConfirmados.length === 0" class="asistencia-vacio">
-          Ningún jugador ha confirmado asistencia todavía.
+          {{ 'MI_EQUIPO.SIN_CONFIRMADOS' | translate }}
         </div>
         <div class="asistencia-lista" *ngIf="jugadoresConfirmados.length > 0">
           <div class="asistencia-fila" *ngFor="let j of jugadoresConfirmados">
@@ -323,10 +317,10 @@
 
       <div class="asistencia-grupo asistencia-grupo--no">
         <h3 class="asistencia-grupo__titulo asistencia-grupo__titulo--no">
-          ❌ Sin confirmar / No asiste <span class="asistencia-count">{{ jugadoresSinConfirmar.length }}</span>
+          {{ 'MI_EQUIPO.SIN_CONFIRMAR_TITULO' | translate }} <span class="asistencia-count">{{ jugadoresSinConfirmar.length }}</span>
         </h3>
         <div *ngIf="jugadoresSinConfirmar.length === 0" class="asistencia-vacio">
-          Todos los jugadores han confirmado.
+          {{ 'MI_EQUIPO.TODOS_CONFIRMADOS' | translate }}
         </div>
         <div class="asistencia-lista" *ngIf="jugadoresSinConfirmar.length > 0">
           <div class="asistencia-fila asistencia-fila--no" *ngFor="let j of jugadoresSinConfirmar">

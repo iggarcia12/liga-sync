@@ -4,10 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-pago-exito',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, TranslateModule],
   templateUrl: './pago-exito.html',
   styleUrl: './pago-exito.css'
 })

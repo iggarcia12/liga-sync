@@ -3,22 +3,22 @@
   <!-- ── FILA SUPERIOR: título + acción admin ──────────────────── -->
   <div class="dashboard-top-row">
     <div class="header-section">
-      <h1 class="page-title">Panorama General</h1>
-      <p class="page-subtitle">Estado de la liga, clasificación y estadísticas en tiempo real.</p>
+      <h1 class="page-title">{{ 'DASHBOARD.TITULO' | translate }}</h1>
+      <p class="page-subtitle">{{ 'DASHBOARD.SUBTITULO' | translate }}</p>
     </div>
 
     <div class="admin-action-bar card" *ngIf="isAdmin">
       <div class="admin-action-content">
         <span class="admin-action-icon">🏆</span>
         <div class="admin-action-info">
-          <strong>Fase Final</strong>
-          <span>Genera el cuadro eliminatorio con los 8 mejores clasificados</span>
+          <strong>{{ 'DASHBOARD.FASE_FINAL' | translate }}</strong>
+          <span>{{ 'DASHBOARD.FASE_FINAL_DESC' | translate }}</span>
         </div>
         <div class="admin-action-controles">
           <button class="btn-playoffs" (click)="generarPlayoffs()" [disabled]="generandoPlayoffs">
-            {{ generandoPlayoffs ? 'Generando…' : 'Generar Play-offs' }}
+            {{ (generandoPlayoffs ? 'DASHBOARD.BTN_GENERANDO_PLAYOFFS' : 'DASHBOARD.BTN_GENERAR_PLAYOFFS') | translate }}
           </button>
-          <a routerLink="/playoffs" class="btn-ver-playoffs">Ver cuadro →</a>
+          <a routerLink="/playoffs" class="btn-ver-playoffs">{{ 'DASHBOARD.BTN_VER_CUADRO' | translate }}</a>
         </div>
       </div>
       <p class="admin-action-msg msg-ok"  *ngIf="mensajePlayoffs && !hayErrorPlayoffs">✓ {{ mensajePlayoffs }}</p>
@@ -30,7 +30,7 @@
   <div class="panel-estadisticas">
     <div class="card stat-card metric-azul">
       <div class="stat-info">
-        <p class="stat-label">Jugadores Inscritos</p>
+        <p class="stat-label">{{ 'DASHBOARD.KPI_JUGADORES' | translate }}</p>
         <h3 class="stat-value">{{ totalJugadores }}</h3>
       </div>
       <div class="stat-icono">🏃‍♂️</div>
@@ -38,7 +38,7 @@
 
     <div class="card stat-card metric-verde">
       <div class="stat-info">
-        <p class="stat-label">Equipos en Liga</p>
+        <p class="stat-label">{{ 'DASHBOARD.KPI_EQUIPOS' | translate }}</p>
         <h3 class="stat-value">{{ totalEquipos }}</h3>
       </div>
       <div class="stat-icono">🛡️</div>
@@ -46,7 +46,7 @@
 
     <div class="card stat-card metric-naranja">
       <div class="stat-info">
-        <p class="stat-label">Partidos Jugados</p>
+        <p class="stat-label">{{ 'DASHBOARD.KPI_PARTIDOS' | translate }}</p>
         <h3 class="stat-value">{{ partidosJugados }} / {{ partidos.length }}</h3>
       </div>
       <div class="stat-icono">{{ iconoDeporte }}</div>
@@ -61,24 +61,24 @@
       <div class="card card-clasificacion">
         <div class="card-header-kpi">
           <span class="card-tag">🏆</span>
-          <h3>Clasificación General</h3>
-          <span class="badge">Top 5</span>
+          <h3>{{ 'DASHBOARD.CLASIFICACION_TITULO' | translate }}</h3>
+          <span class="badge">{{ 'DASHBOARD.TOP5' | translate }}</span>
         </div>
 
         <div *ngIf="equipos.length > 0; else sinEquipos">
           <table class="tabla-clasificacion">
             <thead>
               <tr>
-                <th class="th-pos">#</th>
-                <th class="th-equipo">Equipo</th>
-                <th class="th-pj">PJ</th>
-                <th class="th-pg">PG</th>
-                <th *ngIf="!esBasket" class="th-pe">PE</th>
-                <th class="th-pp">PP</th>
+                <th class="th-pos">{{ 'DASHBOARD.COL_POS' | translate }}</th>
+                <th class="th-equipo">{{ 'DASHBOARD.COL_EQUIPO' | translate }}</th>
+                <th class="th-pj">{{ 'DASHBOARD.COL_PJ' | translate }}</th>
+                <th class="th-pg">{{ 'DASHBOARD.COL_PG' | translate }}</th>
+                <th *ngIf="!esBasket" class="th-pe">{{ 'DASHBOARD.COL_PE' | translate }}</th>
+                <th class="th-pp">{{ 'DASHBOARD.COL_PP' | translate }}</th>
                 <th class="th-gf">{{ esBasket ? 'PF' : 'GF' }}</th>
                 <th class="th-gc">{{ esBasket ? 'PC' : 'GC' }}</th>
                 <th class="th-dg">{{ esBasket ? 'DP' : 'DG' }}</th>
-                <th class="th-pts">Pts</th>
+                <th class="th-pts">{{ 'DASHBOARD.COL_PTS' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -109,13 +109,13 @@
         <ng-template #sinEquipos>
           <div class="estado-vacio">
             <span class="icon-vacio">🏟️</span>
-            <p>No hay equipos registrados aún.</p>
+            <p>{{ 'DASHBOARD.SIN_EQUIPOS' | translate }}</p>
           </div>
         </ng-template>
 
         <div *ngIf="equipos.length > 0" class="card-footer-link">
           <a routerLink="/clasificacion" class="btn-ver-todo">
-            Ver clasificación completa <span class="flecha">→</span>
+            {{ 'DASHBOARD.VER_CLASIFICACION' | translate }}
           </a>
         </div>
       </div>
@@ -128,7 +128,7 @@
       <div class="card card-resultado">
         <div class="card-header-kpi">
           <span class="card-tag">{{ iconoDeporte }}</span>
-          <h3>Último Resultado</h3>
+          <h3>{{ 'DASHBOARD.ULTIMO_RESULTADO' | translate }}</h3>
         </div>
 
         <div *ngIf="ultimoPartido; else sinResultado">
@@ -144,14 +144,14 @@
             </div>
           </div>
           <div class="resultado-jornada" *ngIf="ultimoPartido.jornada">
-            Jornada {{ ultimoPartido.jornada }}
+            {{ 'COMUN.JORNADA' | translate }} {{ ultimoPartido.jornada }}
           </div>
         </div>
 
         <ng-template #sinResultado>
           <div class="estado-vacio-mini">
             <span class="icon-vacio">📋</span>
-            <p>Sin resultados disponibles</p>
+            <p>{{ 'DASHBOARD.SIN_RESULTADOS' | translate }}</p>
           </div>
         </ng-template>
       </div>
@@ -181,7 +181,7 @@
         <ng-template #sinGoleadores>
           <div class="estado-vacio-mini">
             <span class="icon-vacio">📊</span>
-            <p>Sin estadísticas disponibles</p>
+            <p>{{ 'DASHBOARD.SIN_STATS' | translate }}</p>
           </div>
         </ng-template>
       </div>
@@ -190,10 +190,10 @@
       <div class="card card-tesoreria-admin" *ngIf="totalDeudaLiga > 0">
         <div class="card-header-kpi">
           <span class="card-tag">⚠️</span>
-          <h3>Tesorería</h3>
+          <h3>{{ 'DASHBOARD.TESORERIA' | translate }}</h3>
         </div>
         <div class="tesoreria-total">
-          <p class="tesoreria-total__label">Deuda total en multas</p>
+          <p class="tesoreria-total__label">{{ 'DASHBOARD.DEUDA_MULTAS' | translate }}</p>
           <p class="tesoreria-total__valor">{{ totalDeudaLiga | currency:'EUR':'symbol':'1.0-0' }}</p>
         </div>
         <div class="tesoreria-lista">

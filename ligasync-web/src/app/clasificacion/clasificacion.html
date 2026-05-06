@@ -4,13 +4,13 @@
   <div class="page-header">
     <div class="page-header__left">
       <a routerLink="/dashboard" class="btn-volver">
-        <span>←</span> Volver
+        <span>←</span> {{ 'COMUN.VOLVER' | translate }}
       </a>
       <div>
         <h1 class="page-titulo">
-          {{ esBasket ? '🏀' : '⚽' }} Clasificación
+          {{ esBasket ? '🏀' : '⚽' }} {{ 'CLASIFICACION.TITULO' | translate }}
         </h1>
-        <p class="page-subtitulo">Temporada actual · Todas las jornadas</p>
+        <p class="page-subtitulo">{{ 'CLASIFICACION.SUBTITULO' | translate }}</p>
       </div>
     </div>
   </div>
@@ -18,14 +18,14 @@
   <!-- ── Estado: cargando ──────────────────────────────────── -->
   <div *ngIf="cargando" class="estado-cargando">
     <div class="spinner"></div>
-    <p>Cargando clasificación...</p>
+    <p>{{ 'CLASIFICACION.CARGANDO' | translate }}</p>
   </div>
 
   <!-- ── Estado: error ─────────────────────────────────────── -->
   <div *ngIf="!cargando && error" class="estado-error card">
     <span class="icon-estado">⚠️</span>
-    <p>No se pudo cargar la clasificación.</p>
-    <button class="btn-reintentar" (click)="cargarClasificacion()">Reintentar</button>
+    <p>{{ 'CLASIFICACION.ERROR' | translate }}</p>
+    <button class="btn-reintentar" (click)="cargarClasificacion()">{{ 'CLASIFICACION.BTN_REINTENTAR' | translate }}</button>
   </div>
 
   <!-- ── Tabla principal ───────────────────────────────────── -->
@@ -33,22 +33,22 @@
 
     <div *ngIf="equiposOrdenados.length === 0" class="estado-vacio">
       <span class="icon-vacio">🏟️</span>
-      <p>No hay equipos registrados aún.</p>
+      <p>{{ 'CLASIFICACION.SIN_EQUIPOS' | translate }}</p>
     </div>
 
     <table *ngIf="equiposOrdenados.length > 0" class="tabla-completa">
       <thead>
         <tr>
-          <th class="th-pos">#</th>
-          <th class="th-equipo">Equipo</th>
-          <th class="th-num" title="Partidos Jugados">PJ</th>
-          <th class="th-num" title="Partidos Ganados">PG</th>
-          <th *ngIf="!esBasket" class="th-num" title="Partidos Empatados">PE</th>
-          <th class="th-num" title="Partidos Perdidos">PP</th>
+          <th class="th-pos">{{ 'DASHBOARD.COL_POS' | translate }}</th>
+          <th class="th-equipo">{{ 'DASHBOARD.COL_EQUIPO' | translate }}</th>
+          <th class="th-num" [title]="'CLASIFICACION.COL_PJ_TITULO' | translate">{{ 'DASHBOARD.COL_PJ' | translate }}</th>
+          <th class="th-num" [title]="'CLASIFICACION.COL_PG_TITULO' | translate">{{ 'DASHBOARD.COL_PG' | translate }}</th>
+          <th *ngIf="!esBasket" class="th-num" [title]="'CLASIFICACION.COL_PE_TITULO' | translate">{{ 'DASHBOARD.COL_PE' | translate }}</th>
+          <th class="th-num" [title]="'CLASIFICACION.COL_PP_TITULO' | translate">{{ 'DASHBOARD.COL_PP' | translate }}</th>
           <th class="th-num" [title]="titleGF">{{ labelGF }}</th>
           <th class="th-num" [title]="titleGC">{{ labelGC }}</th>
           <th class="th-num" [title]="titleDG">{{ labelDG }}</th>
-          <th class="th-pts">Pts</th>
+          <th class="th-pts">{{ 'DASHBOARD.COL_PTS' | translate }}</th>
         </tr>
       </thead>
       <tbody>

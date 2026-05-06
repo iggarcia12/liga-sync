@@ -7,10 +7,12 @@ import { of } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-estadisticas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './estadisticas.html',
   styleUrl: './estadisticas.css'
 })

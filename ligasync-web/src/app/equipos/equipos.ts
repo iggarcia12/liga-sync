@@ -7,10 +7,12 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-equipos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './equipos.html',
   styleUrl: './equipos.css'
 })

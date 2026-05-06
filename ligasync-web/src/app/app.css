@@ -149,6 +149,9 @@
 
 /* ── Footer del sidebar ─────────────────────────────────── */
 .sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: 0.875rem 1.1rem;
   border-top: 1px solid var(--sb-border);
   flex-shrink: 0;
@@ -374,6 +377,32 @@
     padding-left: 1.1rem;
     padding-right: 1.1rem;
   }
+}
+
+/* ── Botón idioma flotante (páginas sin sidebar) ─────────── */
+.btn-lang-flotante {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  background: rgba(13, 21, 32, 0.85);
+  color: #e2eeff;
+  border: 1px solid rgba(75, 159, 255, 0.35);
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.btn-lang-flotante:hover {
+  background: rgba(75, 159, 255, 0.18);
+  border-color: #4b9fff;
+  color: #fff;
 }
 
 @media (max-width: 480px) {

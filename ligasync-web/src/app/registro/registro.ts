@@ -11,10 +11,12 @@ interface LigaBuscada {
   deporte: 'FUTBOL' | 'BALONCESTO';
 }
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './registro.html',
   styleUrl: './registro.css'
 })

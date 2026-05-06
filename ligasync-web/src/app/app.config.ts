@@ -1,13 +1,25 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http'; // <-- Añadir withInterceptors
-import { authInterceptor } from './auth-interceptor'; // <-- Importar el mayordomo
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth-interceptor';
+import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    // Contratamos al mayordomo para que intercepte todas las llamadas HTTP
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor])),
+    {
+      provide: TRANSLATE_HTTP_LOADER_CONFIG,
+      useValue: { prefix: './assets/i18n/', suffix: '.json' }
+    },
+    provideTranslateService({
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateHttpLoader
+      },
+      fallbackLang: 'es'
+    })
   ]
 };

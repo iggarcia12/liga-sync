@@ -5,10 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-mi-equipo',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './mi-equipo.html',
   styleUrl: './mi-equipo.css'
 })

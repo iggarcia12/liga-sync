@@ -1,0 +1,30 @@
+{
+  "APP": {
+    "TITLE": "LigaSync",
+    "WELCOME": "Bienvenido"
+  },
+  "NAV": {
+    "PRINCIPAL": "Principal",
+    "INICIO": "Inicio",
+    "CLASIFICACION": "Clasificación",
+    "PARTIDOS": "Partidos",
+    "PLANTILLAS": "Plantillas",
+    "ESTADISTICAS": "Estadísticas",
+    "MERCADO": "Mercado",
+    "PLAYOFFS": "Play-offs",
+    "MI_ESPACIO": "Mi Espacio",
+    "MI_PERFIL": "Mi Perfil",
+    "MI_EQUIPO": "Mi Equipo",
+    "CONVOCATORIA": "Convocatoria",
+    "MENSAJES": "Mensajes",
+    "GESTION": "Gestión",
+    "PANEL_ADMIN": "Panel Admin",
+    "MODO_CLARO": "Modo Claro",
+    "MODO_OSCURO": "Modo Oscuro"
+  },
+  "TOPBAR": {
+    "HOLA": "Hola,",
+    "SALIR": "Salir",
+    "ABRIR_MENU": "Abrir menú"
+  }
+}

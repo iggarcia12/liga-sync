@@ -20,45 +20,45 @@
 
         <!-- PRINCIPAL -->
         <div class="nav-section">
-          <span class="nav-section-label">Principal</span>
+          <span class="nav-section-label">{{ 'NAV.PRINCIPAL' | translate }}</span>
           <a routerLink="/dashboard" routerLinkActive="active-link"
              [routerLinkActiveOptions]="{exact: true}" (click)="closeSidebar()">
-            <span class="nav-icon">📊</span> <span class="nav-text">Inicio</span>
+            <span class="nav-icon">📊</span> <span class="nav-text">{{ 'NAV.INICIO' | translate }}</span>
           </a>
           <a routerLink="/clasificacion" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">🏆</span> <span class="nav-text">Clasificación</span>
+            <span class="nav-icon">🏆</span> <span class="nav-text">{{ 'NAV.CLASIFICACION' | translate }}</span>
           </a>
           <a routerLink="/partidos" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span> <span class="nav-text">Partidos</span>
+            <span class="nav-icon">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span> <span class="nav-text">{{ 'NAV.PARTIDOS' | translate }}</span>
           </a>
           <a routerLink="/equipos" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">🛡️</span> <span class="nav-text">Plantillas</span>
+            <span class="nav-icon">🛡️</span> <span class="nav-text">{{ 'NAV.PLANTILLAS' | translate }}</span>
           </a>
           <a routerLink="/estadisticas" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">📈</span> <span class="nav-text">Estadísticas</span>
+            <span class="nav-icon">📈</span> <span class="nav-text">{{ 'NAV.ESTADISTICAS' | translate }}</span>
           </a>
           <a routerLink="/mercado" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">🤝</span> <span class="nav-text">Mercado</span>
+            <span class="nav-icon">🤝</span> <span class="nav-text">{{ 'NAV.MERCADO' | translate }}</span>
           </a>
           <a routerLink="/playoffs" routerLinkActive="active-link" (click)="closeSidebar()">
-            <span class="nav-icon">🏅</span> <span class="nav-text">Play-offs</span>
+            <span class="nav-icon">🏅</span> <span class="nav-text">{{ 'NAV.PLAYOFFS' | translate }}</span>
           </a>
         </div>
 
         <!-- MI ESPACIO: jugador / entrenador -->
         <ng-container *ngIf="authService.isJugador() || authService.isEntrenador()">
           <div class="nav-section">
-            <span class="nav-section-label">Mi Espacio</span>
+            <span class="nav-section-label">{{ 'NAV.MI_ESPACIO' | translate }}</span>
             <a *ngIf="authService.isJugador()"
                routerLink="/mi-perfil" routerLinkActive="active-link" (click)="closeSidebar()">
-              <span class="nav-icon">👤</span> <span class="nav-text">Mi Perfil</span>
+              <span class="nav-icon">👤</span> <span class="nav-text">{{ 'NAV.MI_PERFIL' | translate }}</span>
             </a>
             <a routerLink="/mi-equipo" routerLinkActive="active-link" (click)="closeSidebar()">
               <span class="nav-icon">{{ authService.isEntrenador() ? '🏟️' : '✅' }}</span>
-              <span class="nav-text">{{ authService.isEntrenador() ? 'Mi Equipo' : 'Convocatoria' }}</span>
+              <span class="nav-text">{{ (authService.isEntrenador() ? 'NAV.MI_EQUIPO' : 'NAV.CONVOCATORIA') | translate }}</span>
             </a>
             <a routerLink="/mensajes" routerLinkActive="active-link" (click)="closeSidebar()">
-              <span class="nav-icon">✉️</span> <span class="nav-text">Mensajes</span>
+              <span class="nav-icon">✉️</span> <span class="nav-text">{{ 'NAV.MENSAJES' | translate }}</span>
             </a>
           </div>
         </ng-container>
@@ -66,9 +66,9 @@
         <!-- MI ESPACIO: árbitro -->
         <ng-container *ngIf="authService.isArbitro()">
           <div class="nav-section">
-            <span class="nav-section-label">Mi Espacio</span>
+            <span class="nav-section-label">{{ 'NAV.MI_ESPACIO' | translate }}</span>
             <a routerLink="/mensajes" routerLinkActive="active-link" (click)="closeSidebar()">
-              <span class="nav-icon">✉️</span> <span class="nav-text">Mensajes</span>
+              <span class="nav-icon">✉️</span> <span class="nav-text">{{ 'NAV.MENSAJES' | translate }}</span>
             </a>
           </div>
         </ng-container>
@@ -76,12 +76,12 @@
         <!-- GESTIÓN: solo admin -->
         <ng-container *ngIf="authService.isAdmin()">
           <div class="nav-section">
-            <span class="nav-section-label">Gestión</span>
+            <span class="nav-section-label">{{ 'NAV.GESTION' | translate }}</span>
             <a routerLink="/mensajes" routerLinkActive="active-link" (click)="closeSidebar()">
-              <span class="nav-icon">✉️</span> <span class="nav-text">Mensajes</span>
+              <span class="nav-icon">✉️</span> <span class="nav-text">{{ 'NAV.MENSAJES' | translate }}</span>
             </a>
             <a routerLink="/admin" routerLinkActive="active-link" (click)="closeSidebar()">
-              <span class="nav-icon">⚙️</span> <span class="nav-text">Panel Admin</span>
+              <span class="nav-icon">⚙️</span> <span class="nav-text">{{ 'NAV.PANEL_ADMIN' | translate }}</span>
             </a>
           </div>
         </ng-container>
@@ -91,7 +91,11 @@
       <div class="sidebar-footer">
         <button class="btn-theme-toggle" (click)="toggleTheme()">
           <span class="nav-icon">{{ isDarkMode ? '☀️' : '🌙' }}</span>
-          <span class="nav-text">{{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}</span>
+          <span class="nav-text">{{ (isDarkMode ? 'NAV.MODO_CLARO' : 'NAV.MODO_OSCURO') | translate }}</span>
+        </button>
+        <button class="btn-theme-toggle btn-lang-toggle" (click)="toggleIdioma()">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-text">{{ currentLang === 'es' ? 'English' : 'Español' }}</span>
         </button>
       </div>
 
@@ -101,18 +105,18 @@
     <main class="main-layout">
 
       <header class="top-navbar">
-        <button class="btn-hamburger" (click)="toggleSidebar()" aria-label="Abrir menú">
+        <button class="btn-hamburger" (click)="toggleSidebar()" [attr.aria-label]="'TOPBAR.ABRIR_MENU' | translate">
           <span></span>
           <span></span>
           <span></span>
         </button>
 
         <div class="top-bar-user">
-          <span class="user-greeting">Hola, <strong>{{ authService.getNombre() }}</strong></span>
+          <span class="user-greeting">{{ 'TOPBAR.HOLA' | translate }} <strong>{{ authService.getNombre() }}</strong></span>
         </div>
 
         <button (click)="salir()" class="btn-logout">
-          <span class="nav-icon" style="opacity:1; width:auto; margin-right:4px;">🚪</span> <span class="nav-text">Salir</span>
+          <span class="nav-icon" style="opacity:1; width:auto; margin-right:4px;">🚪</span> <span class="nav-text">{{ 'TOPBAR.SALIR' | translate }}</span>
         </button>
       </header>
 
@@ -127,5 +131,11 @@
 
 <!-- Login / Registro: sin layout -->
 <ng-template #sinLayout>
+  <button class="btn-lang-flotante" (click)="toggleIdioma()" [attr.aria-label]="'TOPBAR.ABRIR_MENU' | translate">
+    🌐 {{ currentLang === 'es' ? 'EN' : 'ES' }}
+  </button>
   <router-outlet></router-outlet>
 </ng-template>
+
+<!-- Asistente flotante — solo visible con sesión activa -->
+<app-chatbot *ngIf="authService.isLoggedIn()" />

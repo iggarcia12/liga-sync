@@ -1,22 +1,22 @@
 <div class="admin-page" [class.editing-mode]="editorActivo">
   <div class="main-admin-content" *ngIf="!editorActivo">
   <div class="header-section">
-    <h1 class="page-title">⚙️ Panel de Administración</h1>
-    <p class="page-subtitle">Gestión centralizada de la liga y control total del calendario.</p>
+    <h1 class="page-title">{{ 'ADMIN.TITULO' | translate }}</h1>
+    <p class="page-subtitle">{{ 'ADMIN.SUBTITULO' | translate }}</p>
   </div>
 
   <div class="admin-tabs">
-    <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥<span class="tab-text"> Usuarios</span></button>
-    <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅<span class="tab-text"> Convocatoria</span></button>
-    <button class="tab-btn" [class.active]="tabActiva === 'pagos'" (click)="activarTab('pagos')">💳<span class="tab-text"> Pagos</span></button>
+    <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥<span class="tab-text"> {{ 'ADMIN.TAB_USUARIOS' | translate }}</span></button>
+    <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅<span class="tab-text"> {{ 'ADMIN.TAB_CONVOCATORIA' | translate }}</span></button>
+    <button class="tab-btn" [class.active]="tabActiva === 'pagos'" (click)="activarTab('pagos')">💳<span class="tab-text"> {{ 'ADMIN.TAB_PAGOS' | translate }}</span></button>
   </div>
 
   <div class="admin-grid">
     <!-- SECCIÓN USUARIOS -->
     <div class="card panel-usuarios" *ngIf="tabActiva === 'usuarios'">
       <div class="card-header">
-        <h3>Gestión de Usuarios</h3>
-        <span class="badge badge-espectador">{{ usuarios.length }} usuarios</span>
+        <h3>{{ 'ADMIN.USUARIOS_TITULO' | translate }}</h3>
+        <span class="badge badge-espectador">{{ usuarios.length }} {{ 'ADMIN.TAB_USUARIOS' | translate }}</span>
       </div>
 
       <div class="buscador-usuarios">
@@ -24,7 +24,7 @@
         <input
           type="text"
           class="buscador-input"
-          placeholder="Buscar por nombre..."
+          [placeholder]="'ADMIN.BUSCAR_USUARIO_PH' | translate"
           [(ngModel)]="busquedaUsuario"
         />
         <button class="buscador-clear" *ngIf="busquedaUsuario" (click)="busquedaUsuario = ''">×</button>
@@ -33,18 +33,18 @@
       <div class="caja-exito-rango" *ngIf="mensajeRango">{{ mensajeRango }}</div>
       <div class="caja-error-rango" *ngIf="mensajeRangoError">{{ mensajeRangoError }}</div>
 
-      <div class="estado-vacio" *ngIf="cargandoUsuarios"><p>⏳ Cargando usuarios...</p></div>
+      <div class="estado-vacio" *ngIf="cargandoUsuarios"><p>{{ 'ADMIN.CARGANDO_USUARIOS' | translate }}</p></div>
 
       <div class="table-responsive" *ngIf="!cargandoUsuarios">
         <table class="table">
           <thead>
             <tr>
-              <th>Usuario</th>
-              <th>Email</th>
-              <th>Rol actual</th>
-              <th>Asignar rol</th>
-              <th>Vinculación</th>
-              <th>Acciones</th>
+              <th>{{ 'ADMIN.COL_USUARIO' | translate }}</th>
+              <th>{{ 'ADMIN.COL_EMAIL' | translate }}</th>
+              <th>{{ 'ADMIN.COL_ROL_ACTUAL' | translate }}</th>
+              <th>{{ 'ADMIN.COL_ASIGNAR_ROL' | translate }}</th>
+              <th>{{ 'ADMIN.COL_VINCULACION' | translate }}</th>
+              <th>{{ 'ADMIN.COL_ACCIONES' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -73,7 +73,7 @@
                 <select *ngIf="requiereEquipo(rangosPendientes[u.id].role)"
                   class="select-equipo"
                   [(ngModel)]="rangosPendientes[u.id].teamId">
-                  <option [ngValue]="null">— Sin equipo —</option>
+                  <option [ngValue]="null">{{ 'ADMIN.SIN_EQUIPO_ASIGNAR' | translate }}</option>
                   <option *ngFor="let e of equipos" [ngValue]="e.id">{{ e.nombre }}</option>
                 </select>
 
@@ -81,11 +81,11 @@
                 <select *ngIf="requiereJugador(rangosPendientes[u.id].role)"
                   class="select-equipo"
                   [(ngModel)]="rangosPendientes[u.id].jugadorId">
-                  <option [ngValue]="null">— Sin jugador —</option>
+                  <option [ngValue]="null">{{ 'ADMIN.SIN_JUGADOR_ASIGNAR' | translate }}</option>
                   <!-- Mostrar el jugador ya vinculado aunque no esté en "sin-usuario" -->
                   <option *ngIf="u.jugadorId && !jugadoresSinUsuario.find(j => j.id === u.jugadorId)"
                     [ngValue]="u.jugadorId">
-                    [Vinculado actual]
+                    {{ 'ADMIN.VINCULADO_ACTUAL' | translate }}
                   </option>
                   <option *ngFor="let j of jugadoresSinUsuario" [ngValue]="j.id">
                     {{ j.nombre }} ({{ j.pos }})
@@ -101,7 +101,7 @@
                   <button class="btn btn-small btn-primary"
                     [disabled]="(u.role || '').toUpperCase() === 'ADMIN'"
                     (click)="guardarRango(u)">
-                    💾<span class="btn-text"> Guardar</span>
+                    {{ 'ADMIN.BTN_GUARDAR' | translate }}
                   </button>
                   <button class="btn btn-small btn-danger"
                     [disabled]="(u.role || '').toUpperCase() === 'ADMIN'"
@@ -113,7 +113,7 @@
             </tr>
             <tr *ngIf="usuariosFiltrados.length === 0 && !cargandoUsuarios">
               <td colspan="6" class="sin-resultados-busqueda">
-                Sin usuarios que coincidan con "{{ busquedaUsuario }}"
+                {{ 'ADMIN.SIN_USUARIOS' | translate }} "{{ busquedaUsuario }}"
               </td>
             </tr>
           </tbody>
@@ -127,24 +127,24 @@
       <!-- ── VISTA: LISTA DE PARTIDOS PENDIENTES ── -->
       <ng-container *ngIf="!partidoConvocatoria">
         <div class="card-header">
-          <h3>Convocatoria por Partido</h3>
-          <span class="badge badge-espectador">{{ partidosPendientes.length }} partidos pendientes</span>
+          <h3>{{ 'ADMIN.CONVOCATORIA_TITULO' | translate }}</h3>
+          <span class="badge badge-espectador">{{ partidosPendientes.length }} {{ 'ADMIN.PARTIDOS_PENDIENTES_BADGE' | translate }}</span>
         </div>
 
         <div class="estado-vacio" *ngIf="partidosPendientes.length === 0">
-          <p>No hay partidos pendientes. Todos han sido finalizados y firmados.</p>
+          <p>{{ 'ADMIN.SIN_PARTIDOS_PENDIENTES' | translate }}</p>
         </div>
 
         <div class="conv-partidos-lista" *ngIf="partidosPendientes.length > 0">
           <div class="conv-partido-fila" *ngFor="let p of partidosPendientes" (click)="abrirConvocatoriaPartido(p)">
-            <span class="conv-jornada-badge">J{{ p.jornada }}</span>
+            <span class="conv-jornada-badge">{{ 'COMUN.JORNADA_ABREV' | translate }}{{ p.jornada }}</span>
             <div class="conv-partido-equipos">
               <span class="conv-partido-equipo">{{ p.local?.nombre || '?' }}</span>
               <span class="conv-partido-vs">vs</span>
               <span class="conv-partido-equipo">{{ p.visitante?.nombre || '?' }}</span>
             </div>
             <span class="conv-partido-fecha">{{ p.fecha }}</span>
-            <button class="btn btn-small btn-primary">Gestionar →</button>
+            <button class="btn btn-small btn-primary">{{ 'ADMIN.BTN_GESTIONAR' | translate }}</button>
           </div>
         </div>
       </ng-container>
@@ -152,14 +152,14 @@
       <!-- ── VISTA: DETALLE DE PARTIDO ── -->
       <ng-container *ngIf="partidoConvocatoria">
         <div class="card-header">
-          <button class="btn btn-small" (click)="volverListaConvocatoria()">← Volver</button>
+          <button class="btn btn-small" (click)="volverListaConvocatoria()">{{ 'ADMIN.BTN_VOLVER_LISTA' | translate }}</button>
           <h3>
-            J{{ partidoConvocatoria.jornada }} —
+            {{ 'COMUN.JORNADA_ABREV' | translate }}{{ partidoConvocatoria.jornada }} —
             {{ partidoConvocatoria.local?.nombre }} vs {{ partidoConvocatoria.visitante?.nombre }}
           </h3>
         </div>
 
-        <div class="estado-vacio" *ngIf="cargandoConvJugadores"><p>⏳ Cargando jugadores...</p></div>
+        <div class="estado-vacio" *ngIf="cargandoConvJugadores"><p>{{ 'ADMIN.CARGANDO_JUGADORES' | translate }}</p></div>
 
         <div class="conv-detalle-grid" *ngIf="!cargandoConvJugadores">
 
@@ -168,8 +168,8 @@
             <div class="conv-equipo-header">
               <span class="conv-equipo-nombre">🏠 {{ partidoConvocatoria.local?.nombre }}</span>
               <div class="conv-equipo-acciones">
-                <button class="btn btn-small btn-success" (click)="marcarTodoConv(jugadoresLocalConv, true)">✅ Todos</button>
-                <button class="btn btn-small btn-danger"  (click)="marcarTodoConv(jugadoresLocalConv, false)">❌ Ninguno</button>
+                <button class="btn btn-small btn-success" (click)="marcarTodoConv(jugadoresLocalConv, true)">{{ 'ADMIN.BTN_TODOS' | translate }}</button>
+                <button class="btn btn-small btn-danger"  (click)="marcarTodoConv(jugadoresLocalConv, false)">{{ 'ADMIN.BTN_NINGUNO' | translate }}</button>
               </div>
             </div>
             <div class="conv-jugador-lista">
@@ -177,16 +177,16 @@
                 [class.conv-jugador-fila--sancionado]="j.estadoDisciplinario === 'SANCIONADO'">
                 <span class="conv-jugador-pos" [attr.data-pos]="j.pos">{{ j.pos ?? '—' }}</span>
                 <span class="conv-jugador-nombre">{{ j.nombre }}</span>
-                <span class="conv-sancion-badge" *ngIf="j.estadoDisciplinario === 'SANCIONADO'">🚫 Sancionado</span>
+                <span class="conv-sancion-badge" *ngIf="j.estadoDisciplinario === 'SANCIONADO'">{{ 'ADMIN.SANCIONADO' | translate }}</span>
                 <button class="btn-conv-toggle"
                   *ngIf="j.estadoDisciplinario !== 'SANCIONADO'"
                   [class.btn-conv-toggle--si]="j.convocado"
                   [class.btn-conv-toggle--no]="!j.convocado"
                   (click)="toggleConvocatoria(j)">
-                  {{ j.convocado ? '✅ Asiste' : '❌ No asiste' }}
+                  {{ (j.convocado ? 'ADMIN.BTN_ASISTE' : 'ADMIN.BTN_NO_ASISTE') | translate }}
                 </button>
               </div>
-              <p class="conv-sin-jugadores" *ngIf="jugadoresLocalConv.length === 0">Sin jugadores en este equipo.</p>
+              <p class="conv-sin-jugadores" *ngIf="jugadoresLocalConv.length === 0">{{ 'ADMIN.SIN_JUGADORES_EQUIPO' | translate }}</p>
             </div>
           </div>
 
@@ -195,8 +195,8 @@
             <div class="conv-equipo-header">
               <span class="conv-equipo-nombre">🚌 {{ partidoConvocatoria.visitante?.nombre }}</span>
               <div class="conv-equipo-acciones">
-                <button class="btn btn-small btn-success" (click)="marcarTodoConv(jugadoresVisitanteConv, true)">✅ Todos</button>
-                <button class="btn btn-small btn-danger"  (click)="marcarTodoConv(jugadoresVisitanteConv, false)">❌ Ninguno</button>
+                <button class="btn btn-small btn-success" (click)="marcarTodoConv(jugadoresVisitanteConv, true)">{{ 'ADMIN.BTN_TODOS' | translate }}</button>
+                <button class="btn btn-small btn-danger"  (click)="marcarTodoConv(jugadoresVisitanteConv, false)">{{ 'ADMIN.BTN_NINGUNO' | translate }}</button>
               </div>
             </div>
             <div class="conv-jugador-lista">
@@ -204,16 +204,16 @@
                 [class.conv-jugador-fila--sancionado]="j.estadoDisciplinario === 'SANCIONADO'">
                 <span class="conv-jugador-pos" [attr.data-pos]="j.pos">{{ j.pos ?? '—' }}</span>
                 <span class="conv-jugador-nombre">{{ j.nombre }}</span>
-                <span class="conv-sancion-badge" *ngIf="j.estadoDisciplinario === 'SANCIONADO'">🚫 Sancionado</span>
+                <span class="conv-sancion-badge" *ngIf="j.estadoDisciplinario === 'SANCIONADO'">{{ 'ADMIN.SANCIONADO' | translate }}</span>
                 <button class="btn-conv-toggle"
                   *ngIf="j.estadoDisciplinario !== 'SANCIONADO'"
                   [class.btn-conv-toggle--si]="j.convocado"
                   [class.btn-conv-toggle--no]="!j.convocado"
                   (click)="toggleConvocatoria(j)">
-                  {{ j.convocado ? '✅ Asiste' : '❌ No asiste' }}
+                  {{ (j.convocado ? 'ADMIN.BTN_ASISTE' : 'ADMIN.BTN_NO_ASISTE') | translate }}
                 </button>
               </div>
-              <p class="conv-sin-jugadores" *ngIf="jugadoresVisitanteConv.length === 0">Sin jugadores en este equipo.</p>
+              <p class="conv-sin-jugadores" *ngIf="jugadoresVisitanteConv.length === 0">{{ 'ADMIN.SIN_JUGADORES_EQUIPO' | translate }}</p>
             </div>
           </div>
 
@@ -225,10 +225,10 @@
     <!-- ─── TAB PAGOS ──────────────────────────────────────────── -->
     <div class="card panel-pagos" *ngIf="tabActiva === 'pagos'">
       <div class="card-header">
-        <h3>Gestión de Cuotas de Inscripción</h3>
+        <h3>{{ 'ADMIN.CUOTAS_TITULO' | translate }}</h3>
         <div class="pagos-resumen-badges">
-          <span class="badge badge-pagado">✅ {{ equiposPagados }} pagados</span>
-          <span class="badge badge-pendiente">⏳ {{ equiposPendientes }} pendientes</span>
+          <span class="badge badge-pagado">✅ {{ equiposPagados }} {{ 'ADMIN.BADGE_PAGADOS' | translate }}</span>
+          <span class="badge badge-pendiente">⏳ {{ equiposPendientes }} {{ 'ADMIN.BADGE_PENDIENTES' | translate }}</span>
         </div>
       </div>
 
@@ -238,21 +238,21 @@
         </div>
       </div>
       <p class="pagos-progress-label">
-        {{ equiposPagados }} de {{ equipos.length }} equipos han pagado la cuota de inscripción
+        {{ equiposPagados }} {{ 'ADMIN.PROGRESS_DE' | translate }} {{ equipos.length }} {{ 'ADMIN.PROGRESS_PAGARON' | translate }}
       </p>
 
       <div class="estado-vacio" *ngIf="equipos.length === 0">
-        <p>No hay equipos registrados en la liga.</p>
+        <p>{{ 'ADMIN.SIN_EQUIPOS_PAGOS' | translate }}</p>
       </div>
 
       <div class="table-responsive" *ngIf="equipos.length > 0">
         <table class="table">
           <thead>
             <tr>
-              <th>Equipo</th>
-              <th>Ciudad</th>
-              <th>Estado cuota</th>
-              <th>Acción admin</th>
+              <th>{{ 'ADMIN.COL_EQUIPO' | translate }}</th>
+              <th>{{ 'ADMIN.COL_CIUDAD' | translate }}</th>
+              <th>{{ 'ADMIN.COL_ESTADO_CUOTA' | translate }}</th>
+              <th>{{ 'ADMIN.COL_ACCION_ADMIN' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -261,19 +261,19 @@
               <td>{{ eq.ciudad || '—' }}</td>
               <td>
                 <span class="badge" [ngClass]="eq.cuotaPagada ? 'badge-pagado' : 'badge-pendiente'">
-                  {{ eq.cuotaPagada ? '✅ Pagada' : '⏳ Pendiente' }}
+                  {{ (eq.cuotaPagada ? 'ADMIN.CUOTA_PAGADA' : 'ADMIN.CUOTA_PENDIENTE') | translate }}
                 </span>
               </td>
               <td>
                 <button class="btn btn-small btn-success"
                   *ngIf="!eq.cuotaPagada"
                   (click)="marcarCuotaPagada(eq)">
-                  Marcar como pagada
+                  {{ 'ADMIN.BTN_MARCAR_PAGADA' | translate }}
                 </button>
                 <button class="btn btn-small btn-danger"
                   *ngIf="eq.cuotaPagada"
                   (click)="resetearCuota(eq)">
-                  Resetear
+                  {{ 'ADMIN.BTN_RESETEAR' | translate }}
                 </button>
               </td>
             </tr>
@@ -290,15 +290,15 @@
 <div class="match-editor-screen" *ngIf="editorActivo">
   <div class="editor-header">
     <button class="back-btn" (click)="cerrarModal()">
-      <span class="icon">⬅️</span> Volver
+      {{ 'ADMIN.EDITOR_BTN_VOLVER' | translate }}
     </button>
     <div class="match-info-top">
-      <span class="jornada-badge">Jornada {{ partidoEditando?.jornada }}</span>
+      <span class="jornada-badge">{{ 'COMUN.JORNADA' | translate }} {{ partidoEditando?.jornada }}</span>
       <span class="fecha-badge">{{ partidoEditando?.fecha }}</span>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary btn-save" (click)="guardarResultado()">
-        💾 Guardar Cambios
+        {{ 'ADMIN.EDITOR_BTN_GUARDAR' | translate }}
       </button>
     </div>
   </div>
@@ -311,11 +311,11 @@
       <!-- COLUMNA LOCAL -->
       <div class="columna-equipo">
         <div class="equipo-cabecera">
-          <span class="equipo-rol-tag">Local</span>
+          <span class="equipo-rol-tag">{{ 'COMUN.LOCAL' | translate }}</span>
           <div class="equipo-identity-display">
             <span class="equipo-escudo" [title]="partidoEditando?.local?.escudo || 'Sin escudo'">
-              <img *ngIf="esUrl(partidoEditando?.local?.escudo)" 
-                   [src]="partidoEditando.local.escudo" 
+              <img *ngIf="esUrl(partidoEditando?.local?.escudo)"
+                   [src]="partidoEditando.local.escudo"
                    class="img-escudo-acta"
                    (error)="onImageError($event)">
               <span [style.display]="esUrl(partidoEditando?.local?.escudo) ? 'none' : 'inline-block'">
@@ -336,14 +336,14 @@
           </div>
         </div>
         <ng-template #sinLocal>
-          <p class="sin-jugadores-msg">Sin jugadores en este equipo.</p>
+          <p class="sin-jugadores-msg">{{ 'ADMIN.EDITOR_SIN_JUGADORES' | translate }}</p>
         </ng-template>
       </div>
 
       <!-- COLUMNA CENTRAL: MARCADOR -->
       <div class="columna-central">
         <div class="score-grupo">
-          <span class="score-label">Local</span>
+          <span class="score-label">{{ 'COMUN.LOCAL' | translate }}</span>
           <input type="number" [(ngModel)]="golesLocal" class="score-input-vs" min="0">
           <div class="score-controls">
             <button class="score-btn" (click)="golesLocal = (golesLocal > 0 ? golesLocal - 1 : 0)">−</button>
@@ -351,10 +351,10 @@
           </div>
         </div>
 
-        <div class="vs-central">VS</div>
+        <div class="vs-central">{{ 'COMUN.VS' | translate }}</div>
 
         <div class="score-grupo">
-          <span class="score-label">Visitante</span>
+          <span class="score-label">{{ 'COMUN.VISITANTE' | translate }}</span>
           <input type="number" [(ngModel)]="golesVisitante" class="score-input-vs" min="0">
           <div class="score-controls">
             <button class="score-btn" (click)="golesVisitante = (golesVisitante > 0 ? golesVisitante - 1 : 0)">−</button>
@@ -366,11 +366,11 @@
       <!-- COLUMNA VISITANTE -->
       <div class="columna-equipo">
         <div class="equipo-cabecera equipo-cabecera--der">
-          <span class="equipo-rol-tag">Visitante</span>
+          <span class="equipo-rol-tag">{{ 'COMUN.VISITANTE' | translate }}</span>
           <div class="equipo-identity-display">
             <span class="equipo-escudo" [title]="partidoEditando?.visitante?.escudo || 'Sin escudo'">
-              <img *ngIf="esUrl(partidoEditando?.visitante?.escudo)" 
-                   [src]="partidoEditando.visitante.escudo" 
+              <img *ngIf="esUrl(partidoEditando?.visitante?.escudo)"
+                   [src]="partidoEditando.visitante.escudo"
                    class="img-escudo-acta"
                    (error)="onImageError($event)">
               <span [style.display]="esUrl(partidoEditando?.visitante?.escudo) ? 'none' : 'inline-block'">
@@ -391,7 +391,7 @@
           </div>
         </div>
         <ng-template #sinVisitante>
-          <p class="sin-jugadores-msg">Sin jugadores en este equipo.</p>
+          <p class="sin-jugadores-msg">{{ 'ADMIN.EDITOR_SIN_JUGADORES' | translate }}</p>
         </ng-template>
       </div>
 
@@ -400,13 +400,13 @@
     <!-- ── LOG DE INCIDENCIAS ──────────────────────────────── -->
     <div class="incidencias-seccion">
       <div class="section-title">
-        <h3>⚡ Incidencias del Partido</h3>
-        <p>Historial de eventos registrados en el acta.</p>
+        <h3>{{ 'ADMIN.INCIDENCIAS_TITULO' | translate }}</h3>
+        <p>{{ 'ADMIN.INCIDENCIAS_SUBTITULO' | translate }}</p>
       </div>
       <div class="incidents-log">
         <div class="empty-log" *ngIf="incidencias.length === 0">
           <div class="icon">📋</div>
-          <p>Usa los botones de los jugadores para registrar goles y tarjetas.</p>
+          <p>{{ 'ADMIN.INCIDENCIAS_VACIAS' | translate }}</p>
         </div>
         <div class="incident-list-item" *ngFor="let inc of incidencias; let i = index">
           <div class="incident-icon" [ngClass]="inc.tipo.toLowerCase()">

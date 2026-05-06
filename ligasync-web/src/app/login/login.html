@@ -5,7 +5,7 @@
     <div class="login-lateral__contenido">
       <span class="login-lateral__icono">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}</span>
       <h1 class="login-lateral__marca">LIGA<span>SYNC</span></h1>
-      <p class="login-lateral__lema">El panel de alto rendimiento para la gestión deportiva profesional.</p>
+      <p class="login-lateral__lema">{{ 'LOGIN.LEMA' | translate }}</p>
       <div class="login-lateral__deco">
         <div class="deco-circulo"></div>
         <div class="deco-circulo deco-circulo--2"></div>
@@ -23,8 +23,8 @@
         <strong>LigaSync</strong>
       </div>
 
-      <h2>Bienvenido de vuelta</h2>
-      <p class="login-descripcion">Introduce tus credenciales para acceder al panel.</p>
+      <h2>{{ 'LOGIN.TITULO' | translate }}</h2>
+      <p class="login-descripcion">{{ 'LOGIN.DESCRIPCION' | translate }}</p>
 
       <div class="caja-error" *ngIf="mensajeError">
         {{ mensajeError }}
@@ -32,31 +32,31 @@
 
       <form (ngSubmit)="hacerLogin()">
         <div class="grupo-input">
-          <label>Email</label>
+          <label>{{ 'LOGIN.EMAIL' | translate }}</label>
           <input
             type="email"
             name="email"
             [(ngModel)]="email"
             required
-            placeholder="entrenador@ligasync.com"
+            [placeholder]="'LOGIN.EMAIL_PH' | translate"
           />
         </div>
 
         <div class="grupo-input">
-          <label>Contraseña</label>
-          <input type="password" name="pass" [(ngModel)]="pass" required placeholder="••••••••" />
+          <label>{{ 'LOGIN.CONTRASENA' | translate }}</label>
+          <input type="password" name="pass" [(ngModel)]="pass" required [placeholder]="'LOGIN.CONTRASENA_PH' | translate" />
         </div>
 
-        <button type="submit" class="btn-entrar">Entrar al Panel</button>
+        <button type="submit" class="btn-entrar">{{ 'LOGIN.BTN_ENTRAR' | translate }}</button>
       </form>
 
       <div class="separador-oauth">
-        <span>o continúa con</span>
+        <span>{{ 'LOGIN.SEPARADOR' | translate }}</span>
       </div>
 
       <div id="google-btn-container" class="google-btn-wrapper"></div>
 
-      <p class="link-registro">¿No tienes cuenta? <a routerLink="/registro">Regístrate gratis</a></p>
+      <p class="link-registro">{{ 'LOGIN.LINK_REGISTRO' | translate }} <a routerLink="/registro">{{ 'LOGIN.LINK_REGISTRO_BTN' | translate }}</a></p>
     </div>
   </div>
 

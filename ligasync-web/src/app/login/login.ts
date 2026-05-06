@@ -8,10 +8,12 @@ import { environment } from '../../environments/environment';
 
 declare const google: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })

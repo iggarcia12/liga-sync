@@ -1,11 +1,11 @@
 <div class="estadisticas-page">
   <div class="header-section">
-    <h1 class="page-title">Estadísticas de la Liga</h1>
-    <p class="page-subtitle">Rendimiento, goleadores y datos de los equipos en tiempo real.</p>
+    <h1 class="page-title">{{ 'ESTADISTICAS.TITULO' | translate }}</h1>
+    <p class="page-subtitle">{{ 'ESTADISTICAS.SUBTITULO' | translate }}</p>
   </div>
 
   <div class="estado-mensaje" *ngIf="cargando">
-    <p>⏳ Analizando datos de la liga...</p>
+    <p>{{ 'ESTADISTICAS.CARGANDO' | translate }}</p>
   </div>
 
   <div class="stats-grid" *ngIf="!cargando">
@@ -13,7 +13,7 @@
      <div class="stats-col-main">
         <div class="card">
            <div class="card-header">
-              <h3>Jugadores por Equipo (Plantillas Activas)</h3>
+              <h3>{{ 'ESTADISTICAS.JUGADORES_POR_EQUIPO' | translate }}</h3>
            </div>
            <div class="chart-container">
               <canvas #chartEquipos></canvas>
@@ -22,27 +22,27 @@
 
         <div class="card mt-4">
            <div class="card-header">
-              <h3>🚨 Tarjetas y Sanciones (Top 5)</h3>
+              <h3>{{ 'ESTADISTICAS.TARJETAS_TITULO' | translate }}</h3>
            </div>
            <div class="table-responsive">
               <table class="table">
                 <thead>
                   <tr>
-                    <th>Jugador</th>
-                    <th>Equipo</th>
-                    <th>Amarillas</th>
-                    <th>Rojas</th>
+                    <th>{{ 'ESTADISTICAS.COL_JUGADOR' | translate }}</th>
+                    <th>{{ 'ESTADISTICAS.COL_EQUIPO' | translate }}</th>
+                    <th>{{ 'ESTADISTICAS.COL_AMARILLAS' | translate }}</th>
+                    <th>{{ 'ESTADISTICAS.COL_ROJAS' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let j of sancionados">
                     <td><strong>{{j.nombre}}</strong></td>
-                    <td><span class="badge">{{j.equipo?.nombre || 'Agente Libre'}}</span></td>
+                    <td><span class="badge">{{j.equipo?.nombre || ('COMUN.AGENTE_LIBRE' | translate)}}</span></td>
                     <td class="text-amarilla font-weight-bold">{{j.tarjetasAmarillas || 0}}</td>
                     <td class="text-roja font-weight-bold">{{j.tarjetasRojas || 0}}</td>
                   </tr>
                   <tr *ngIf="sancionados.length === 0">
-                    <td colspan="4" style="text-align: center; color: var(--text-secondary);">Juego limpio. No hay tarjetas registradas.</td>
+                    <td colspan="4" style="text-align: center; color: var(--text-secondary);">{{ 'ESTADISTICAS.SIN_TARJETAS' | translate }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -55,54 +55,56 @@
         <!-- Pichichi -->
         <div class="card">
            <div class="card-header">
-              <h3>{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Top {{ authService.esBaloncesto() ? 'Anotadores' : 'Goleadores' }}</h3>
+              <h3>{{ authService.esBaloncesto() ? '🏀' : '⚽' }} {{ (authService.esBaloncesto() ? 'ESTADISTICAS.TOP_ANOTADORES' : 'ESTADISTICAS.TOP_GOLEADORES') | translate }}</h3>
            </div>
            <div class="top-list">
               <div class="top-item" *ngFor="let j of topGoleadores; let i = index">
                  <div class="top-rank" [ngClass]="{'rank-gold': i===0, 'rank-silver': i===1, 'rank-bronze': i===2}">{{ i + 1 }}</div>
                  <div class="top-info">
                     <h4>{{j.nombre}}</h4>
-                    <span>{{j.equipo?.nombre || 'Libre'}}</span>
+                    <span>{{j.equipo?.nombre || ('ESTADISTICAS.LIBRE' | translate)}}</span>
                  </div>
                  <div class="top-stat">{{j.goles || 0}} <span>{{ authService.esBaloncesto() ? 'Pts' : 'G' }}</span></div >
               </div>
-              <div class="estado-vacio" *ngIf="topGoleadores.length === 0">Sin info de {{ authService.esBaloncesto() ? 'puntos' : 'goles' }}</div>
+              <div class="estado-vacio" *ngIf="topGoleadores.length === 0">
+                {{ (authService.esBaloncesto() ? 'ESTADISTICAS.SIN_PUNTOS' : 'ESTADISTICAS.SIN_GOLES') | translate }}
+              </div>
            </div>
         </div>
 
         <!-- Asistencias -->
         <div class="card mt-4">
            <div class="card-header">
-              <h3>👟 Top Asistentes</h3>
+              <h3>{{ 'ESTADISTICAS.TOP_ASISTENTES' | translate }}</h3>
            </div>
            <div class="top-list">
               <div class="top-item" *ngFor="let j of topAsistencias; let i = index">
                  <div class="top-rank" [ngClass]="{'rank-gold': i===0, 'rank-silver': i===1, 'rank-bronze': i===2}">{{ i + 1 }}</div>
                  <div class="top-info">
                     <h4>{{j.nombre}}</h4>
-                    <span>{{j.equipo?.nombre || 'Libre'}}</span>
+                    <span>{{j.equipo?.nombre || ('ESTADISTICAS.LIBRE' | translate)}}</span>
                  </div>
                  <div class="top-stat">{{j.asistencias || 0}} <span>A</span></div >
               </div>
-              <div class="estado-vacio" *ngIf="topAsistencias.length === 0">Sin info de asistencias</div>
+              <div class="estado-vacio" *ngIf="topAsistencias.length === 0">{{ 'ESTADISTICAS.SIN_ASISTENCIAS' | translate }}</div>
            </div>
         </div>
 
         <!-- Top Rebotes — solo baloncesto -->
         <div class="card mt-4" *ngIf="authService.esBaloncesto()">
            <div class="card-header">
-              <h3>💪 Top Reboteadores</h3>
+              <h3>{{ 'ESTADISTICAS.TOP_REBOTEADORES' | translate }}</h3>
            </div>
            <div class="top-list">
               <div class="top-item" *ngFor="let j of topRebotes; let i = index">
                  <div class="top-rank" [ngClass]="{'rank-gold': i===0, 'rank-silver': i===1, 'rank-bronze': i===2}">{{ i + 1 }}</div>
                  <div class="top-info">
                     <h4>{{j.nombre}}</h4>
-                    <span>{{j.equipo?.nombre || 'Libre'}}</span>
+                    <span>{{j.equipo?.nombre || ('ESTADISTICAS.LIBRE' | translate)}}</span>
                  </div>
                  <div class="top-stat">{{j.rebotes || 0}} <span>REB</span></div>
               </div>
-              <div class="estado-vacio" *ngIf="topRebotes.length === 0">Sin rebotes registrados</div>
+              <div class="estado-vacio" *ngIf="topRebotes.length === 0">{{ 'ESTADISTICAS.SIN_REBOTES' | translate }}</div>
            </div>
         </div>
      </div>

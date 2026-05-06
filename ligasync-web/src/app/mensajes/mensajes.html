@@ -1,10 +1,10 @@
 <div class="mensajes-page">
-   
+
    <div class="chat-container card">
       <!-- Columna Izquierda: Sidebar -->
       <div class="chat-sidebar">
          <div class="sidebar-header">
-            <h3>Mensajes</h3>
+            <h3>{{ 'MENSAJES.TITULO' | translate }}</h3>
             <span class="badge badge-nombre" *ngIf="miNombre">{{ miNombre }}</span>
          </div>
 
@@ -15,7 +15,7 @@
                <input
                   type="text"
                   class="search-input"
-                  placeholder="Buscar usuario..."
+                  [placeholder]="'MENSAJES.BUSCAR_PH' | translate"
                   [(ngModel)]="textoBusqueda"
                   (ngModelChange)="buscarUsuarios()"
                   autocomplete="off">
@@ -25,7 +25,7 @@
             <!-- Resultados de búsqueda (dropdown) -->
             <div class="search-results" *ngIf="mostrarBusqueda">
                <div class="search-empty" *ngIf="resultadosBusqueda.length === 0">
-                  <p>No se encontraron usuarios.</p>
+                  <p>{{ 'MENSAJES.SIN_USUARIOS' | translate }}</p>
                </div>
                <div class="search-result-item"
                     *ngFor="let u of resultadosBusqueda"
@@ -44,22 +44,22 @@
 
             <!-- Cargando (solo si la lista está vacía) -->
             <div class="estado-vacio" *ngIf="cargandoContactos && contactosActivos.length === 0">
-               <p>⏳ Cargando...</p>
+               <p>{{ 'MENSAJES.CARGANDO' | translate }}</p>
             </div>
 
             <!-- Sin chats activos -->
             <div class="estado-vacio sin-chats" *ngIf="!cargandoContactos && contactosActivos.length === 0">
                <span>💬</span>
-               <p>No tienes conversaciones activas.</p>
-               <p class="hint">Usa el buscador para iniciar un chat.</p>
+               <p>{{ 'MENSAJES.SIN_CHATS' | translate }}</p>
+               <p class="hint">{{ 'MENSAJES.SIN_CHATS_HINT' | translate }}</p>
             </div>
 
             <!-- Chats activos -->
-            <div class="contacto-item" 
-                 *ngFor="let u of contactosActivos" 
+            <div class="contacto-item"
+                 *ngFor="let u of contactosActivos"
                  [class.activo]="contactoSeleccionado?.id === u.id"
                  (click)="seleccionarContacto(u)">
-               
+
                <div class="avatar-circle">{{ getInicial(u.nombre) }}</div>
                <div class="contacto-info">
                   <div class="contacto-header">
@@ -89,17 +89,17 @@
          <div class="chat-history" #chatHistory>
             <!-- Cargando mensajes -->
             <div class="estado-vacio" *ngIf="cargandoMensajes">
-               <p>⏳ Cargando mensajes...</p>
+               <p>{{ 'MENSAJES.CARGANDO_MENSAJES' | translate }}</p>
             </div>
 
             <!-- Sin mensajes todavía -->
             <div class="estado-vacio" *ngIf="!cargandoMensajes && mensajesActivos.length === 0">
-               <p>💬 Sin mensajes todavía. ¡Envía el primero!</p>
+               <p>{{ 'MENSAJES.SIN_MENSAJES' | translate }}</p>
             </div>
 
             <!-- Burbujas de mensajes -->
-            <div class="mensaje-bubble" 
-                 *ngFor="let msg of mensajesActivos" 
+            <div class="mensaje-bubble"
+                 *ngFor="let msg of mensajesActivos"
                  [ngClass]="esMio(msg) ? 'me' : 'them'">
                <div class="bubble-text">{{ msg.contenido }}</div>
                <div class="bubble-time">{{ formatearHora(msg.fechaEnvio) }}</div>
@@ -108,18 +108,18 @@
 
          <div class="chat-input-area">
             <form (ngSubmit)="enviarMensaje()">
-               <input 
-                  type="text" 
-                  name="nuevoMensaje" 
-                  [(ngModel)]="nuevoMensaje" 
-                  placeholder="Escribe un mensaje..." 
+               <input
+                  type="text"
+                  name="nuevoMensaje"
+                  [(ngModel)]="nuevoMensaje"
+                  [placeholder]="'MENSAJES.ESCRIBIR_PH' | translate"
                   autocomplete="off"
                   [disabled]="enviando">
-               <button 
-                  type="submit" 
-                  class="btn btn-primary" 
+               <button
+                  type="submit"
+                  class="btn btn-primary"
                   [disabled]="!nuevoMensaje.trim() || enviando">
-                  {{ enviando ? '...' : 'Enviar' }}
+                  {{ (enviando ? 'MENSAJES.BTN_ENVIANDO' : 'MENSAJES.BTN_ENVIAR') | translate }}
                </button>
             </form>
          </div>
@@ -128,8 +128,8 @@
       <!-- Estado vacío: ningún chat seleccionado -->
       <div class="chat-main empty-state" *ngIf="!contactoSeleccionado">
          <div class="empty-icon">💬</div>
-         <h3>Tus Mensajes</h3>
-         <p>Selecciona una conversación o busca un usuario para iniciar un chat.</p>
+         <h3>{{ 'MENSAJES.EMPTY_TITULO' | translate }}</h3>
+         <p>{{ 'MENSAJES.EMPTY_DESC' | translate }}</p>
       </div>
 
    </div>

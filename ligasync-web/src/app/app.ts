@@ -2,24 +2,41 @@ import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { ChatbotComponent } from './chatbot/chatbot';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, ChatbotComponent, TranslateModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit {
   private router = inject(Router);
   public authService = inject(AuthService);
+  private translate = inject(TranslateService);
   isDarkMode = false;
   isSidebarCollapsed = false;
   isMobileOpen = false;
+  currentLang = 'es';
 
   ngOnInit() {
+    const savedLang = localStorage.getItem('lang') || 'es';
+    this.currentLang = savedLang;
+    this.translate.use(savedLang);
     this.initTheme();
     this.checkScreenSize();
+  }
+
+  cambiarIdioma(lang: string) {
+    this.currentLang = lang;
+    this.translate.use(lang);
+    localStorage.setItem('lang', lang);
+  }
+
+  toggleIdioma() {
+    this.cambiarIdioma(this.currentLang === 'es' ? 'en' : 'es');
   }
 
   @HostListener('window:resize')

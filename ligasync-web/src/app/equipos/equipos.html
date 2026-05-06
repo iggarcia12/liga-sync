@@ -1,44 +1,42 @@
 <div class="equipos-page">
 
   <div class="header-section">
-    <h1 class="page-title">Gestión de Plantillas</h1>
-    <p class="page-subtitle">Visualiza la alineación y administra tus jugadores asignados.</p>
+    <h1 class="page-title">{{ 'EQUIPOS.TITULO' | translate }}</h1>
+    <p class="page-subtitle">{{ 'EQUIPOS.SUBTITULO' | translate }}</p>
   </div>
 
   <div class="estado-mensaje" *ngIf="cargando">
-    <p>⏳ Cargando equipos y tácticas...</p>
+    <p>{{ 'EQUIPOS.CARGANDO' | translate }}</p>
   </div>
 
   <div class="estado-mensaje vacio" *ngIf="!cargando && equipos.length === 0">
-    <p>Aún no hay equipos registrados en la liga. ¡Crea el primero!</p>
-    <button class="btn btn-primary" *ngIf="esAdmin" (click)="abrirFormulario()" style="margin-top: 1rem;">+ Crear Equipo</button>
+    <p>{{ 'EQUIPOS.SIN_EQUIPOS' | translate }}</p>
+    <button class="btn btn-primary" *ngIf="esAdmin" (click)="abrirFormulario()" style="margin-top: 1rem;">{{ 'EQUIPOS.BTN_CREAR_EQUIPO' | translate }}</button>
   </div>
 
   <!-- Controles y Selector -->
   <div class="filtros-card card" *ngIf="!cargando && equipos.length > 0">
     <div class="selector-equipo">
-      <label>Seleccionar Equipo: </label>
+      <label>{{ 'EQUIPOS.SELECTOR_EQUIPO' | translate }}</label>
       <select class="input-select" [(ngModel)]="equipoActualSeleccionado" (ngModelChange)="onEquipoChange($event)">
-        <option *ngFor="let eq of equipos" [value]="eq.id">
-          {{ eq.nombre }}
-        </option>
+        <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
       </select>
     </div>
     <div class="acciones-equipo" *ngIf="esAdmin">
-      <button class="btn" (click)="abrirFormulario()">+ Nuevo Equipo</button>
-      <button class="btn" (click)="abrirFormulario(equipoActualDetalles)" *ngIf="equipoActualDetalles">✏️ Editar Configuración</button>
-      <button class="btn btn-presupuesto" (click)="abrirModalPresupuesto()" *ngIf="equipoActualDetalles">💰 Ajustar Presupuesto</button>
+      <button class="btn" (click)="abrirFormulario()">{{ 'EQUIPOS.BTN_NUEVO_EQUIPO' | translate }}</button>
+      <button class="btn" (click)="abrirFormulario(equipoActualDetalles)" *ngIf="equipoActualDetalles">{{ 'EQUIPOS.BTN_EDITAR_CONFIG' | translate }}</button>
+      <button class="btn btn-presupuesto" (click)="abrirModalPresupuesto()" *ngIf="equipoActualDetalles">{{ 'EQUIPOS.BTN_AJUSTAR_PRESUPUESTO' | translate }}</button>
     </div>
   </div>
 
   <div class="team-layout" *ngIf="equipoActualDetalles">
-    
-    <!-- Pizarra Táctica (Soccer Pitch) -->
+
+    <!-- Pizarra Táctica -->
     <div class="pitch-container card">
       <div class="pitch-header">
-        <h3>Alineación Titular — {{ equipoActualDetalles.formacion || (esBaloncesto ? '2-1-2' : '4-4-2') }}</h3>
+        <h3>{{ 'EQUIPOS.ALINEACION_TITULAR' | translate }} {{ equipoActualDetalles.formacion || (esBaloncesto ? '2-1-2' : '4-4-2') }}</h3>
       </div>
-      
+
       <div [ngClass]="{'campo-preview': true, 'campo-preview--basket': esBaloncesto}">
         <div [ngClass]="esBaloncesto ? 'cancha-basket' : 'campo-futbol'">
           <div *ngIf="!esBaloncesto" class="linea-medio"></div>
@@ -47,7 +45,6 @@
           <div class="area-grande area-grande--abajo"></div>
           <div *ngIf="esBaloncesto" class="linea-triple linea-triple--abajo"></div>
 
-          <!-- Jugadores Titulares -->
           <div class="jugador-spot-read"
                *ngFor="let j of titulares; let i = index"
                [ngStyle]="getPosicionEstilo(j, i)"
@@ -66,20 +63,20 @@
 
     <!-- Lista Lateral de la Plantilla -->
     <div class="plantilla-container">
-      
+
       <div class="team-summary card">
         <div class="escudo-large">🛡️</div>
         <h2>{{ equipoActualDetalles.nombre }}</h2>
-        <p>Ciudad: {{ equipoActualDetalles.ciudad || 'No definida' }}</p>
-        <p class="summary-stat"><strong>{{ jugadoresFiltrados.length }}</strong> Jugadores en Plantilla</p>
+        <p>{{ 'EQUIPOS.CIUDAD_LABEL' | translate }} {{ equipoActualDetalles.ciudad || ('EQUIPOS.NO_DEFINIDA' | translate) }}</p>
+        <p class="summary-stat"><strong>{{ jugadoresFiltrados.length }}</strong> {{ 'EQUIPOS.JUGADORES_PLANTILLA' | translate }}</p>
         <p class="summary-stat presupuesto-stat" *ngIf="esAdmin">
-          Presupuesto: <strong>{{ (equipoActualDetalles.presupuesto || 0) | number:'1.0-0' }} €</strong>
+          {{ 'EQUIPOS.PRESUPUESTO' | translate }} <strong>{{ (equipoActualDetalles.presupuesto || 0) | number:'1.0-0' }} €</strong>
         </p>
       </div>
 
       <div class="players-checklist">
-        <h3>Lista Completa</h3>
-        
+        <h3>{{ 'EQUIPOS.LISTA_COMPLETA' | translate }}</h3>
+
         <div class="grid-jugadores mini">
           <div class="card player-mini-card" *ngFor="let j of jugadoresFiltrados" [class.is-titular]="j.titular">
              <div class="player-avatar-bg">
@@ -89,16 +86,16 @@
                 <h4>{{ j.nombre }}</h4>
                 <div class="player-meta">
                   <span class="p-pos" [ngClass]="j.pos">{{ j.pos }}</span>
-                  <span class="badge-titular" *ngIf="j.titular">TITULAR</span>
-                  <span class="badge-suplente" *ngIf="!j.titular">SUPLENTE</span>
+                  <span class="badge-titular" *ngIf="j.titular">{{ 'EQUIPOS.TITULAR' | translate }}</span>
+                  <span class="badge-suplente" *ngIf="!j.titular">{{ 'EQUIPOS.SUPLENTE' | translate }}</span>
                 </div>
              </div>
              <button class="btn btn-danger btn-vender" *ngIf="esAdmin" (click)="venderJugador(j)" title="Vender al Mercado">💰</button>
           </div>
         </div>
-        
+
         <div class="estado-vacio" *ngIf="jugadoresFiltrados.length === 0">
-           <p>Este equipo no tiene jugadores asignados actualmente.</p>
+           <p>{{ 'EQUIPOS.SIN_JUGADORES' | translate }}</p>
         </div>
       </div>
 
@@ -108,41 +105,41 @@
   <!-- Modal Ajustar Presupuesto -->
   <div class="modal-overlay" *ngIf="mostrarModalPresupuesto">
     <div class="modal-content">
-      <h3>💰 Ajustar Presupuesto</h3>
-      <p class="modal-subtitulo">Equipo: <strong>{{ equipoActualDetalles?.nombre }}</strong></p>
-      <p class="modal-subtitulo">Presupuesto actual: <strong>{{ (equipoActualDetalles?.presupuesto || 0) | number:'1.0-0' }} €</strong></p>
+      <h3>{{ 'EQUIPOS.MODAL_PRESUPUESTO_TITULO' | translate }}</h3>
+      <p class="modal-subtitulo">{{ 'EQUIPOS.MODAL_PRESUPUESTO_EQUIPO' | translate }} <strong>{{ equipoActualDetalles?.nombre }}</strong></p>
+      <p class="modal-subtitulo">{{ 'EQUIPOS.MODAL_PRESUPUESTO_ACTUAL' | translate }} <strong>{{ (equipoActualDetalles?.presupuesto || 0) | number:'1.0-0' }} €</strong></p>
 
       <div class="grupo-input">
-        <label>Monto a añadir (negativo para deducir)</label>
-        <input type="number" [(ngModel)]="montoInyectar" placeholder="Ej: 5000000" />
+        <label>{{ 'EQUIPOS.MODAL_PRESUPUESTO_MONTO' | translate }}</label>
+        <input type="number" [(ngModel)]="montoInyectar" [placeholder]="'EQUIPOS.MODAL_PRESUPUESTO_PH' | translate" />
       </div>
 
       <div class="modal-acciones">
-        <button type="button" class="btn" (click)="cerrarModalPresupuesto()">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="inyectarPresupuesto()" [disabled]="montoInyectar === 0">Confirmar</button>
+        <button type="button" class="btn" (click)="cerrarModalPresupuesto()">{{ 'COMUN.CANCELAR' | translate }}</button>
+        <button type="button" class="btn btn-primary" (click)="inyectarPresupuesto()" [disabled]="montoInyectar === 0">{{ 'COMUN.CONFIRMAR' | translate }}</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal CRUD Equipo Original -->
+  <!-- Modal CRUD Equipo -->
   <div class="modal-overlay" *ngIf="mostrarFormulario">
     <div class="modal-content">
-      <h3>{{ modoEdicion ? 'Editar Equipo' : 'Crear Nuevo Equipo' }}</h3>
+      <h3>{{ (modoEdicion ? 'EQUIPOS.MODAL_CRUD_EDITAR' : 'EQUIPOS.MODAL_CRUD_CREAR') | translate }}</h3>
 
       <form (ngSubmit)="guardarEquipo()">
         <div class="grupo-input">
-          <label>Nombre del Equipo</label>
+          <label>{{ 'EQUIPOS.MODAL_NOMBRE_EQUIPO' | translate }}</label>
           <input type="text" name="nombre" [(ngModel)]="nuevoEquipo.nombre" required />
         </div>
         <div class="grupo-input">
-          <label>Ciudad</label>
+          <label>{{ 'EQUIPOS.MODAL_CIUDAD' | translate }}</label>
           <input type="text" name="ciudad" [(ngModel)]="nuevoEquipo.ciudad" />
         </div>
 
         <div class="modal-acciones">
-          <button type="button" class="btn" (click)="cancelarFormulario()">Cancelar</button>
-          <button type="button" class="btn btn-danger" *ngIf="modoEdicion" (click)="eliminarEquipo(equipoSeleccionadoId!)">Eliminar</button>
-          <button type="submit" class="btn btn-primary">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+          <button type="button" class="btn" (click)="cancelarFormulario()">{{ 'COMUN.CANCELAR' | translate }}</button>
+          <button type="button" class="btn btn-danger" *ngIf="modoEdicion" (click)="eliminarEquipo(equipoSeleccionadoId!)">{{ 'COMUN.ELIMINAR' | translate }}</button>
+          <button type="submit" class="btn btn-primary">{{ (modoEdicion ? 'COMUN.ACTUALIZAR' : 'COMUN.GUARDAR') | translate }}</button>
         </div>
       </form>
     </div>

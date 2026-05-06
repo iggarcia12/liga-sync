@@ -5,10 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-mensajes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './mensajes.html',
   styleUrl: './mensajes.css'
 })

@@ -9,22 +9,22 @@
         <strong>LigaSync</strong>
       </div>
 
-      <h2>{{ modoLiga ? 'Elige tu liga' : 'Crear cuenta' }}</h2>
+      <h2>{{ (modoLiga ? 'REGISTRO.TITULO_LIGA' : 'REGISTRO.TITULO_CUENTA') | translate }}</h2>
       <p class="registro-descripcion">
-        {{ modoLiga ? 'Ya tienes cuenta con Google. Solo necesitas unirte o crear una liga.' : 'Únete a LigaSync y sigue tu liga en tiempo real.' }}
+        {{ (modoLiga ? 'REGISTRO.DESC_LIGA' : 'REGISTRO.DESC_CUENTA') | translate }}
       </p>
 
       <!-- Selector CREAR / UNIRSE -->
       <div class="selector-accion">
         <div class="opcion-accion" [class.opcion-accion--activa]="tipoAccion === 'CREAR'" (click)="seleccionarAccion('CREAR')">
           <span class="opcion-accion__icono">🏆</span>
-          <span class="opcion-accion__titulo">Crear liga</span>
-          <span class="opcion-accion__sub">Serás el administrador</span>
+          <span class="opcion-accion__titulo">{{ 'REGISTRO.CREAR_LIGA' | translate }}</span>
+          <span class="opcion-accion__sub">{{ 'REGISTRO.SERAS_ADMIN' | translate }}</span>
         </div>
         <div class="opcion-accion" [class.opcion-accion--activa]="tipoAccion === 'UNIRSE'" (click)="seleccionarAccion('UNIRSE')">
           <span class="opcion-accion__icono">🔗</span>
-          <span class="opcion-accion__titulo">Unirme a una liga</span>
-          <span class="opcion-accion__sub">Entras como espectador</span>
+          <span class="opcion-accion__titulo">{{ 'REGISTRO.UNIRME_LIGA' | translate }}</span>
+          <span class="opcion-accion__sub">{{ 'REGISTRO.ENTRAS_ESPECTADOR' | translate }}</span>
         </div>
       </div>
 
@@ -35,39 +35,39 @@
 
         <!-- ── CREAR: nombre + selector de deporte ── -->
         <div *ngIf="tipoAccion === 'CREAR'" class="grupo-input grupo-input-liga">
-          <label>Nombre de tu nueva liga</label>
+          <label>{{ 'REGISTRO.NOMBRE_LIGA' | translate }}</label>
           <input type="text" name="nombreLigaCrear" [(ngModel)]="nombreLiga" required
-                 placeholder="Ej: Premier de Barcelona" autocomplete="off" />
+                 [placeholder]="'REGISTRO.NOMBRE_LIGA_PH' | translate" autocomplete="off" />
         </div>
 
         <div *ngIf="tipoAccion === 'CREAR'" class="grupo-input grupo-input-liga">
-          <label>Deporte</label>
+          <label>{{ 'REGISTRO.DEPORTE' | translate }}</label>
           <div class="selector-deporte">
             <div class="opcion-deporte" [class.opcion-deporte--activa]="deporte === 'FUTBOL'"
                  (click)="deporte = 'FUTBOL'">
               <span class="opcion-deporte__icono">⚽</span>
-              <span class="opcion-deporte__nombre">Fútbol</span>
+              <span class="opcion-deporte__nombre">{{ 'REGISTRO.FUTBOL' | translate }}</span>
             </div>
             <div class="opcion-deporte" [class.opcion-deporte--activa]="deporte === 'BALONCESTO'"
                  (click)="deporte = 'BALONCESTO'">
               <span class="opcion-deporte__icono">🏀</span>
-              <span class="opcion-deporte__nombre">Baloncesto</span>
+              <span class="opcion-deporte__nombre">{{ 'REGISTRO.BALONCESTO' | translate }}</span>
             </div>
           </div>
         </div>
 
         <!-- ── UNIRSE: filtro + buscador ── -->
         <div *ngIf="tipoAccion === 'UNIRSE'" class="grupo-input grupo-input-liga">
-          <label>Filtrar por deporte</label>
+          <label>{{ 'REGISTRO.FILTRAR_DEPORTE' | translate }}</label>
           <select name="filtroDeporte" [(ngModel)]="filtroDeporte" (change)="onFiltroDeporteChange()" class="select-deporte">
-            <option value="">Todos los deportes</option>
-            <option value="FUTBOL">⚽ Fútbol</option>
-            <option value="BALONCESTO">🏀 Baloncesto</option>
+            <option value="">{{ 'REGISTRO.TODOS_DEPORTES' | translate }}</option>
+            <option value="FUTBOL">⚽ {{ 'REGISTRO.FUTBOL' | translate }}</option>
+            <option value="BALONCESTO">🏀 {{ 'REGISTRO.BALONCESTO' | translate }}</option>
           </select>
         </div>
 
         <div *ngIf="tipoAccion === 'UNIRSE'" class="grupo-input grupo-input-liga">
-          <label>Buscar liga</label>
+          <label>{{ 'REGISTRO.BUSCAR_LIGA' | translate }}</label>
           <div class="buscador-liga">
             <input
               type="text"
@@ -76,7 +76,7 @@
               (input)="onBuscarLiga($event)"
               (blur)="ocultarSugerencias()"
               required
-              placeholder="Escribe el nombre de la liga..."
+              [placeholder]="'REGISTRO.BUSCAR_LIGA_PH' | translate"
               autocomplete="off"
             />
             <div class="buscador-sugerencias" *ngIf="mostrarSugerencias">
@@ -88,7 +88,7 @@
                 <span class="sugerencia-icono">{{ iconoDeporte(liga.deporte) }}</span>
                 <span class="sugerencia-nombre">{{ liga.nombre }}</span>
                 <span class="sugerencia-deporte-tag" [class.tag-basket]="liga.deporte === 'BALONCESTO'">
-                  {{ liga.deporte === 'BALONCESTO' ? 'Basket' : 'Fútbol' }}
+                  {{ (liga.deporte === 'BALONCESTO' ? 'REGISTRO.TAG_BASKET' : 'REGISTRO.TAG_FUTBOL') | translate }}
                 </span>
               </div>
             </div>
@@ -99,37 +99,37 @@
           <div class="separador-seccion"></div>
 
           <div class="grupo-input">
-            <label>Nombre completo</label>
-            <input type="text" name="nombre" [(ngModel)]="nombre" required placeholder="Ej: Carlos García" />
+            <label>{{ 'REGISTRO.NOMBRE_COMPLETO' | translate }}</label>
+            <input type="text" name="nombre" [(ngModel)]="nombre" required [placeholder]="'REGISTRO.NOMBRE_COMPLETO_PH' | translate" />
           </div>
 
           <div class="grupo-input">
-            <label>Email</label>
-            <input type="email" name="email" [(ngModel)]="email" required placeholder="tu@email.com" />
+            <label>{{ 'REGISTRO.EMAIL' | translate }}</label>
+            <input type="email" name="email" [(ngModel)]="email" required [placeholder]="'REGISTRO.EMAIL_PH' | translate" />
           </div>
 
           <div class="grupo-input">
-            <label>Contraseña</label>
-            <input type="password" name="pass" [(ngModel)]="pass" required placeholder="Mínimo 6 caracteres" />
+            <label>{{ 'REGISTRO.CONTRASENA' | translate }}</label>
+            <input type="password" name="pass" [(ngModel)]="pass" required [placeholder]="'REGISTRO.CONTRASENA_PH' | translate" />
           </div>
 
           <div class="grupo-input">
-            <label>Confirmar contraseña</label>
-            <input type="password" name="confirmarPass" [(ngModel)]="confirmarPass" required placeholder="Repite la contraseña" />
+            <label>{{ 'REGISTRO.CONFIRMAR_CONTRASENA' | translate }}</label>
+            <input type="password" name="confirmarPass" [(ngModel)]="confirmarPass" required [placeholder]="'REGISTRO.CONFIRMAR_CONTRASENA_PH' | translate" />
           </div>
         </ng-container>
 
         <button type="submit" class="btn-registrar" [disabled]="cargando">
           <ng-container *ngIf="!cargando">
-            {{ modoLiga
-              ? (tipoAccion === 'CREAR' ? 'Crear liga y entrar' : 'Unirme y entrar al panel')
-              : (tipoAccion === 'CREAR' ? 'Crear liga y cuenta' : 'Unirme a la liga') }}
+            {{ (modoLiga
+              ? (tipoAccion === 'CREAR' ? 'REGISTRO.BTN_CREAR_LIGA_ENTRAR' : 'REGISTRO.BTN_UNIRME_ENTRAR')
+              : (tipoAccion === 'CREAR' ? 'REGISTRO.BTN_CREAR_LIGA_CUENTA' : 'REGISTRO.BTN_UNIRME_LIGA')) | translate }}
           </ng-container>
-          <ng-container *ngIf="cargando">Procesando...</ng-container>
+          <ng-container *ngIf="cargando">{{ 'REGISTRO.BTN_PROCESANDO' | translate }}</ng-container>
         </button>
       </form>
 
-      <p class="link-login">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+      <p class="link-login">{{ 'REGISTRO.LINK_LOGIN' | translate }} <a routerLink="/login">{{ 'REGISTRO.LINK_LOGIN_BTN' | translate }}</a></p>
     </div>
   </div>
 
@@ -138,12 +138,12 @@
     <div class="registro-lateral__contenido">
       <span class="registro-lateral__icono">🏆</span>
       <h1 class="registro-lateral__marca">LIGA<span>SYNC</span></h1>
-      <p class="registro-lateral__lema">Gestión deportiva profesional. Tu equipo, tus estadísticas, tu liga.</p>
+      <p class="registro-lateral__lema">{{ 'REGISTRO.LATERAL_LEMA' | translate }}</p>
 
       <ul class="registro-lateral__beneficios">
-        <li><span class="beneficio-icono">📊</span> Estadísticas en tiempo real</li>
-        <li><span class="beneficio-icono">🛡️</span> Gestión de equipos y plantillas</li>
-        <li><span class="beneficio-icono">⚽</span> Fútbol y Baloncesto</li>
+        <li><span class="beneficio-icono">📊</span> {{ 'REGISTRO.BENEFICIO_1' | translate }}</li>
+        <li><span class="beneficio-icono">🛡️</span> {{ 'REGISTRO.BENEFICIO_2' | translate }}</li>
+        <li><span class="beneficio-icono">⚽</span> {{ 'REGISTRO.BENEFICIO_3' | translate }}</li>
       </ul>
 
       <div class="registro-lateral__deco">

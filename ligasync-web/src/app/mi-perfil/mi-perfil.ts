@@ -4,10 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './mi-perfil.html',
   styleUrl: './mi-perfil.css'
 })
