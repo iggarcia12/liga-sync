@@ -900,9 +900,50 @@
 .btn-firmar-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .modal-acta__header { padding: 1.5rem 1.25rem 1rem; }
+  .modal-acta__footer { padding: 1rem 1.25rem; gap: 0.5rem; flex-wrap: wrap; }
+  .modal-acta__footer .btn-cancelar,
+  .modal-acta__footer .btn-firmar,
+  .modal-acta__footer .btn-guardar-resultado { min-height: 44px; }
+  .acta-log { padding: 1rem 1.25rem; }
+  .acta-mvp { padding: 1rem 1.25rem; }
+}
+
 @media (max-width: 640px) {
   .acta-jugadores-grid { grid-template-columns: 1fr; }
   .acta-columna { border-right: none; border-bottom: 1px solid var(--border-color); }
   .acta-marcador { flex-direction: column; gap: 0.75rem; }
   .acta-equipo-nombre { width: 100%; }
+  .modal-acta__titulo { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+  .acta-jugadores-grid { gap: 0; }
+}
+
+@media (max-width: 480px) {
+  .cabecera-seccion {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .btn-nuevo { width: 100%; justify-content: center; }
+
+  .enfrentamiento { padding: 1rem 1rem; gap: 0.5rem; }
+  .equipo { width: auto; flex: 1; }
+  .equipo .escudo { width: 48px; height: 48px; font-size: 1.6rem; }
+  .equipo .nombre { font-size: 0.8rem; }
+  .resultado { min-width: 88px; padding: 0.5rem 0.75rem; }
+  .resultado .goles { font-size: 2.2rem; }
+  .resultado .separador { font-size: 1.6rem; }
+
+  .card-footer { padding: 0.75rem 1rem; }
+  .acta-mvp { padding: 1rem; gap: 0.5rem; flex-direction: column; align-items: stretch; }
+
+  .modal-acta__footer { flex-direction: column-reverse; }
+  .modal-acta__footer .btn-cancelar,
+  .modal-acta__footer .btn-firmar,
+  .modal-acta__footer .btn-guardar-resultado { width: 100%; justify-content: center; }
+  .acta-jugador__acciones { max-width: 60%; }
+  .confirmacion-botones { flex-direction: column-reverse; }
+  .confirmacion-botones .btn-firmar-confirm,
+  .confirmacion-botones .btn-cancelar { width: 100%; }
 }

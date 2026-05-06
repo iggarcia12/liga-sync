@@ -111,7 +111,7 @@
 
 .grid-jugadores-mercado {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: 1.25rem;
 }
 
@@ -485,6 +485,35 @@
 .ventana-texto strong {
   font-size: 1rem;
   letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+  .presupuesto-panel {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.5rem 1.25rem;
+  }
+  .presupuesto-acciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .presupuesto-acciones .btn { flex: 1; min-width: 130px; text-align: center; }
+  .ventana-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.875rem 1rem;
+  }
+  .saldo .amount { font-size: 2.4rem; }
+  .modal-content { padding: 1.5rem 1.25rem; }
+  .modal-acciones { flex-direction: column-reverse; }
+  .modal-acciones .btn { width: 100%; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .saldo .amount { font-size: 1.9rem; }
+  .seccion-mercado-titulo { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+  .seccion-agentes h3 { font-size: clamp(1.2rem, 5vw, 1.8rem); }
 }
 
 .ventana-cerrada-msg {

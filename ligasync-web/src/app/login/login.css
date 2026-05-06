@@ -254,3 +254,19 @@
     display: flex;
   }
 }
+
+@media (max-width: 640px) {
+  .login-lateral { min-height: 28vh; padding: 1.5rem; }
+  .login-lateral__marca { font-size: 3.5rem; }
+  .login-lateral__lema { font-size: 0.82rem; }
+  .login-formulario { padding: 1.5rem 1rem; }
+  .tarjeta-login h2 { font-size: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+  .login-lateral { display: none; }
+  .login-formulario { padding: 2rem 1.25rem; min-height: 100vh; align-items: flex-start; padding-top: 3rem; }
+  .login-brand-movil { display: flex; }
+  .tarjeta-login { max-width: 100%; }
+  .btn-entrar { min-height: 48px; font-size: 0.95rem; }
+}

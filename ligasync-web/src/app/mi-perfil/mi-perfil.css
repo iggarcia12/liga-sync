@@ -208,3 +208,26 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+@media (max-width: 768px) {
+  .perfil-page { padding: 1.5rem 1rem; }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1.25rem;
+    gap: 1rem;
+  }
+  .perfil-nombre { font-size: 1.4rem; }
+  .perfil-email { font-size: 0.82rem; }
+
+  .seccion-ficha { padding: 1.25rem 1rem; }
+  .ficha-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-card { padding: 1rem 0.75rem; }
+  .stat-card__numero { font-size: 2.2rem; }
+}

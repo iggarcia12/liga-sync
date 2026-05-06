@@ -6,10 +6,10 @@
   </div>
 
   <div class="admin-tabs">
-    <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥 Usuarios</button>
-    <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Partidos y Calendario</button>
-    <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅ Convocatoria</button>
-    <button class="tab-btn" [class.active]="tabActiva === 'pagos'" (click)="activarTab('pagos')">💳 Pagos</button>
+    <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥<span class="tab-text"> Usuarios</span></button>
+    <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}<span class="tab-text"> Partidos</span></button>
+    <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅<span class="tab-text"> Convocatoria</span></button>
+    <button class="tab-btn" [class.active]="tabActiva === 'pagos'" (click)="activarTab('pagos')">💳<span class="tab-text"> Pagos</span></button>
   </div>
 
   <div class="admin-grid">

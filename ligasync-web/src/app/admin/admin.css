@@ -237,6 +237,7 @@
   display: flex;
   gap: 6px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* ── Estado vacío ─────────────────────────────────────────── */
@@ -736,6 +737,56 @@
 }
 
 /* ── Responsive ───────────────────────────────────────────── */
+
+/* Cards con tabla: overflow hidden para que table-responsive funcione */
+.panel-usuarios,
+.panel-partidos {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .admin-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .admin-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { white-space: nowrap; flex-shrink: 0; }
+
+  .panel-usuarios .card-header,
+  .panel-partidos .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .conv-detalle-grid { grid-template-columns: 1fr; }
+  .conv-equipo-panel { border-right: none; border-bottom: 1px solid var(--border-color); }
+  .conv-equipo-panel:last-child { border-bottom: none; }
+
+  .conv-partido-fila {
+    grid-template-columns: 44px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .conv-partido-fecha { grid-column: 2; font-size: 0.72rem; }
+
+  .table th, .table td { padding: 0.6rem 0.75rem; font-size: 0.82rem; }
+
+  /* Tabla usuarios: oculta Email y Vinculación en tablet */
+  .panel-usuarios .table th:nth-child(2),
+  .panel-usuarios .table td:nth-child(2),
+  .panel-usuarios .table th:nth-child(5),
+  .panel-usuarios .table td:nth-child(5) { display: none; }
+
+  /* Tabla partidos: oculta Jornada y Fecha en tablet */
+  .panel-partidos .table th:nth-child(1),
+  .panel-partidos .table td:nth-child(1),
+  .panel-partidos .table th:nth-child(5),
+  .panel-partidos .table td:nth-child(5) { display: none; }
+}
+
 @media (max-width: 1024px) {
   .editor-acta-grid {
     grid-template-columns: 1fr;
@@ -761,6 +812,36 @@
   .editor-header { padding: 1rem; gap: 0.5rem; }
   .editor-container { padding: 1.5rem 1rem 3rem; }
   .score-input-vs { font-size: 3.5rem; width: 90px; height: 90px; }
+}
+
+@media (max-width: 480px) {
+  /* Tabs: solo emoji, sin texto */
+  .tab-text { display: none; }
+  .tab-btn { padding: 0.65rem 0.9rem; font-size: 1rem; flex: 1; justify-content: center; }
+  .admin-tabs { overflow-x: visible; }
+
+  .editor-header {
+    flex-wrap: wrap;
+    padding: 0.75rem;
+  }
+  .match-info-top { order: -1; width: 100%; }
+  .btn-save { width: 100%; justify-content: center; }
+  .score-input-vs { font-size: 2.8rem; width: 76px; height: 76px; }
+  .conv-partido-fila {
+    grid-template-columns: 44px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .conv-partido-fecha { grid-column: 2; }
+  .panel-pagos .card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .pagos-resumen-badges { flex-wrap: wrap; }
+  .table th, .table td { padding: 0.4rem 0.45rem; font-size: 0.75rem; }
+
+  /* Tabla usuarios: ocultar avatar para liberar espacio — quedan: Nombre, Rol, Asignar rol, Acciones */
+  .panel-usuarios .usuario-avatar { display: none; }
+
+  /* Select compacto para caber en columna estrecha */
+  .select-rango { min-width: 70px; width: 100%; font-size: 0.72rem; padding: 0.3rem 0.4rem; }
+  .celda-vinculacion { min-width: 0; }
 }
 
 /* ============================================================

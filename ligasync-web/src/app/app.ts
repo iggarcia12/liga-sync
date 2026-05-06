@@ -28,8 +28,13 @@ export class App implements OnInit {
   }
 
   checkScreenSize() {
-    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-      this.isMobileOpen = false;
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth >= 768) {
+        this.isMobileOpen = false;
+      } else {
+        // En móvil el sidebar nunca usa el estado colapsado
+        this.isSidebarCollapsed = false;
+      }
     }
   }
 

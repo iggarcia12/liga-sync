@@ -301,9 +301,11 @@
 /* ── Contenido de página ────────────────────────────────── */
 .page-container {
   overflow-y: auto;
+  overflow-x: hidden;
   height: calc(100vh - var(--topbar-height));
   padding: 1.5rem;
   min-width: 0;
+  max-width: 100%;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -330,8 +332,8 @@
    RESPONSIVE < 768px
    ══════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  .app-shell { 
-    grid-template-columns: 1fr; 
+  .app-shell {
+    grid-template-columns: 1fr;
   }
 
   .sidebar {
@@ -342,9 +344,9 @@
     height: 100vh;
     box-shadow: none;
     transition: left 0.3s ease;
-    width: var(--sidebar-width); /* Fixed width for mobile regardless of collapsed state */
+    width: 260px; /* Valor fijo: --sidebar-width puede ser 70px si está colapsado */
   }
-  
+
   .sidebar.mobile-open {
     left: 0;
     box-shadow: 8px 0 40px rgba(0, 0, 0, 0.45);
@@ -353,7 +355,7 @@
   .sidebar-overlay { display: block; }
   .btn-hamburger  { display: flex; }
   .page-container   { padding: 1rem; }
-  
+
   /* Reset collapsed state styles on mobile */
   .app-shell.is-collapsed .brand-name,
   .app-shell.is-collapsed .nav-text,
@@ -367,4 +369,10 @@
     padding-left: 1.1rem;
     padding-right: 1.1rem;
   }
+}
+
+@media (max-width: 480px) {
+  .page-container { padding: 0.75rem; }
+  .user-greeting { display: none; }
+  .top-navbar { padding: 0 0.75rem; }
 }

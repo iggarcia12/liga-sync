@@ -653,6 +653,103 @@
   }
 }
 
+@media (max-width: 768px) {
+  .miequipo-page { padding: 1.5rem 1rem; }
+
+  .equipo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.25rem;
+  }
+  .equipo-acciones { align-items: stretch; width: 100%; }
+  .equipo-acciones .btn-pagar-cuota,
+  .equipo-acciones .btn-editar,
+  .equipo-acciones .badge-cuota-pagada { width: 100%; text-align: center; }
+  .equipo-meta { flex-direction: column; gap: 0.4rem; }
+
+  .tabs-nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 0;
+    scrollbar-width: none;
+  }
+  .tabs-nav::-webkit-scrollbar { display: none; }
+  .tab-btn { white-space: nowrap; flex-shrink: 0; padding: 0.6rem 1rem; }
+
+  .oferta-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .oferta-estado-acciones { width: 100%; justify-content: flex-end; }
+
+  .card-tesoreria {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.25rem 1rem;
+  }
+  .btn-pagar-deuda { margin-left: 0; width: 100%; }
+
+  .tactica-controles {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .btn-guardar-tactica { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 640px) {
+  .modal-card {
+    padding: 1.5rem 1.25rem;
+  }
+  .modal-acciones {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+  .modal-acciones .btn-cancelar,
+  .modal-acciones .btn-guardar { width: 100%; justify-content: center; }
+  .convocatoria-acciones { flex-direction: column; }
+  .btn-asistire, .btn-no-asistire { min-height: 44px; }
+
+  /* Plantilla: reducir a 4 columnas (Jugador, Pos, Media, Acción) */
+  .tabla-header,
+  .tabla-fila {
+    grid-template-columns: 2fr 0.7fr 0.7fr 1fr;
+    min-width: 0;
+    padding: 0.65rem 0.875rem;
+  }
+  /* Ocultar Goles, Asist, Amarillas, Rojas */
+  .tabla-header > :nth-child(4),
+  .tabla-fila   > :nth-child(4),
+  .tabla-header > :nth-child(5),
+  .tabla-fila   > :nth-child(5),
+  .tabla-header > :nth-child(6),
+  .tabla-fila   > :nth-child(6),
+  .tabla-header > :nth-child(7),
+  .tabla-fila   > :nth-child(7) { display: none; }
+}
+
+@media (max-width: 480px) {
+  .miequipo-page { padding: 1rem 0.75rem; }
+  .equipo-nombre { font-size: clamp(1.2rem, 4vw, 1.6rem); }
+  .oferta-monto { font-size: 1.1rem; }
+  .oferta-botones { flex-wrap: wrap; gap: 0.4rem; }
+  .oferta-botones .btn-aceptar,
+  .oferta-botones .btn-rechazar { flex: 1; text-align: center; }
+  .conv-enfrentamiento { gap: 0.75rem; }
+  .conv-equipo { font-size: 0.9rem; }
+  .asistencia-fila { padding: 0.6rem 1rem; gap: 0.5rem; }
+
+  /* Tabs: solo emoji, sin texto — todas las pestañas caben en una fila */
+  .tab-text { display: none; }
+  .tab-btn { flex: 1; justify-content: center; padding: 0.65rem 0; font-size: 1rem; }
+  .tabs-nav { overflow-x: visible; }
+}
+
 /* --- Campo de Fútbol --- */
 .campo-futbol {
   position: relative;

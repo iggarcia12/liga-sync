@@ -71,6 +71,28 @@
   .team-layout { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 768px) {
+  .filtros-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .selector-equipo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .input-select { min-width: 0; width: 100%; }
+  .acciones-equipo { flex-wrap: wrap; }
+  .acciones-equipo .btn { flex: 1; min-width: 120px; text-align: center; }
+  .pitch-header h3 { font-size: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .player-mini-card { padding: 0.6rem 0.75rem; }
+  .team-summary { padding: 1.5rem 1rem; }
+  .team-summary h2 { font-size: 1.6rem; }
+}
+
 /* ============================================================
    PIZARRA TÁCTICA (SOCCER PITCH)
    ============================================================ */

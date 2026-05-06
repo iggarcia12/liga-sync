@@ -120,7 +120,7 @@
 /* ── KPI ── Panel de Estadísticas ─────────────────────────── */
 .panel-estadisticas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 1.25rem;
 }
 
@@ -596,9 +596,44 @@
   }
 }
 
+/* Previene que las columnas del grid desborden su celda */
+.main-column,
+.side-column {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  /* En tablet oculta columnas menos importantes */
+  .th-gf, .col-gf,
+  .th-gc, .col-gc { display: none; }
+}
+
 @media (max-width: 640px) {
   .side-column {
     grid-template-columns: 1fr;
   }
   .marcador-numero { font-size: 3rem; }
+
+  /* Tabla clasificación: reduce padding para que quepan las columnas */
+  .tabla-clasificacion thead th,
+  .tabla-clasificacion tbody td { padding: 0.4rem 0.5rem; }
+  .col-pts { font-size: 1.15rem; }
+}
+
+@media (max-width: 480px) {
+  .stat-info .stat-value { font-size: 2rem; }
+  .admin-action-controles { flex-wrap: wrap; width: 100%; }
+  .admin-action-controles .btn-playoffs { flex: 1; }
+
+  /* Solo quedan: #, Equipo, PG, PP, Pts — suficiente para el resumen */
+  .th-pj, .col-pj,
+  .th-pe, .col-pe,
+  .th-gf, .col-gf,
+  .th-gc, .col-gc,
+  .th-dg, .col-dg { display: none; }
+
+  .tabla-clasificacion thead th,
+  .tabla-clasificacion tbody td { padding: 0.4rem 0.4rem; }
+  .col-equipo { font-size: 0.82rem; }
+  .col-pts { font-size: 1rem; }
 }

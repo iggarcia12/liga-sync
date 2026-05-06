@@ -132,20 +132,20 @@
     <!-- Navegación de pestañas -->
     <nav class="tabs-nav" *ngIf="esEntrenador">
       <button class="tab-btn" *ngIf="esJugador" [class.tab-btn--active]="pestanaActiva === 'convocatoria'" (click)="cambiarPestana('convocatoria')">
-        ✅ Convocatoria
+        📅<span class="tab-text"> Convocatoria</span>
       </button>
       <button class="tab-btn" [class.tab-btn--active]="pestanaActiva === 'plantilla'" (click)="cambiarPestana('plantilla')">
-        Plantilla
+        👥<span class="tab-text"> Plantilla</span>
       </button>
       <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'tactica'" (click)="cambiarPestana('tactica')">
-        📋 Pizarra Táctica
+        📋<span class="tab-text"> Pizarra</span>
       </button>
       <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'ofertas'" (click)="cambiarPestana('ofertas')">
-        Bandeja de Ofertas
+        📬<span class="tab-text"> Ofertas</span>
         <span class="tab-badge" *ngIf="ofertasPendientes > 0">{{ ofertasPendientes }}</span>
       </button>
       <button class="tab-btn" *ngIf="esEntrenador" [class.tab-btn--active]="pestanaActiva === 'asistencia'" (click)="cambiarPestana('asistencia')">
-        ✅ Asistencia
+        ✅<span class="tab-text"> Asistencia</span>
         <span class="tab-badge tab-badge--verde" *ngIf="jugadoresConfirmados.length > 0">{{ jugadoresConfirmados.length }}</span>
       </button>
     </nav>
