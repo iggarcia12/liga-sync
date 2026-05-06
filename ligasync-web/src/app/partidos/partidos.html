@@ -1,7 +1,7 @@
 <div class="seccion-container">
   <div class="cabecera-seccion">
     <h2>📅 Calendario de Partidos</h2>
-    <button class="btn-nuevo" *ngIf="esAdmin">+ Nuevo Partido</button>
+    <button class="btn-nuevo btn-generar" *ngIf="esAdmin" (click)="generarCalendario()">🗓️ Generar Calendario</button>
   </div>
 
   <div class="estado-mensaje" *ngIf="cargando">
@@ -45,11 +45,12 @@
         </div>
       </div>
 
-      <div class="card-footer" *ngIf="(puedeGestionarActas && !esFirmado(partido)) || esFirmado(partido)">
+      <div class="card-footer" *ngIf="(puedeGestionarActas && !esFirmado(partido)) || esFirmado(partido) || esAdmin">
         <button class="btn-editar" *ngIf="puedeGestionarActas && !esFirmado(partido)" (click)="abrirActa(partido)">🖊️ Gestionar Acta</button>
         <button class="btn-descargar-acta" *ngIf="esFirmado(partido)" (click)="descargarActa(partido.id)" [disabled]="descargandoActa[partido.id]">
           {{ descargandoActa[partido.id] ? '⏳ Generando...' : '📄 Descargar Acta' }}
         </button>
+        <button class="btn-eliminar-partido" *ngIf="esAdmin" (click)="eliminarPartido(partido.id)">🗑️ Eliminar</button>
       </div>
 
     </div>

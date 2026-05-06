@@ -45,19 +45,38 @@
     </div>
   </div>
 
+  <!-- ===== BUSCADOR ===== -->
+  <div class="buscador-mercado" *ngIf="!cargando">
+    <div class="buscador-wrapper">
+      <span class="buscador-icono">🔍</span>
+      <input
+        type="text"
+        class="buscador-input"
+        [(ngModel)]="terminoBusqueda"
+        (ngModelChange)="filtrar()"
+        placeholder="Buscar por nombre, posición o equipo..."
+        autocomplete="off"
+      />
+      <button class="buscador-limpiar" *ngIf="terminoBusqueda" (click)="terminoBusqueda = ''; filtrar()">✕</button>
+    </div>
+  </div>
+
   <!-- ===== SECCIÓN 1: AGENTES LIBRES ===== -->
   <div class="seccion-agentes" *ngIf="!cargando">
     <h3 class="seccion-mercado-titulo">
       Agentes Libres
-      <span class="contador-badge">{{ agentesLibres.length }}</span>
+      <span class="contador-badge">{{ agentesLibresFiltrados.length }}</span>
     </h3>
 
     <div *ngIf="agentesLibres.length === 0" class="estado-mensaje vacio">
       <p>No hay agentes libres en el mercado actualmente.</p>
     </div>
+    <div *ngIf="agentesLibres.length > 0 && agentesLibresFiltrados.length === 0" class="estado-mensaje vacio">
+      <p>Sin resultados para "<strong>{{ terminoBusqueda }}</strong>" en agentes libres.</p>
+    </div>
 
-    <div class="grid-jugadores-mercado" *ngIf="agentesLibres.length > 0">
-      <div class="card market-card" *ngFor="let j of agentesLibres">
+    <div class="grid-jugadores-mercado" *ngIf="agentesLibresFiltrados.length > 0">
+      <div class="card market-card" *ngFor="let j of agentesLibresFiltrados">
         <div class="player-photo">
           <span class="p-dorsal">{{ j.media || '—' }}</span>
         </div>
@@ -80,16 +99,19 @@
   <div class="seccion-agentes" *ngIf="!cargando">
     <h3 class="seccion-mercado-titulo">
       Jugadores en Activo
-      <span class="contador-badge contador-badge--azul">{{ jugadoresConEquipo.length }}</span>
+      <span class="contador-badge contador-badge--azul">{{ jugadoresConEquipoFiltrados.length }}</span>
     </h3>
     <p class="seccion-subtitulo">¿Quieres un jugador que ya pertenece a otro equipo? Envíales una oferta económica.</p>
 
     <div *ngIf="jugadoresConEquipo.length === 0" class="estado-mensaje vacio">
       <p>No hay jugadores fichados por otros equipos. Cuando los equipos tengan plantilla, aparecerán aquí.</p>
     </div>
+    <div *ngIf="jugadoresConEquipo.length > 0 && jugadoresConEquipoFiltrados.length === 0" class="estado-mensaje vacio">
+      <p>Sin resultados para "<strong>{{ terminoBusqueda }}</strong>" en jugadores en activo.</p>
+    </div>
 
-    <div class="grid-jugadores-mercado" *ngIf="jugadoresConEquipo.length > 0">
-      <div class="card market-card market-card--activo" *ngFor="let j of jugadoresConEquipo">
+    <div class="grid-jugadores-mercado" *ngIf="jugadoresConEquipoFiltrados.length > 0">
+      <div class="card market-card market-card--activo" *ngFor="let j of jugadoresConEquipoFiltrados">
         <div class="player-photo player-photo--activo">
           <span class="p-dorsal">{{ j.media || '—' }}</span>
         </div>

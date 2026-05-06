@@ -7,7 +7,6 @@
 
   <div class="admin-tabs">
     <button class="tab-btn" [class.active]="tabActiva === 'usuarios'" (click)="activarTab('usuarios')">👥<span class="tab-text"> Usuarios</span></button>
-    <button class="tab-btn" [class.active]="tabActiva === 'partidos'" (click)="activarTab('partidos')">{{ authService.esBaloncesto() ? '🏀' : '⚽' }}<span class="tab-text"> Partidos</span></button>
     <button class="tab-btn" [class.active]="tabActiva === 'convocatoria'" (click)="activarTab('convocatoria')">✅<span class="tab-text"> Convocatoria</span></button>
     <button class="tab-btn" [class.active]="tabActiva === 'pagos'" (click)="activarTab('pagos')">💳<span class="tab-text"> Pagos</span></button>
   </div>
@@ -122,55 +121,6 @@
       </div>
     </div>
 
-    <!-- SECCIÓN PARTIDOS -->
-    <div class="card panel-partidos" *ngIf="tabActiva === 'partidos'">
-      <div class="card-header">
-        <h3>Calendario de Temporada</h3>
-        <button class="btn btn-primary" (click)="generarCalendario()">🗓️ Generar Calendario Completo</button>
-      </div>
-
-      <div class="estado-vacio" *ngIf="cargandoPartidos">
-        <p>⏳ Cargando partidos...</p>
-      </div>
-
-      <div class="estado-vacio" *ngIf="!cargandoPartidos && partidos.length === 0">
-        <p>📭 No hay partidos programados. Usa el botón superior para generar el calendario.</p>
-      </div>
-
-      <div class="table-responsive" *ngIf="!cargandoPartidos && partidos.length > 0">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Jornada</th>
-              <th>Local</th>
-              <th>Resultado</th>
-              <th>Visitante</th>
-              <th>Fecha</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let p of partidos">
-              <td><strong>J{{ p.jornada }}</strong></td>
-              <td>{{ p.local?.nombre || '?' }}</td>
-              <td>
-                <div class="score-display">
-                  {{ p.golesLocal !== null ? p.golesLocal : '-' }} : {{ p.golesVisitante !== null ? p.golesVisitante : '-' }}
-                </div>
-              </td>
-              <td>{{ p.visitante?.nombre || '?' }}</td>
-              <td>{{ p.fecha }}</td>
-              <td>
-                <div class="acciones-celda">
-                  <button class="btn btn-small btn-success" (click)="abrirModalResultado(p)">{{ authService.esBaloncesto() ? '🏀' : '⚽' }} Resultado</button>
-                  <button class="btn btn-small btn-danger" (click)="eliminarPartido(p.id)">🗑️</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
     <!-- SECCIÓN CONVOCATORIA -->
     <div class="card panel-convocatoria" *ngIf="tabActiva === 'convocatoria'">
 

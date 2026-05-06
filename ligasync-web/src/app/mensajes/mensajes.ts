@@ -189,6 +189,8 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     if (r === 'ADMIN') return 'Administrador';
     if (r === 'ENTRENADOR') return 'Entrenador';
     if (r === 'JUGADOR') return 'Jugador';
+    if (r === 'ARBITRO') return 'Árbitro';
+    if (r === 'ESPECTADOR') return 'Espectador';
     return role;
   }
 

@@ -5,6 +5,7 @@ import LigaSync.API.dto.GoogleLoginRequest;
 import LigaSync.API.dto.LoginRequest;
 import LigaSync.API.dto.RegistroRequest;
 import LigaSync.API.service.AuthService;
+import LigaSync.API.service.EmailService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import LigaSync.API.model.Deporte;
 import LigaSync.API.model.Liga;
@@ -41,6 +42,9 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/auth/asignar-liga")
     public ResponseEntity<?> asignarLiga(@RequestBody AsignarLigaRequest request) {
@@ -156,6 +160,7 @@ public class AuthController {
         nuevo.setRole(rolAsignado);
         nuevo.setLigaId(ligaId);
         usuarioRepository.save(nuevo);
+        emailService.enviarBienvenida(nuevo.getEmail(), nuevo.getNombre());
 
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje", "Usuario registrado correctamente");

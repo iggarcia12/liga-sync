@@ -41,6 +41,9 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     public Map<String, Object> loginWithGoogle(String googleToken) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                 new NetHttpTransport(), GsonFactory.getDefaultInstance())
@@ -65,6 +68,7 @@ public class AuthService {
             usuario.setPass(passwordEncoder.encode(UUID.randomUUID().toString()));
             usuario.setRole("espectador");
             usuarioRepository.save(usuario);
+            emailService.enviarBienvenida(usuario.getEmail(), usuario.getNombre());
         }
 
         String jwtToken = jwtUtil.generateToken(

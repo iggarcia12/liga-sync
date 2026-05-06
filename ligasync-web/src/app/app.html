@@ -63,6 +63,16 @@
           </div>
         </ng-container>
 
+        <!-- MI ESPACIO: árbitro -->
+        <ng-container *ngIf="authService.isArbitro()">
+          <div class="nav-section">
+            <span class="nav-section-label">Mi Espacio</span>
+            <a routerLink="/mensajes" routerLinkActive="active-link" (click)="closeSidebar()">
+              <span class="nav-icon">✉️</span> <span class="nav-text">Mensajes</span>
+            </a>
+          </div>
+        </ng-container>
+
         <!-- GESTIÓN: solo admin -->
         <ng-container *ngIf="authService.isAdmin()">
           <div class="nav-section">

@@ -22,6 +22,28 @@ export class MercadoComponent implements OnInit {
   jornadaActual = 0;
   mercadoForzadoAbierto = false;
 
+  terminoBusqueda = '';
+  agentesLibresFiltrados: any[] = [];
+  jugadoresConEquipoFiltrados: any[] = [];
+
+  filtrar() {
+    const t = this.terminoBusqueda.toLowerCase().trim();
+    if (!t) {
+      this.agentesLibresFiltrados = this.agentesLibres;
+      this.jugadoresConEquipoFiltrados = this.jugadoresConEquipo;
+    } else {
+      this.agentesLibresFiltrados = this.agentesLibres.filter(j =>
+        j.nombre?.toLowerCase().includes(t) || j.pos?.toLowerCase().includes(t)
+      );
+      this.jugadoresConEquipoFiltrados = this.jugadoresConEquipo.filter(j =>
+        j.nombre?.toLowerCase().includes(t) ||
+        j.pos?.toLowerCase().includes(t) ||
+        j.equipo?.nombre?.toLowerCase().includes(t)
+      );
+    }
+    this.cdr.detectChanges();
+  }
+
   mostrarModalFichaje = false;
   nuevoJugador: any = { nombre: '', pos: 'DEL', media: 70, valor: 5000000, equipo: null };
 
@@ -81,6 +103,7 @@ export class MercadoComponent implements OnInit {
       this.agentesLibres = todos.filter((j: any) => !j.equipo?.id);
       this._todosConEquipo = todos.filter((j: any) => j.equipo?.id);
       this.actualizarJugadoresConEquipo();
+      this.filtrar();
 
       this.cargando = false;
 
@@ -108,6 +131,7 @@ export class MercadoComponent implements OnInit {
     this.jugadoresConEquipo = this._todosConEquipo.filter(
       (j: any) => j.equipo?.id !== this._miEquipoId
     );
+    this.filtrar();
   }
 
   _miEquipoId: number | null = null;
@@ -208,6 +232,7 @@ export class MercadoComponent implements OnInit {
     this.mostrarModalOferta = false;
     this.jugadorParaOfertar = null;
     this.montoOferta = 0;
+    this.cdr.detectChanges();
   }
 
   enviarOferta() {
@@ -229,6 +254,7 @@ export class MercadoComponent implements OnInit {
       },
       error: (err) => {
         const msg = err.error || 'No se pudo enviar la oferta.';
+        this.cerrarModalOferta();
         alert(`Error: ${msg}`);
         console.error('Error al enviar oferta:', err);
       }

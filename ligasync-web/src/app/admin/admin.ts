@@ -76,7 +76,7 @@ export class AdminComponent implements OnInit {
         // Inicializar estado editable por usuario
         datos.forEach(u => {
           this.rangosPendientes[u.id] = {
-            role: u.role ?? 'espectador',
+            role: (u.role ?? 'espectador').toLowerCase(),
             teamId: u.teamId ?? null,
             jugadorId: u.jugadorId ?? null
           };

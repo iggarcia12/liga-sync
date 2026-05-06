@@ -55,7 +55,12 @@ export class PartidosComponent implements OnInit {
   cargarPartidos() {
     this.http.get<any[]>(`${this.urlBase}/partidos`).subscribe({
       next: (datos) => {
-        this.partidos = datos;
+        const ordenEstado: Record<string, number> = { PENDIENTE: 0, EN_JUEGO: 1, FINALIZADO_Y_FIRMADO: 2 };
+        this.partidos = datos.sort((a, b) => {
+          const diffEstado = (ordenEstado[a.estado] ?? 0) - (ordenEstado[b.estado] ?? 0);
+          if (diffEstado !== 0) return diffEstado;
+          return (a.jornada ?? 0) - (b.jornada ?? 0);
+        });
         this.cargando = false;
         this.cdr.detectChanges();
       },
@@ -208,6 +213,33 @@ export class PartidosComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  generarCalendario() {
+    if (confirm('¿Estás seguro? Esto ELIMINARÁ todos los partidos actuales y creará un nuevo calendario de ida y vuelta.')) {
+      this.http.post(`${this.urlBase}/partidos/generar-calendario`, {}).subscribe({
+        next: () => {
+          alert('¡Calendario generado con éxito!');
+          this.cargarPartidos();
+        },
+        error: (err) => {
+          console.error('Error al generar el calendario', err);
+          alert('Error al generar calendario. Asegúrate de tener al menos 2 equipos.');
+        }
+      });
+    }
+  }
+
+  eliminarPartido(id: number) {
+    if (confirm('¿Eliminar este partido?')) {
+      this.http.delete(`${this.urlBase}/partidos/${id}`).subscribe({
+        next: () => {
+          this.partidos = this.partidos.filter(p => p.id !== id);
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error(`Error al eliminar el partido #${id}`, err)
+      });
+    }
   }
 
   tipoIcono(tipo: string): string {

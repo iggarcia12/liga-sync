@@ -522,3 +522,68 @@
   margin: 0.4rem 0 0;
   text-align: center;
 }
+
+/* ===== BUSCADOR ===== */
+.buscador-mercado {
+  margin: 0 0 2rem;
+}
+
+.buscador-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 520px;
+}
+
+.buscador-icono {
+  position: absolute;
+  left: 1rem;
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.buscador-input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 2.75rem;
+  border: 1.5px solid var(--border-color, #e5e7eb);
+  border-radius: 10px;
+  background: var(--card-bg, #fff);
+  color: var(--text-primary, #111);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.buscador-input:focus {
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #3b82f6) 15%, transparent);
+}
+
+.buscador-input::placeholder {
+  color: var(--text-secondary, #9ca3af);
+}
+
+.buscador-limpiar {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #9ca3af);
+  padding: 0.25rem 0.4rem;
+  border-radius: 50%;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+
+.buscador-limpiar:hover {
+  background: var(--border-color, #e5e7eb);
+  color: var(--text-primary, #111);
+}
+
+@media (max-width: 768px) {
+  .buscador-wrapper { max-width: 100%; }
+}
