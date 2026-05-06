@@ -1,19 +1,20 @@
 package LigaSync.API.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.Collections;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -41,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 email = claims.getSubject();
                 rol = claims.get("rol", String.class);
 
-                // Extrae ligaId — JWT puede serializar IDs pequeños como Integer
+                // Extrae ligaId
                 Object rawLigaId = claims.get("ligaId");
                 if (rawLigaId instanceof Integer) {
                     ligaId = ((Integer) rawLigaId).longValue();
