@@ -102,7 +102,7 @@
                   <button class="btn btn-small btn-primary"
                     [disabled]="(u.role || '').toUpperCase() === 'ADMIN'"
                     (click)="guardarRango(u)">
-                    💾 Guardar
+                    💾<span class="btn-text"> Guardar</span>
                   </button>
                   <button class="btn btn-small btn-danger"
                     [disabled]="(u.role || '').toUpperCase() === 'ADMIN'"

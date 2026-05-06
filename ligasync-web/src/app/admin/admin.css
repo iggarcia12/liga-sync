@@ -836,8 +836,13 @@
   .pagos-resumen-badges { flex-wrap: wrap; }
   .table th, .table td { padding: 0.4rem 0.45rem; font-size: 0.75rem; }
 
-  /* Tabla usuarios: ocultar avatar para liberar espacio — quedan: Nombre, Rol, Asignar rol, Acciones */
+  /* Tabla usuarios: ocultar avatar y "Rol actual" — quedan: Nombre | Asignar rol | Acciones */
   .panel-usuarios .usuario-avatar { display: none; }
+  .panel-usuarios .table th:nth-child(3),
+  .panel-usuarios .table td:nth-child(3) { display: none; }
+
+  /* Botón guardar: solo emoji, sin texto */
+  .acciones-celda .btn-text { display: none; }
 
   /* Select compacto para caber en columna estrecha */
   .select-rango { min-width: 70px; width: 100%; font-size: 0.72rem; padding: 0.3rem 0.4rem; }
