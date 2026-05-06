@@ -14,6 +14,7 @@
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   transition: grid-template-columns 0.3s ease;
 }
@@ -42,6 +43,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   scrollbar-width: none;
   transition: width 0.3s ease;
@@ -210,6 +212,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   background: var(--bg-color);
   min-width: 0;
   overflow: hidden;
@@ -303,6 +306,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100vh - var(--topbar-height));
+  height: calc(100dvh - var(--topbar-height));
   padding: 1.5rem;
   min-width: 0;
   max-width: 100%;
@@ -342,6 +346,7 @@
     top: 0;
     z-index: 1000;
     height: 100vh;
+    height: 100dvh;
     box-shadow: none;
     transition: left 0.3s ease;
     width: 260px; /* Valor fijo: --sidebar-width puede ser 70px si está colapsado */
