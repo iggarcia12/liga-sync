@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 interface LigaBuscada {
   id: number;
@@ -39,7 +40,7 @@ export class RegistroComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = environment.apiUrl + '/api';
 
   ngOnInit(): void {
     this.modoLiga = this.route.snapshot.queryParamMap.get('mode') === 'liga';

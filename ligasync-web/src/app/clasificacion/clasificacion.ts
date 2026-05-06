@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-clasificacion',
@@ -20,7 +21,7 @@ export class ClasificacionComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private auth = inject(AuthService);
 
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
 
   get esBasket(): boolean { return this.auth.esBaloncesto(); }
 

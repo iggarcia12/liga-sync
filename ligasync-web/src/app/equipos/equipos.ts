@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-equipos',
@@ -52,7 +53,7 @@ export class EquiposComponent implements OnInit {
   }
 
   cargarDatosGenerales() {
-    const urlBase = 'http://localhost:8080/api'; 
+    const urlBase = environment.apiUrl + '/api';
     this.cargando = true;
 
     forkJoin({
@@ -241,7 +242,7 @@ export class EquiposComponent implements OnInit {
   }
 
   guardarEquipo() {
-    const urlBase = 'http://localhost:8080/api/equipos'; 
+    const urlBase = environment.apiUrl + '/api/equipos';
     if (this.modoEdicion) {
       this.http.put<any>(urlBase + '/' + this.equipoSeleccionadoId, this.nuevoEquipo).subscribe(() => {
         this.cancelarFormulario();
@@ -267,7 +268,7 @@ export class EquiposComponent implements OnInit {
   inyectarPresupuesto() {
     if (!this.equipoActualSeleccionado || this.montoInyectar === 0) return;
     this.http.patch<any>(
-      `http://localhost:8080/api/equipos/${this.equipoActualSeleccionado}/presupuesto`,
+      `${environment.apiUrl}/api/equipos/${this.equipoActualSeleccionado}/presupuesto`,
       { monto: this.montoInyectar }
     ).subscribe({
       next: (equipoActualizado) => {
@@ -284,7 +285,7 @@ export class EquiposComponent implements OnInit {
   eliminarEquipo(id: number) {
     const confirmacion = window.confirm("⚠️ ¿Estás seguro de que quieres borrar este equipo permanentemente?");
     if (confirmacion) {
-      this.http.delete('http://localhost:8080/api/equipos/' + id).subscribe(() => {
+      this.http.delete(`${environment.apiUrl}/api/equipos/` + id).subscribe(() => {
         this.cargarDatosGenerales(); 
       });
     }

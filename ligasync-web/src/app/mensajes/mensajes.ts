@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-mensajes',
@@ -15,7 +16,7 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('chatHistory') private chatHistoryEl!: ElementRef;
 
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
 
   miId: number | null = null;
   miNombre: string | null = null;

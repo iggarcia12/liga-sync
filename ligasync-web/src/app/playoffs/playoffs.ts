@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 interface IncidenciaItem {
   jugadorId: number;
@@ -43,7 +44,7 @@ export class PlayoffsComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   public authService = inject(AuthService);
 
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
 
   get esAdmin(): boolean { return this.authService.isAdmin(); }
   get esArbitro(): boolean { return this.authService.isArbitro(); }

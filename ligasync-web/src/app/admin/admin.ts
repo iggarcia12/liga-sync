@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-admin',
@@ -13,7 +14,7 @@ import { AuthService } from '../auth.service';
 })
 export class AdminComponent implements OnInit {
 
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
   tabActiva: string = 'usuarios';
   partidoConvocatoria: any = null;
   jugadoresLocalConv: any[] = [];

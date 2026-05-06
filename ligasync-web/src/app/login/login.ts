@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 declare const google: any;
 
@@ -23,7 +24,7 @@ export class LoginComponent implements AfterViewInit {
   private router = inject(Router);
   public authService = inject(AuthService);
 
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = environment.apiUrl + '/api';
   private readonly GOOGLE_CLIENT_ID =
     '376016123168-3imb1gjhio93hvluq74b7scf52jpvbf9.apps.googleusercontent.com';
 

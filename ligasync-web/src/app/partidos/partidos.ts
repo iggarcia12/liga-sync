@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 interface IncidenciaItem {
   jugadorId: number;
@@ -20,7 +21,7 @@ interface IncidenciaItem {
   styleUrl: './partidos.css'
 })
 export class PartidosComponent implements OnInit {
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
 
   partidos: any[] = [];
   cargando = true;

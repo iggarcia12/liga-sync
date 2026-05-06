@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-pago-exito',
@@ -27,7 +28,7 @@ export class PagoExitoComponent implements OnInit {
       return; 
     }
 
-    this.http.patch(`http://localhost:8080/api/pagos/confirmar-cuota/${equipoId}`, {}).subscribe({
+    this.http.patch(`${environment.apiUrl}/api/pagos/confirmar-cuota/${equipoId}`, {}).subscribe({
       next: (resp) => {
         console.log('[PagoExito] Cuota confirmada correctamente:', resp);
         this.confirmando = false;

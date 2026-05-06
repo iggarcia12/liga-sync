@@ -5,6 +5,7 @@ import Chart from 'chart.js/auto';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-estadisticas',
@@ -41,7 +42,7 @@ export class EstadisticasComponent implements OnInit, AfterViewInit {
 
   cargarDatos() {
     this.cargando = true;
-    const url = 'http://localhost:8080/api/jugadores';
+    const url = environment.apiUrl + '/api/jugadores';
     
     this.http.get<any[]>(url).pipe(
       catchError(err => { console.error('Error cargando estadísticas', err); return of([]); })

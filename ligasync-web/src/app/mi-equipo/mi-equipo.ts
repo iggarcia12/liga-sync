@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-mi-equipo',
@@ -62,7 +63,7 @@ export class MiEquipoComponent implements OnInit {
     const userId = this.authService.getUserId();
     if (!userId) { this.cargando = false; return; }
 
-    this.http.get<any>(`http://localhost:8080/api/usuarios/${userId}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/api/usuarios/${userId}`).subscribe({
       next: (usuario) => {
         if (usuario.teamId) {
           this.cargarEquipo(usuario.teamId);
@@ -82,7 +83,7 @@ export class MiEquipoComponent implements OnInit {
   }
 
   private cargarDatosJugador(jugadorId: number) {
-    this.http.get<any>(`http://localhost:8080/api/jugadores/${jugadorId}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/api/jugadores/${jugadorId}`).subscribe({
       next: (jugador) => {
         this.miJugador = jugador;
         this.cargarProximoPartido(jugador.equipo?.id);
@@ -94,7 +95,7 @@ export class MiEquipoComponent implements OnInit {
 
   private cargarProximoPartido(equipoId: number | undefined) {
     if (!equipoId) return;
-    this.http.get<any[]>('http://localhost:8080/api/partidos').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/api/partidos`).subscribe({
       next: (partidos) => {
         const pendientes = partidos.filter(p =>
           p.estado !== 'FINALIZADO_Y_FIRMADO' &&
@@ -110,7 +111,7 @@ export class MiEquipoComponent implements OnInit {
   toggleConvocatoria(asiste: boolean) {
     if (!this.miJugador) return;
     if (asiste && this.miJugador.estadoDisciplinario === 'SANCIONADO') return;
-    this.http.put<any>(`http://localhost:8080/api/jugadores/${this.miJugador.id}/convocatoria`, { convocado: asiste }).subscribe({
+    this.http.put<any>(`${environment.apiUrl}/api/jugadores/${this.miJugador.id}/convocatoria`, { convocado: asiste }).subscribe({
       next: (jugadorActualizado) => {
         this.miJugador = jugadorActualizado;
         this.cdr.detectChanges();
@@ -120,7 +121,7 @@ export class MiEquipoComponent implements OnInit {
   }
 
   private cargarEquipo(teamId: number) {
-    this.http.get<any>(`http://localhost:8080/api/equipos/${teamId}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/api/equipos/${teamId}`).subscribe({
       next: (equipo) => {
         this.equipo = equipo;
         this.nombreEdicion = equipo.nombre;
@@ -133,14 +134,14 @@ export class MiEquipoComponent implements OnInit {
       }
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/equipos').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/api/equipos`).subscribe({
       next: (equipos) => this.equiposTodos = equipos,
       error: (err) => console.error('Error al cargar lista de equipos:', err)
     });
   }
 
   cargarJugadores(teamId: number) {
-    this.http.get<any[]>(`http://localhost:8080/api/jugadores/equipo/${teamId}`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/api/jugadores/equipo/${teamId}`).subscribe({
       next: (jugadores) => {
         this.jugadores = jugadores;
         this.aplicarOrdenacion();
@@ -213,7 +214,7 @@ export class MiEquipoComponent implements OnInit {
 
   guardarCambios() {
     const body = { ...this.equipo, nombre: this.nombreEdicion, escudo: this.escudoEdicion };
-    this.http.put<any>(`http://localhost:8080/api/equipos/${this.equipo.id}`, body).subscribe({
+    this.http.put<any>(`${environment.apiUrl}/api/equipos/${this.equipo.id}`, body).subscribe({
       next: (equipoActualizado) => {
         this.equipo = equipoActualizado;
         this.editando = false;
@@ -242,7 +243,7 @@ export class MiEquipoComponent implements OnInit {
 
   cargarOfertas(equipoId: number) {
     this.cargandoOfertas = true;
-    this.http.get<any[]>(`http://localhost:8080/api/ofertas/recibidas/${equipoId}`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/api/ofertas/recibidas/${equipoId}`).subscribe({
       next: (ofertas) => {
         this.ofertas = ofertas;
         this.cargandoOfertas = false;
@@ -264,12 +265,12 @@ export class MiEquipoComponent implements OnInit {
   }
 
   aceptarOferta(oferta: any) {
-    this.http.put<any>(`http://localhost:8080/api/ofertas/${oferta.id}/aceptar`, {}).subscribe({
+    this.http.put<any>(`${environment.apiUrl}/api/ofertas/${oferta.id}/aceptar`, {}).subscribe({
       next: () => {
         if (this.equipo) {
           this.cargarOfertas(this.equipo.id);
           this.cargarJugadores(this.equipo.id);
-          this.http.get<any>(`http://localhost:8080/api/equipos/${this.equipo.id}`).subscribe({
+          this.http.get<any>(`${environment.apiUrl}/api/equipos/${this.equipo.id}`).subscribe({
             next: (eq) => { this.equipo = eq; this.cdr.detectChanges(); },
             error: () => {}
           });
@@ -283,7 +284,7 @@ export class MiEquipoComponent implements OnInit {
   }
 
   rechazarOferta(oferta: any) {
-    this.http.put<any>(`http://localhost:8080/api/ofertas/${oferta.id}/rechazar`, {}).subscribe({
+    this.http.put<any>(`${environment.apiUrl}/api/ofertas/${oferta.id}/rechazar`, {}).subscribe({
       next: () => { if (this.equipo) this.cargarOfertas(this.equipo.id); },
       error: (err) => console.error('Error al rechazar oferta:', err)
     });
@@ -293,7 +294,7 @@ export class MiEquipoComponent implements OnInit {
     if (!this.equipo || this.procesandoPago) return;
     this.procesandoPago = true;
 
-    this.http.post<{ url: string }>('http://localhost:8080/api/pagos/crear-sesion', {
+    this.http.post<{ url: string }>(`${environment.apiUrl}/api/pagos/crear-sesion`, {
       equipoId: this.equipo.id,
       nombreEquipo: this.equipo.nombre,
       precioCentimos: 5000
@@ -309,7 +310,7 @@ export class MiEquipoComponent implements OnInit {
   pagarDeuda() {
     if (!this.equipo) return;
     if (!confirm(`¿Pagar la deuda de ${this.equipo.deudaAcumulada.toLocaleString('es-ES')} €? Se descontará de tu presupuesto.`)) return;
-    this.http.put<any>(`http://localhost:8080/api/equipos/${this.equipo.id}/pagar-deuda`, {}).subscribe({
+    this.http.put<any>(`${environment.apiUrl}/api/equipos/${this.equipo.id}/pagar-deuda`, {}).subscribe({
       next: (equipoActualizado) => {
         this.equipo = equipoActualizado;
         this.mensajeGuardado = 'Deuda pagada correctamente.';
@@ -325,7 +326,7 @@ export class MiEquipoComponent implements OnInit {
 
   despedirJugador(jugador: any) {
     if (!confirm(`¿Liberar a ${jugador.nombre}? Pasará a ser Agente Libre en el mercado.`)) return;
-    this.http.put<any>(`http://localhost:8080/api/jugadores/${jugador.id}/liberar`, {}).subscribe({
+    this.http.put<any>(`${environment.apiUrl}/api/jugadores/${jugador.id}/liberar`, {}).subscribe({
       next: () => {
         if (this.equipo) this.cargarJugadores(this.equipo.id);
       },
@@ -399,7 +400,7 @@ export class MiEquipoComponent implements OnInit {
       formacion: this.equipo.formacion
     };
 
-    this.http.put(`http://localhost:8080/api/jugadores/equipo/${this.equipo.id}/titulares`, body).subscribe({
+    this.http.put(`${environment.apiUrl}/api/jugadores/equipo/${this.equipo.id}/titulares`, body).subscribe({
       next: () => {
         this.mensajeGuardado = 'Táctica guardada con éxito.';
         setTimeout(() => this.mensajeGuardado = '', 3000);

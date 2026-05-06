@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-mercado',
@@ -52,11 +53,11 @@ export class MercadoComponent implements OnInit {
 
   ngOnInit() {
     this.cargarMercado();
-    this.http.get<number>('http://localhost:8080/api/partidos/jornada-actual').subscribe({
+    this.http.get<number>(`${environment.apiUrl}/api/partidos/jornada-actual`).subscribe({
       next: (j) => { this.jornadaActual = j; this.cdr.detectChanges(); },
       error: (err) => console.error('Error al cargar jornada actual:', err)
     });
-    this.http.get<any>('http://localhost:8080/api/ligas/actual').subscribe({
+    this.http.get<any>(`${environment.apiUrl}/api/ligas/actual`).subscribe({
       next: (liga) => { this.mercadoForzadoAbierto = liga.mercadoAbierto; this.cdr.detectChanges(); },
       error: (err) => console.error('Error al cargar la liga actual:', err)
     });
@@ -64,7 +65,7 @@ export class MercadoComponent implements OnInit {
 
   cargarMercado() {
     this.cargando = true;
-    const urlBase = 'http://localhost:8080/api';
+    const urlBase = environment.apiUrl + '/api';
 
     forkJoin({
       jugadoresReq: this.http.get<any[]>(urlBase + '/jugadores').pipe(catchError(() => of([]))),
@@ -122,7 +123,7 @@ export class MercadoComponent implements OnInit {
   }
 
   cargarPresupuesto(teamId: number) {
-    this.http.get<any>(`http://localhost:8080/api/equipos/${teamId}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/api/equipos/${teamId}`).subscribe({
       next: (eq) => { this.miEquipoPresupuesto = eq.presupuesto || 0; this.cdr.detectChanges(); },
       error: (err) => console.error('Error al cargar presupuesto:', err)
     });
@@ -137,7 +138,7 @@ export class MercadoComponent implements OnInit {
 
   toggleMercadoAdmin() {
     const nuevoEstado = !this.mercadoForzadoAbierto;
-    this.http.put(`http://localhost:8080/api/ligas/mercado-estado?abierto=${nuevoEstado}`, {}).subscribe({
+    this.http.put(`${environment.apiUrl}/api/ligas/mercado-estado?abierto=${nuevoEstado}`, {}).subscribe({
       next: () => {
         this.mercadoForzadoAbierto = nuevoEstado;
         alert(nuevoEstado ? 'El mercado se ha forzado a ABIERTO.' : 'El mercado ha vuelto a su estado normal.');
@@ -158,7 +159,7 @@ export class MercadoComponent implements OnInit {
       jugadorAEnviar.equipo = null;
     }
 
-    this.http.post<any>('http://localhost:8080/api/jugadores', jugadorAEnviar).subscribe({
+    this.http.post<any>(`${environment.apiUrl}/api/jugadores`, jugadorAEnviar).subscribe({
       next: () => {
         alert('¡Jugador registrado con éxito!');
         this.cerrarModal();
@@ -183,7 +184,7 @@ export class MercadoComponent implements OnInit {
 
     // Fichaje directo para agentes libres (sin negociación entre clubes)
     const payload = { ...jugador, equipo: equipoDestino };
-    this.http.put(`http://localhost:8080/api/jugadores/${jugador.id}`, payload, { responseType: 'text' as 'json' }).subscribe({
+    this.http.put(`${environment.apiUrl}/api/jugadores/${jugador.id}`, payload, { responseType: 'text' as 'json' }).subscribe({
       next: () => {
         this.cargarMercado();
         if (this.miEquipoId) this.cargarPresupuesto(this.miEquipoId);
@@ -221,7 +222,7 @@ export class MercadoComponent implements OnInit {
     };
 
     const nombreJugador = this.jugadorParaOfertar.nombre;
-    this.http.post<any>('http://localhost:8080/api/ofertas', payload).subscribe({
+    this.http.post<any>(`${environment.apiUrl}/api/ofertas`, payload).subscribe({
       next: () => {
         this.cerrarModalOferta();
         alert(`Oferta enviada por ${nombreJugador}. El entrenador rival deberá aceptarla.`);

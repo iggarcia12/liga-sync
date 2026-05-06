@@ -2,6 +2,7 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-mi-perfil',
@@ -15,7 +16,7 @@ export class MiPerfilComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   public authService = inject(AuthService);
 
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
 
   nombre = this.authService.getNombre() ?? '';
   email = '';

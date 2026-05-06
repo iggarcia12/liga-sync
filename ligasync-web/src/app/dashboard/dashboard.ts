@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,7 +40,7 @@ export class DashboardComponent implements OnInit {
   get iconoDeporte(): string { return this.esBasket ? '🏀' : '⚽'; }
   get labelGoles(): string { return this.esBasket ? 'Pts' : 'Goles'; }
 
-  readonly urlBase = 'http://localhost:8080/api';
+  readonly urlBase = environment.apiUrl + '/api';
 
   ngOnInit() {
     this.cargarEstadisticas();
