@@ -14,6 +14,9 @@ public class StripeService {
     @Value("${stripe.api.key}")
     private String stripeApiKey;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeApiKey;
@@ -22,8 +25,8 @@ public class StripeService {
     public String createCheckoutSession(Long equipoId, String nombreEquipo, long precioCentimos) throws StripeException {
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:4200/pago-exito?equipoId=" + equipoId)
-                .setCancelUrl("http://localhost:4200/pago-cancelado")
+                .setSuccessUrl(frontendUrl + "/pago-exito?equipoId=" + equipoId)
+                .setCancelUrl(frontendUrl + "/pago-cancelado")
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
                                 .setQuantity(1L)
