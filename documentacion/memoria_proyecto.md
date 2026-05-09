@@ -76,8 +76,6 @@
 7. [Anexos](#7-anexos)
    - 7.1. [Manual Técnico – Instalación y Despliegue](#71-manual-técnico--instalación-y-despliegue)
    - 7.2. [Manual de Usuario](#72-manual-de-usuario)
-   - 7.3. [Diagrama Entidad-Relación](#73-diagrama-entidad-relación)
-   - 7.4. [Diagrama de Flujo – Flujos Principales](#74-diagrama-de-flujo--flujos-principales)
 
 ---
 
@@ -1417,20 +1415,6 @@ Si el administrador ha habilitado el pago de cuotas, aparecerá un aviso en el d
 > 📸 *[Insertar captura: Pantalla de confirmación de pago exitoso]*
 
 ---
-
-## 7.3. Diagramas de Referencia
-
-Los diagramas entidad-relación y de flujo de los procesos principales se encuentran desarrollados en las siguientes secciones de esta memoria:
-
-| Diagrama | Sección |
-|:---------|:--------|
-| Diagrama Entidad-Relación completo | [§ 2.4 — Base de Datos](#24-base-de-datos) |
-| Arquitectura del sistema | [§ 2.2 — Arquitectura del Sistema](#22-arquitectura-del-sistema) |
-| Flujo de autenticación JWT | [§ 2.7 — Seguridad y Autenticación](#27-seguridad-y-autenticación) |
-| Flujo de firma de acta | [§ 2.5 — Backend – Spring Boot](#25-backend--spring-boot) |
-| Flujo del mercado de fichajes | [§ 2.8 — Funcionalidades Principales](#28-funcionalidades-principales) |
-| Flujo de generación de calendario | [§ 2.8 — Funcionalidades Principales](#28-funcionalidades-principales) |
-| Cuadro de playoffs | [§ 2.8 — Funcionalidades Principales](#28-funcionalidades-principales) |
 
 ---
 

@@ -31,7 +31,9 @@ export class MiEquipoComponent implements OnInit {
 
   get esJugador(): boolean { return this.authService.isJugador() || !!this.authService.getJugadorId(); }
   get esEntrenador(): boolean { return this.authService.isEntrenador(); }
-  get esBaloncesto(): boolean { return this.authService.esBaloncesto(); }
+
+  deporteLiga: 'FUTBOL' | 'BALONCESTO' = this.authService.getDeporte();
+  get esBaloncesto(): boolean { return this.deporteLiga === 'BALONCESTO'; }
 
   sortField: string = 'pos';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -61,6 +63,17 @@ export class MiEquipoComponent implements OnInit {
     if (this.esJugador) {
       this.pestanaActiva = 'convocatoria';
     }
+
+    // Sincroniza el deporte desde el servidor para corregir posibles valores obsoletos en localStorage
+    this.http.get<any>(`${environment.apiUrl}/api/ligas/actual`).subscribe({
+      next: (liga) => {
+        const deporte = liga.deporte as 'FUTBOL' | 'BALONCESTO';
+        this.deporteLiga = deporte;
+        localStorage.setItem('deporte', deporte);
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al obtener deporte de la liga:', err)
+    });
 
     const userId = this.authService.getUserId();
     if (!userId) { this.cargando = false; return; }
