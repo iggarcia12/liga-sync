@@ -78,13 +78,19 @@ public class AuthService {
         );
 
         Map<String, Object> response = new HashMap<>();
+        String deporteGoogle = usuario.getLigaId() != null
+            ? ligaRepository.findById(usuario.getLigaId())
+                .map(l -> l.getDeporte().name())
+                .orElse("FUTBOL")
+            : "FUTBOL";
+
         response.put("token", jwtToken);
         response.put("rol", usuario.getRole());
         response.put("usuario", usuario.getNombre());
         response.put("userId", usuario.getId());
         response.put("jugadorId", usuario.getJugadorId());
         response.put("ligaId", usuario.getLigaId());
-        response.put("deporte", "FUTBOL");
+        response.put("deporte", deporteGoogle);
         response.put("needsLiga", usuario.getLigaId() == null);
         return response;
     }
