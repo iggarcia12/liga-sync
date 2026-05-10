@@ -28,7 +28,6 @@ export class PartidosComponent implements OnInit {
   partidos: any[] = [];
   cargando = true;
 
-  // --- Estado del modal de acta ---
   partidoEnActa: any = null;
   jugadoresLocal: any[] = [];
   jugadoresVisitante: any[] = [];

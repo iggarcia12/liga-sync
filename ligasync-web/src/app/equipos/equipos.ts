@@ -21,24 +21,19 @@ export class EquiposComponent implements OnInit {
   jugadores: any[] = [];
   cargando: boolean = true;
   
-  // Selección actual
   equipoActualSeleccionado: number | null = null;
   equipoActualDetalles: any = null;
-  
-  // Jugadores del equipo divididos para la pizarra
   jugadoresFiltrados: any[] = [];
   porteros: any[] = [];
   defensas: any[] = [];
   medios: any[] = [];
   delanteros: any[] = [];
 
-  // Variables para CRUD de Equipo (Mantenemos la lógica orginal)
   mostrarFormulario: boolean = false;
   modoEdicion: boolean = false;
   equipoSeleccionadoId: number | null = null;
   nuevoEquipo: any = { nombre: '', ciudad: '' };
 
-  // Modal inyectar presupuesto
   mostrarModalPresupuesto: boolean = false;
   montoInyectar: number = 0;
 
@@ -67,12 +62,9 @@ export class EquiposComponent implements OnInit {
       )
     }).subscribe({
       next: (resp) => {
-        // En Spring Data REST las listas suelen venir en _embedded. 
-        // Por si acaso, admitimos ambos formatos:
         this.equipos = resp.equiposReq;
         this.jugadores = resp.jugadoresReq;
 
-        // Validamos por si viene mapeado como _embedded
         if (resp.equiposReq && (resp.equiposReq as any)._embedded) {
            this.equipos = (resp.equiposReq as any)._embedded.equipos || [];
         }
@@ -80,7 +72,6 @@ export class EquiposComponent implements OnInit {
            this.jugadores = (resp.jugadoresReq as any)._embedded.jugadores || [];
         }
 
-        // Si hay equipos, autoseleccionar el primero
         if (this.equipos.length > 0 && !this.equipoActualSeleccionado) {
            this.onEquipoChange(this.equipos[0].id);
         }
@@ -147,7 +138,6 @@ export class EquiposComponent implements OnInit {
       );
     }
 
-    // Sin titulares configurados: generamos un equipo ideal automático
     const por = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'POR').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 1);
     const def = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEF').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
     const med = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'MED').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
@@ -217,14 +207,11 @@ export class EquiposComponent implements OnInit {
   venderJugador(jugador: any) {
     const confirm = window.confirm(`¿Seguro que quieres vender a ${jugador.nombre}?`);
     if(confirm) {
-      console.log('Se simularía la venta enviando el jugador a Mercado (equipoId=null)');
-      // Simulación Frontend
       jugador.equipo = null;
       this.procesarJugadoresDelEquipoActivo();
     }
   }
 
-  // --- CRUD DE EQUIPOS ---
   abrirFormulario(equipoExistente?: any) {
     this.mostrarFormulario = true;
     if (equipoExistente) {

@@ -18,13 +18,11 @@ import { authGuard } from './auth-guard';
 import { adminGuard } from './admin-guard';
 
 export const routes: Routes = [
-  // Rutas públicas
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
   { path: 'pago-exito', component: PagoExitoComponent },
   { path: 'pago-cancelado', component: PagoCanceladoComponent },
 
-  // Rutas privadas normales
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'clasificacion', component: ClasificacionComponent, canActivate: [authGuard] },
   { path: 'equipos', component: EquiposComponent, canActivate: [authGuard] },
@@ -32,14 +30,9 @@ export const routes: Routes = [
   { path: 'estadisticas', component: EstadisticasComponent, canActivate: [authGuard] },
   { path: 'mercado', component: MercadoComponent, canActivate: [authGuard] },
   { path: 'mensajes', component: MensajesComponent, canActivate: [authGuard] },
-
-  // Rutas por rol
   { path: 'mi-perfil', component: MiPerfilComponent, canActivate: [authGuard] },
   { path: 'mi-equipo', component: MiEquipoComponent, canActivate: [authGuard] },
-
   { path: 'playoffs', component: PlayoffsComponent, canActivate: [authGuard] },
-
-  // Ruta VIP solo Admin
   { path: 'admin', component: AdminComponent, canActivate: [authGuard, adminGuard] },
 
   { path: '', redirectTo: '/login', pathMatch: 'full' }

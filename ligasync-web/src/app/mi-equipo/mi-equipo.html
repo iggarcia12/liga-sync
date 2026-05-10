@@ -59,7 +59,6 @@
 
   <ng-container *ngIf="!cargando && equipo && esEntrenador">
 
-    <!-- Cabecera del equipo -->
     <div class="equipo-header" *ngIf="esEntrenador">
       <div class="equipo-escudo">
         <img *ngIf="equipo.escudo" [src]="equipo.escudo" [alt]="equipo.nombre" />
@@ -83,7 +82,6 @@
       </div>
     </div>
 
-    <!-- CARD TESORERÍA -->
     <div class="card-tesoreria" *ngIf="esEntrenador && equipo.deudaAcumulada > 0">
       <div class="tesoreria-icono">⚠️</div>
       <div class="tesoreria-info">
@@ -106,10 +104,8 @@
       </div>
     </div>
 
-    <!-- Mensaje de éxito -->
     <div class="caja-exito" *ngIf="mensajeGuardado">{{ mensajeGuardado }}</div>
 
-    <!-- Modal de edición del equipo -->
     <div class="modal-overlay" *ngIf="editando" (click)="cancelarEdicion()">
       <div class="modal-card" (click)="$event.stopPropagation()">
         <h3 class="modal-titulo">{{ 'MI_EQUIPO.MODAL_EDITAR_TITULO' | translate }}</h3>
@@ -128,7 +124,6 @@
       </div>
     </div>
 
-    <!-- Navegación de pestañas -->
     <nav class="tabs-nav" *ngIf="esEntrenador">
       <button class="tab-btn" *ngIf="esJugador" [class.tab-btn--active]="pestanaActiva === 'convocatoria'" (click)="cambiarPestana('convocatoria')">
         📅<span class="tab-text"> {{ 'MI_EQUIPO.TABS_CONVOCATORIA' | translate }}</span>
@@ -149,7 +144,6 @@
       </button>
     </nav>
 
-    <!-- PESTAÑA: PLANTILLA -->
     <section class="seccion-plantilla" *ngIf="pestanaActiva === 'plantilla'">
 
       <div *ngIf="jugadores.length === 0" class="plantilla-vacia">
@@ -199,7 +193,6 @@
       </div>
     </section>
 
-    <!-- PESTAÑA: PIZARRA TÁCTICA -->
     <section class="seccion-tactica" *ngIf="pestanaActiva === 'tactica'">
       <div class="tactica-controles">
         <div class="grupo-formacion">
@@ -259,7 +252,6 @@
       </div>
     </section>
 
-    <!-- PESTAÑA: BANDEJA DE OFERTAS -->
     <section class="seccion-ofertas" *ngIf="pestanaActiva === 'ofertas'">
 
       <div *ngIf="cargandoOfertas" class="estado-carga">
@@ -296,7 +288,6 @@
       </div>
     </section>
 
-    <!-- PESTAÑA: ASISTENCIA -->
     <section class="seccion-asistencia" *ngIf="pestanaActiva === 'asistencia'">
 
       <div class="asistencia-grupo">

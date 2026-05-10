@@ -14,7 +14,6 @@
     <button class="btn btn-primary" *ngIf="esAdmin" (click)="abrirFormulario()" style="margin-top: 1rem;">{{ 'EQUIPOS.BTN_CREAR_EQUIPO' | translate }}</button>
   </div>
 
-  <!-- Controles y Selector -->
   <div class="filtros-card card" *ngIf="!cargando && equipos.length > 0">
     <div class="selector-equipo">
       <label>{{ 'EQUIPOS.SELECTOR_EQUIPO' | translate }}</label>
@@ -31,7 +30,6 @@
 
   <div class="team-layout" *ngIf="equipoActualDetalles">
 
-    <!-- Pizarra Táctica -->
     <div class="pitch-container card">
       <div class="pitch-header">
         <h3>{{ 'EQUIPOS.ALINEACION_TITULAR' | translate }} {{ equipoActualDetalles.formacion || (esBaloncesto ? '2-1-2' : '4-4-2') }}</h3>
@@ -61,7 +59,6 @@
       </div>
     </div>
 
-    <!-- Lista Lateral de la Plantilla -->
     <div class="plantilla-container">
 
       <div class="team-summary card">
@@ -102,7 +99,6 @@
     </div>
   </div>
 
-  <!-- Modal Ajustar Presupuesto -->
   <div class="modal-overlay" *ngIf="mostrarModalPresupuesto">
     <div class="modal-content">
       <h3>{{ 'EQUIPOS.MODAL_PRESUPUESTO_TITULO' | translate }}</h3>
@@ -121,7 +117,6 @@
     </div>
   </div>
 
-  <!-- Modal CRUD Equipo -->
   <div class="modal-overlay" *ngIf="mostrarFormulario">
     <div class="modal-content">
       <h3>{{ (modoEdicion ? 'EQUIPOS.MODAL_CRUD_EDITAR' : 'EQUIPOS.MODAL_CRUD_CREAR') | translate }}</h3>

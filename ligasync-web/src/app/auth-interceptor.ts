@@ -24,13 +24,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(peticionFinal).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Token caducado o corrupto: sesión fuera
         localStorage.removeItem('token');
         router.navigate(['/login']);
       }
       
       if (error.status === 403) {
-        // El token vale pero el rol no. Solo avisamos por consola, la UI lo gestionará.
         console.warn('Acceso denegado: permisos insuficientes.');
       }
       

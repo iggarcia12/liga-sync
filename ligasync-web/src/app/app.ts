@@ -49,7 +49,6 @@ export class App implements OnInit {
       if (window.innerWidth >= 768) {
         this.isMobileOpen = false;
       } else {
-        // En móvil el sidebar nunca usa el estado colapsado
         this.isSidebarCollapsed = false;
       }
     }

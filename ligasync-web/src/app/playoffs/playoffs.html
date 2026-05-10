@@ -5,7 +5,6 @@
     <p class="page-subtitle">{{ 'PLAYOFFS.SUBTITULO' | translate }}</p>
   </div>
 
-  <!-- Template reutilizable para cada partido del cuadro -->
   <ng-template #tarjeta let-p="p">
     <div class="match-card" [class.finalizado]="finalizado(p)">
       <span class="match-etiqueta">{{ p ? etiqueta(p) : '—' }}</span>
@@ -22,7 +21,6 @@
         {{ (finalizado(p) ? 'PLAYOFFS.FINALIZADO' : 'PLAYOFFS.PENDIENTE') | translate }}
       </span>
 
-      <!-- FOOTER DE ACTA -->
       <div class="card-footer" *ngIf="(puedeGestionarActas && !finalizado(p)) || finalizado(p)">
         <button class="btn-editar" *ngIf="puedeGestionarActas && !finalizado(p)" (click)="abrirActa(p)">{{ 'ACTA.BTN_GESTIONAR' | translate }}</button>
         <button class="btn-descargar-acta" *ngIf="finalizado(p)" (click)="descargarActa(p.id)" [disabled]="descargandoActa[p.id]">
@@ -33,7 +31,6 @@
     </div>
   </ng-template>
 
-  <!-- Estados -->
   <div class="estado-cargando card" *ngIf="cargando">{{ 'PLAYOFFS.CARGANDO' | translate }}</div>
   <div class="estado-error card" *ngIf="!cargando && error">{{ 'PLAYOFFS.ERROR' | translate }}</div>
 
@@ -43,27 +40,22 @@
     <p>{{ 'PLAYOFFS.SIN_PLAYOFFS_DESC' | translate }}</p>
   </div>
 
-  <!-- Bracket -->
   <ng-container *ngIf="!cargando && !error && hayPlayoffs">
 
-    <!-- Banner de campeón -->
     <div class="campeon-banner" *ngIf="campeon">
       <span class="campeon-corona">👑</span>
       <span class="campeon-label">{{ 'PLAYOFFS.CAMPEON' | translate }}</span>
       <span class="campeon-nombre">{{ campeon }}</span>
     </div>
 
-    <!-- Cabeceras de ronda -->
     <div class="bracket-headers">
       <div class="ronda-header">{{ 'PLAYOFFS.CUARTOS' | translate }}</div>
       <div class="ronda-header">{{ 'PLAYOFFS.SEMIFINALES' | translate }}</div>
       <div class="ronda-header">{{ 'PLAYOFFS.GRAN_FINAL' | translate }}</div>
     </div>
 
-    <!-- El cuadro -->
     <div class="bracket">
 
-      <!-- CUARTOS (4 partidos en 2 pares) -->
       <div class="bracket-round round-cuartos">
         <div class="cuartos-pair">
           <div class="match-wrap">
@@ -83,7 +75,6 @@
         </div>
       </div>
 
-      <!-- SEMIFINALES (2 partidos) -->
       <div class="bracket-round round-semis">
         <div class="match-wrap">
           <ng-container *ngTemplateOutlet="tarjeta; context: { p: s1 }"></ng-container>
@@ -93,7 +84,6 @@
         </div>
       </div>
 
-      <!-- GRAN FINAL (1 partido) -->
       <div class="bracket-round round-final">
         <div class="match-wrap">
           <ng-container *ngTemplateOutlet="tarjeta; context: { p: f }"></ng-container>
@@ -107,13 +97,9 @@
 </div>
 
 
-<!-- ============================================================
-     MODAL DE GESTIÓN DE ACTA
-     ============================================================ -->
 <div class="modal-overlay" *ngIf="partidoEnActa" (click)="cerrarActa()">
   <div class="modal-acta" (click)="$event.stopPropagation()">
 
-    <!-- Header -->
     <div class="modal-acta__header">
       <div>
         <span class="modal-jornada-label">{{ 'COMUN.JORNADA' | translate }} {{ partidoEnActa.jornada }}</span>
@@ -125,7 +111,6 @@
       <button class="btn-cerrar-modal" (click)="cerrarActa()">✕</button>
     </div>
 
-    <!-- Marcador editable -->
     <div class="acta-marcador">
       <div class="acta-equipo-nombre">{{ partidoEnActa.local?.nombre }}</div>
       <div class="acta-score-editor">
@@ -144,7 +129,6 @@
       <div class="acta-equipo-nombre">{{ partidoEnActa.visitante?.nombre }}</div>
     </div>
 
-    <!-- Jugadores: dos columnas -->
     <div class="acta-jugadores-grid">
 
       <div class="acta-columna">
@@ -220,7 +204,6 @@
       </div>
     </div>
 
-    <!-- MVP selector -->
     <div class="acta-mvp">
       <label class="acta-mvp__label" for="mvp-select">{{ 'ACTA.MVP_LABEL' | translate }}</label>
       <select id="mvp-select" class="acta-mvp__select" [(ngModel)]="mvpIdActa">
@@ -231,7 +214,6 @@
       </select>
     </div>
 
-    <!-- Log de incidencias -->
     <div class="acta-log" *ngIf="incidencias.length > 0">
       <h4 class="acta-log__titulo">{{ 'ACTA.INCIDENCIAS_TITULO' | translate }}</h4>
       <div class="acta-log__lista">
@@ -242,12 +224,10 @@
       </div>
     </div>
 
-    <!-- Mensaje de error del acta -->
     <div class="acta-error-msg" *ngIf="mensajeErrorActa">
       ⚠️ {{ mensajeErrorActa }}
     </div>
 
-    <!-- Footer del modal -->
     <div class="modal-acta__footer">
       <button class="btn-cancelar" (click)="cerrarActa()">{{ 'ACTA.BTN_CANCELAR' | translate }}</button>
       <button class="btn-guardar-resultado" *ngIf="esAdmin"
@@ -259,7 +239,6 @@
       </button>
     </div>
 
-    <!-- Overlay de confirmación -->
     <div class="confirmacion-overlay" *ngIf="mostrarConfirmacion">
       <div class="confirmacion-box">
         <p class="confirmacion-box__icono">⚠️</p>

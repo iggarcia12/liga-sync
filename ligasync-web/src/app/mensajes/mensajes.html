@@ -1,14 +1,12 @@
 <div class="mensajes-page">
 
    <div class="chat-container card">
-      <!-- Columna Izquierda: Sidebar -->
       <div class="chat-sidebar">
          <div class="sidebar-header">
             <h3>{{ 'MENSAJES.TITULO' | translate }}</h3>
             <span class="badge badge-nombre" *ngIf="miNombre">{{ miNombre }}</span>
          </div>
 
-         <!-- Barra de búsqueda para nuevos chats -->
          <div class="search-bar-wrapper">
             <div class="search-input-container">
                <span class="search-icon">🔍</span>
@@ -22,7 +20,6 @@
                <button class="search-clear" *ngIf="textoBusqueda" (click)="limpiarBusqueda()">✕</button>
             </div>
 
-            <!-- Resultados de búsqueda (dropdown) -->
             <div class="search-results" *ngIf="mostrarBusqueda">
                <div class="search-empty" *ngIf="resultadosBusqueda.length === 0">
                   <p>{{ 'MENSAJES.SIN_USUARIOS' | translate }}</p>
@@ -39,22 +36,18 @@
             </div>
          </div>
 
-         <!-- Lista de chats activos -->
          <div class="contactos-lista">
 
-            <!-- Cargando (solo si la lista está vacía) -->
             <div class="estado-vacio" *ngIf="cargandoContactos && contactosActivos.length === 0">
                <p>{{ 'MENSAJES.CARGANDO' | translate }}</p>
             </div>
 
-            <!-- Sin chats activos -->
             <div class="estado-vacio sin-chats" *ngIf="!cargandoContactos && contactosActivos.length === 0">
                <span>💬</span>
                <p>{{ 'MENSAJES.SIN_CHATS' | translate }}</p>
                <p class="hint">{{ 'MENSAJES.SIN_CHATS_HINT' | translate }}</p>
             </div>
 
-            <!-- Chats activos -->
             <div class="contacto-item"
                  *ngFor="let u of contactosActivos"
                  [class.activo]="contactoSeleccionado?.id === u.id"
@@ -76,7 +69,6 @@
          </div>
       </div>
 
-      <!-- Columna Derecha: Chat activo -->
       <div class="chat-main" *ngIf="contactoSeleccionado">
          <div class="chat-header">
             <div class="avatar-circle small">{{ getInicial(contactoSeleccionado.nombre) }}</div>
@@ -87,17 +79,14 @@
          </div>
 
          <div class="chat-history" #chatHistory>
-            <!-- Cargando mensajes -->
             <div class="estado-vacio" *ngIf="cargandoMensajes">
                <p>{{ 'MENSAJES.CARGANDO_MENSAJES' | translate }}</p>
             </div>
 
-            <!-- Sin mensajes todavía -->
             <div class="estado-vacio" *ngIf="!cargandoMensajes && mensajesActivos.length === 0">
                <p>{{ 'MENSAJES.SIN_MENSAJES' | translate }}</p>
             </div>
 
-            <!-- Burbujas de mensajes -->
             <div class="mensaje-bubble"
                  *ngFor="let msg of mensajesActivos"
                  [ngClass]="esMio(msg) ? 'me' : 'them'">
@@ -125,7 +114,6 @@
          </div>
       </div>
 
-      <!-- Estado vacío: ningún chat seleccionado -->
       <div class="chat-main empty-state" *ngIf="!contactoSeleccionado">
          <div class="empty-icon">💬</div>
          <h3>{{ 'MENSAJES.EMPTY_TITULO' | translate }}</h3>

@@ -27,7 +27,6 @@ export class ClasificacionComponent implements OnInit {
 
   get esBasket(): boolean { return this.auth.esBaloncesto(); }
 
-  // Etiquetas dinámicas según deporte
   get labelGF(): string { return this.esBasket ? 'PF' : 'GF'; }
   get labelGC(): string { return this.esBasket ? 'PC' : 'GC'; }
   get labelDG(): string { return this.esBasket ? 'DP' : 'DG'; }

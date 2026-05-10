@@ -8,7 +8,6 @@
     <p>{{ 'MERCADO.CARGANDO' | translate }}</p>
   </div>
 
-  <!-- Banner ventana de mercado -->
   <div class="ventana-banner" [class.ventana-banner--abierta]="ventanaAbierta" [class.ventana-banner--cerrada]="!ventanaAbierta" *ngIf="!cargando">
     <span class="ventana-icono">{{ ventanaAbierta ? '🟢' : '🔴' }}</span>
     <div class="ventana-texto">
@@ -22,7 +21,6 @@
     </div>
   </div>
 
-  <!-- Panel de Presupuesto -->
   <div class="presupuesto-panel card" *ngIf="!cargando && (esAdmin || esEntrenador)">
     <div class="presupuesto-info">
       <h3 *ngIf="esAdmin">{{ 'MERCADO.SIMULAR_EQUIPO' | translate }}
@@ -46,7 +44,6 @@
     </div>
   </div>
 
-  <!-- BUSCADOR -->
   <div class="buscador-mercado" *ngIf="!cargando">
     <div class="buscador-wrapper">
       <span class="buscador-icono">🔍</span>
@@ -62,7 +59,6 @@
     </div>
   </div>
 
-  <!-- SECCIÓN 1: AGENTES LIBRES -->
   <div class="seccion-agentes" *ngIf="!cargando">
     <h3 class="seccion-mercado-titulo">
       {{ 'MERCADO.AGENTES_LIBRES' | translate }}
@@ -96,7 +92,6 @@
     </div>
   </div>
 
-  <!-- SECCIÓN 2: JUGADORES EN ACTIVO -->
   <div class="seccion-agentes" *ngIf="!cargando">
     <h3 class="seccion-mercado-titulo">
       {{ 'MERCADO.JUGADORES_ACTIVO' | translate }}
@@ -138,7 +133,6 @@
     </div>
   </div>
 
-  <!-- MODAL: Crear jugador (Admin) -->
   <div class="modal-overlay" *ngIf="mostrarModalFichaje" (click)="cerrarModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <h3>{{ 'MERCADO.MODAL_REGISTRAR_TITULO' | translate }}</h3>
@@ -172,7 +166,6 @@
     </div>
   </div>
 
-  <!-- MODAL: Hacer Oferta -->
   <div class="modal-overlay" *ngIf="mostrarModalOferta && jugadorParaOfertar" (click)="cerrarModalOferta()">
     <div class="modal-content modal-oferta" (click)="$event.stopPropagation()">
       <div class="modal-oferta-header">

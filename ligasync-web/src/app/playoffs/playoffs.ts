@@ -27,7 +27,6 @@ export class PlayoffsComponent implements OnInit {
   cargando = true;
   error = false;
 
-  // --- Estado del modal de acta ---
   partidoEnActa: any = null;
   jugadoresLocal: any[] = [];
   jugadoresVisitante: any[] = [];
@@ -120,8 +119,6 @@ export class PlayoffsComponent implements OnInit {
     };
     return m[p?.codigoEliminatoria] ?? '';
   }
-
-  // --- Métodos de gestión de actas ---
 
   abrirActa(partido: any) {
     this.partidoEnActa = partido;

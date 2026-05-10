@@ -1,9 +1,7 @@
 <div class="chatbot-contenedor">
 
-  <!-- Ventana de chat -->
   <div class="chatbot-ventana" *ngIf="isOpen">
 
-    <!-- Cabecera -->
     <div class="chatbot-cabecera">
       <div class="chatbot-cabecera__info">
         <div class="chatbot-cabecera__avatar">⚡</div>
@@ -18,7 +16,6 @@
       <button class="chatbot-cabecera__cerrar" (click)="toggleChat()" aria-label="Cerrar chat">✕</button>
     </div>
 
-    <!-- Zona de mensajes -->
     <div class="chatbot-mensajes" #mensajesRef>
       <div
         *ngFor="let msg of historial"
@@ -29,13 +26,11 @@
         {{ msg.texto }}
       </div>
 
-      <!-- Indicador "Escribiendo..." -->
       <div class="chatbot-typing" *ngIf="isTyping">
         <span></span><span></span><span></span>
       </div>
     </div>
 
-    <!-- Preguntas frecuentes por categoría -->
     <div class="chatbot-faq">
       <p class="chatbot-faq__titulo">Preguntas frecuentes</p>
       <div *ngFor="let cat of categorias" class="chatbot-categoria">
@@ -53,7 +48,6 @@
       </div>
     </div>
 
-    <!-- Input de texto -->
     <div class="chatbot-input-area">
       <input
         class="chatbot-input"
@@ -78,7 +72,6 @@
 
   </div>
 
-  <!-- Botón FAB -->
   <button
     class="chatbot-fab"
     (click)="toggleChat()"

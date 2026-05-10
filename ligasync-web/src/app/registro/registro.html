@@ -1,6 +1,5 @@
 <div class="pagina-registro">
 
-  <!-- Panel del formulario (izquierda) -->
   <div class="registro-formulario">
     <div class="tarjeta-registro">
 
@@ -13,7 +12,6 @@
         {{ (modoLiga ? 'REGISTRO.DESC_LIGA' : 'REGISTRO.DESC_CUENTA') | translate }}
       </p>
 
-      <!-- Selector CREAR / UNIRSE -->
       <div class="selector-accion">
         <div class="opcion-accion" [class.opcion-accion--activa]="tipoAccion === 'CREAR'" (click)="seleccionarAccion('CREAR')">
           <span class="opcion-accion__icono">🏆</span>
@@ -32,7 +30,6 @@
 
       <form (ngSubmit)="registrar()">
 
-        <!-- ── CREAR: nombre + selector de deporte ── -->
         <div *ngIf="tipoAccion === 'CREAR'" class="grupo-input grupo-input-liga">
           <label>{{ 'REGISTRO.NOMBRE_LIGA' | translate }}</label>
           <input type="text" name="nombreLigaCrear" [(ngModel)]="nombreLiga" required
@@ -55,7 +52,6 @@
           </div>
         </div>
 
-        <!-- ── UNIRSE: filtro + buscador ── -->
         <div *ngIf="tipoAccion === 'UNIRSE'" class="grupo-input grupo-input-liga">
           <label>{{ 'REGISTRO.FILTRAR_DEPORTE' | translate }}</label>
           <select name="filtroDeporte" [(ngModel)]="filtroDeporte" (change)="onFiltroDeporteChange()" class="select-deporte">
@@ -132,7 +128,6 @@
     </div>
   </div>
 
-  <!-- Panel visual (derecha) -->
   <div class="registro-lateral">
     <div class="registro-lateral__contenido">
       <img src="assets/logo.png" alt="LigaSync Logo" class="registro-lateral__logo" />

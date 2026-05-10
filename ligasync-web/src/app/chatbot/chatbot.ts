@@ -96,7 +96,6 @@ export class ChatbotComponent {
     }
   ];
 
-  // Palabras clave → respuesta correspondiente
   private keywordMap: MapeoKeyword[] = [
     {
       palabras: ['edito', 'editar', 'cambiar equipo', 'nombre equipo', 'escudo'],

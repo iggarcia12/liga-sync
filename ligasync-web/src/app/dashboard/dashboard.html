@@ -1,6 +1,5 @@
 <div class="dashboard-page">
 
-  <!-- ── FILA SUPERIOR: título + acción admin ──────────────────── -->
   <div class="dashboard-top-row">
     <div class="header-section">
       <h1 class="page-title">{{ 'DASHBOARD.TITULO' | translate }}</h1>
@@ -26,7 +25,6 @@
     </div>
   </div>
 
-  <!-- ── 3 TARJETAS KPI ──────────────────────────────────────── -->
   <div class="panel-estadisticas">
     <div class="card stat-card metric-azul">
       <div class="stat-info">
@@ -53,10 +51,8 @@
     </div>
   </div>
 
-  <!-- ── GRID PRINCIPAL 2fr / 1fr ──────────────────────────── -->
   <div class="dashboard-grid">
 
-    <!-- ── COLUMNA IZQUIERDA: Clasificación ─────────────────── -->
     <div class="main-column">
       <div class="card card-clasificacion">
         <div class="card-header-kpi">
@@ -121,10 +117,8 @@
       </div>
     </div>
 
-    <!-- ── COLUMNA DERECHA: Resultado + Goleadores ──────────── -->
     <aside class="side-column">
 
-      <!-- Mini-card: Último Resultado -->
       <div class="card card-resultado">
         <div class="card-header-kpi">
           <span class="card-tag">{{ iconoDeporte }}</span>
@@ -156,7 +150,6 @@
         </ng-template>
       </div>
 
-      <!-- Mini-card: Top Goleadores / Anotadores -->
       <div class="card card-goleadores">
         <div class="card-header-kpi">
           <span class="card-tag">🔥</span>
@@ -186,7 +179,6 @@
         </ng-template>
       </div>
 
-      <!-- Mini-card: Tesorería de la Liga -->
       <div class="card card-tesoreria-admin" *ngIf="totalDeudaLiga > 0">
         <div class="card-header-kpi">
           <span class="card-tag">⚠️</span>

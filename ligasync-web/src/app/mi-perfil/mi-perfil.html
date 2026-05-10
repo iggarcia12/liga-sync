@@ -1,6 +1,5 @@
 <div class="perfil-page">
 
-  <!-- CABECERA DE IDENTIDAD -->
   <div class="perfil-header">
     <div class="perfil-avatar">
       <span>👤</span>
@@ -13,16 +12,13 @@
     </div>
   </div>
 
-  <!-- CARGANDO -->
   <div *ngIf="cargando" class="estado-carga">
     <div class="spinner"></div>
     <p>{{ 'MI_PERFIL.CARGANDO' | translate }}</p>
   </div>
 
-  <!-- FICHA DEL JUGADOR -->
   <ng-container *ngIf="!cargando && jugador">
 
-    <!-- Datos generales del jugador -->
     <section class="seccion-ficha">
       <div class="ficha-grid">
         <div class="ficha-dato">
@@ -46,7 +42,6 @@
       </div>
     </section>
 
-    <!-- Estadísticas de temporada -->
     <section class="seccion-stats">
       <h2 class="seccion-titulo">{{ 'MI_PERFIL.STATS_TITULO' | translate }}</h2>
       <div class="stats-grid">
@@ -75,7 +70,6 @@
 
   </ng-container>
 
-  <!-- SIN VINCULACIÓN -->
   <div *ngIf="!cargando && !jugador" class="estado-vacio">
     <span>📋</span>
     <p>{{ 'MI_PERFIL.SIN_VINCULACION' | translate }}<br>{{ 'MI_PERFIL.SIN_VINCULACION_2' | translate }}</p>

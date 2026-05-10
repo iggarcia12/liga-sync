@@ -51,12 +51,11 @@ export class AdminComponent implements OnInit {
     return this.usuarios.filter(u => u.nombre?.toLowerCase().includes(filtro));
   }
 
-  // Estado del editor de resultados (pantalla completa)
   editorActivo: boolean = false;
   partidoEditando: any = null;
   golesLocal: number = 0;
   golesVisitante: number = 0;
-  incidencias: any[] = []; // { jugadorId: number, tipo: string }
+  incidencias: any[] = [];
   jugadoresLocal: any[] = [];
   jugadoresVisitante: any[] = [];
 
@@ -69,13 +68,11 @@ export class AdminComponent implements OnInit {
   }
 
   cargarDatos() {
-    // 1. Cargar usuarios
     this.http.get<any[]>(this.urlBase + '/usuarios').subscribe({
       next: (datos) => {
         this.usuarios = datos;
         this.metricas.totalUsuarios = datos.length;
         this.cargandoUsuarios = false;
-        // Inicializar estado editable por usuario
         datos.forEach(u => {
           this.rangosPendientes[u.id] = {
             role: (u.role ?? 'espectador').toLowerCase(),
@@ -91,7 +88,6 @@ export class AdminComponent implements OnInit {
       }
     });
 
-    // 2. Cargar partidos
     this.http.get<any[]>(this.urlBase + '/partidos').subscribe(datos => {
       this.partidos = datos.sort((a, b) => (a.jornada || 0) - (b.jornada || 0));
       this.metricas.partidosJugados = datos.filter(
@@ -101,14 +97,12 @@ export class AdminComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    // 3. Cargar equipos
     this.http.get<any[]>(this.urlBase + '/equipos').subscribe(datos => {
       this.equipos = datos;
       this.metricas.equiposRegistrados = datos.length;
       this.cdr.detectChanges();
     });
 
-    // 4. Cargar jugadores disponibles (sin usuario vinculado)
     this.http.get<any[]>(this.urlBase + '/jugadores/sin-usuario').subscribe({
       next: (datos) => {
         this.jugadoresSinUsuario = datos;
@@ -188,7 +182,6 @@ export class AdminComponent implements OnInit {
     this.incidencias = [];
     this.editorActivo = true;
 
-    // Cargar jugadores de ambos equipos para las incidencias
     if (partido.local?.id) {
       this.http.get<any[]>(this.urlBase + `/jugadores/equipo/${partido.local.id}`).subscribe(datos => {
         this.jugadoresLocal = datos;
@@ -344,7 +337,6 @@ export class AdminComponent implements OnInit {
 
   esUrl(texto: string): boolean {
     if (!texto) return false;
-    // Es URL si empieza por http, contiene barras o tiene una extensión de imagen común
     const regexImagen = /\.(jpg|jpeg|png|gif|svg|webp|avif)(?:\?.*)?$/i;
     return texto.startsWith('http') || 
            texto.startsWith('https') || 
@@ -354,7 +346,6 @@ export class AdminComponent implements OnInit {
   }
 
   onImageError(event: any) {
-    // Si la imagen falla, la ocultamos y mostramos el span de respaldo
     event.target.style.display = 'none';
     const fallback = event.target.nextElementSibling;
     if (fallback) {

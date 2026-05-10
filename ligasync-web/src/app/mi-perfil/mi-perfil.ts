@@ -33,7 +33,6 @@ export class MiPerfilComponent implements OnInit {
       return;
     }
 
-    // Primero cargamos el usuario para obtener su jugadorId actualizado desde el servidor
     this.http.get<any>(`${this.urlBase}/usuarios/${userId}`).subscribe({
       next: (usuario) => {
         this.nombre = usuario.nombre;

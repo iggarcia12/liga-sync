@@ -1,14 +1,12 @@
 <ng-container *ngIf="mostrarMenu(); else sinLayout">
   <div class="app-shell" [class.is-collapsed]="isSidebarCollapsed">
 
-    <!-- Overlay semitransparente en móvil -->
     <div
       class="sidebar-overlay"
       [class.is-active]="isMobileOpen"
       (click)="closeSidebar()">
     </div>
 
-    <!-- ─── Sidebar ──────────────────────────────────────── -->
     <aside class="sidebar" [class.mobile-open]="isMobileOpen">
 
       <div class="sidebar-brand">
@@ -17,7 +15,6 @@
 
       <nav class="sidebar-nav">
 
-        <!-- PRINCIPAL -->
         <div class="nav-section">
           <span class="nav-section-label">{{ 'NAV.PRINCIPAL' | translate }}</span>
           <a routerLink="/dashboard" routerLinkActive="active-link"
@@ -44,7 +41,6 @@
           </a>
         </div>
 
-        <!-- MI ESPACIO: jugador / entrenador -->
         <ng-container *ngIf="authService.isJugador() || authService.isEntrenador()">
           <div class="nav-section">
             <span class="nav-section-label">{{ 'NAV.MI_ESPACIO' | translate }}</span>
@@ -62,7 +58,6 @@
           </div>
         </ng-container>
 
-        <!-- MI ESPACIO: árbitro -->
         <ng-container *ngIf="authService.isArbitro()">
           <div class="nav-section">
             <span class="nav-section-label">{{ 'NAV.MI_ESPACIO' | translate }}</span>
@@ -72,7 +67,6 @@
           </div>
         </ng-container>
 
-        <!-- GESTIÓN: solo admin -->
         <ng-container *ngIf="authService.isAdmin()">
           <div class="nav-section">
             <span class="nav-section-label">{{ 'NAV.GESTION' | translate }}</span>
@@ -100,7 +94,6 @@
 
     </aside>
 
-    <!-- ─── Área principal ───────────────────────────────── -->
     <main class="main-layout">
 
       <header class="top-navbar">
@@ -128,7 +121,6 @@
   </div>
 </ng-container>
 
-<!-- Login / Registro: sin layout -->
 <ng-template #sinLayout>
   <button class="btn-lang-flotante" (click)="toggleIdioma()" [attr.aria-label]="'TOPBAR.ABRIR_MENU' | translate">
     🌐 {{ currentLang === 'es' ? 'EN' : 'ES' }}
@@ -136,5 +128,4 @@
   <router-outlet></router-outlet>
 </ng-template>
 
-<!-- Asistente flotante — solo visible con sesión activa -->
 <app-chatbot *ngIf="authService.isLoggedIn()" />

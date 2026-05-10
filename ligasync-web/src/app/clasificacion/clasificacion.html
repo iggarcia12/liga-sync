@@ -1,6 +1,5 @@
 <div class="clasificacion-page">
 
-  <!-- ── Cabecera ──────────────────────────────────────────── -->
   <div class="page-header">
     <div class="page-header__left">
       <a routerLink="/dashboard" class="btn-volver">
@@ -15,20 +14,17 @@
     </div>
   </div>
 
-  <!-- ── Estado: cargando ──────────────────────────────────── -->
   <div *ngIf="cargando" class="estado-cargando">
     <div class="spinner"></div>
     <p>{{ 'CLASIFICACION.CARGANDO' | translate }}</p>
   </div>
 
-  <!-- ── Estado: error ─────────────────────────────────────── -->
   <div *ngIf="!cargando && error" class="estado-error card">
     <span class="icon-estado">⚠️</span>
     <p>{{ 'CLASIFICACION.ERROR' | translate }}</p>
     <button class="btn-reintentar" (click)="cargarClasificacion()">{{ 'CLASIFICACION.BTN_REINTENTAR' | translate }}</button>
   </div>
 
-  <!-- ── Tabla principal ───────────────────────────────────── -->
   <div *ngIf="!cargando && !error" class="card card-tabla">
 
     <div *ngIf="equiposOrdenados.length === 0" class="estado-vacio">

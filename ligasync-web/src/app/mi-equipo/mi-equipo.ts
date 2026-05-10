@@ -25,7 +25,6 @@ export class MiEquipoComponent implements OnInit {
   editando = false;
   mensajeGuardado = '';
 
-  // Datos específicos del jugador
   miJugador: any = null;
   proximoPartido: any = null;
 
@@ -384,7 +383,6 @@ export class MiEquipoComponent implements OnInit {
     } else if (this.jugadorSeleccionado.id === j.id) {
       this.jugadorSeleccionado = null;
     } else {
-      // Intercambio lógico: permuta si ambos son titulares, swap si uno es suplente
       const j1 = this.jugadorSeleccionado;
       const j2 = j;
 
@@ -427,7 +425,6 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
-  // Distribución dinámica de slots según la formación y el deporte
   getSlots(formacionStr: string) {
     if (!formacionStr) return [];
     const parts = formacionStr.split('-').map(Number);
@@ -452,7 +449,6 @@ export class MiEquipoComponent implements OnInit {
         }
       });
     } else {
-      // Fútbol: portero + líneas de jugadores
       slots.push({ type: 'POR', x: 50, y: 7 });
 
       const yRange = 63;

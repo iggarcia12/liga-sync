@@ -9,7 +9,6 @@
   </div>
 
   <div class="stats-grid" *ngIf="!cargando">
-     <!-- Columna Gráficos (Izquierda) -->
      <div class="stats-col-main">
         <div class="card">
            <div class="card-header">
@@ -50,9 +49,7 @@
         </div>
      </div>
 
-     <!-- Columna Tops (Derecha) -->
      <div class="stats-col-side">
-        <!-- Pichichi -->
         <div class="card">
            <div class="card-header">
               <h3>{{ authService.esBaloncesto() ? '🏀' : '⚽' }} {{ (authService.esBaloncesto() ? 'ESTADISTICAS.TOP_ANOTADORES' : 'ESTADISTICAS.TOP_GOLEADORES') | translate }}</h3>
@@ -72,7 +69,6 @@
            </div>
         </div>
 
-        <!-- Asistencias -->
         <div class="card mt-4">
            <div class="card-header">
               <h3>{{ 'ESTADISTICAS.TOP_ASISTENTES' | translate }}</h3>
@@ -90,7 +86,6 @@
            </div>
         </div>
 
-        <!-- Top Rebotes — solo baloncesto -->
         <div class="card mt-4" *ngIf="authService.esBaloncesto()">
            <div class="card-header">
               <h3>{{ 'ESTADISTICAS.TOP_REBOTEADORES' | translate }}</h3>

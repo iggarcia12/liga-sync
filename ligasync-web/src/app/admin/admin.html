@@ -12,7 +12,6 @@
   </div>
 
   <div class="admin-grid">
-    <!-- SECCIÓN USUARIOS -->
     <div class="card panel-usuarios" *ngIf="tabActiva === 'usuarios'">
       <div class="card-header">
         <h3>{{ 'ADMIN.USUARIOS_TITULO' | translate }}</h3>
@@ -69,7 +68,6 @@
                 </select>
               </td>
               <td class="celda-vinculacion">
-                <!-- Entrenador: selector de equipo -->
                 <select *ngIf="requiereEquipo(rangosPendientes[u.id].role)"
                   class="select-equipo"
                   [(ngModel)]="rangosPendientes[u.id].teamId">
@@ -77,12 +75,10 @@
                   <option *ngFor="let e of equipos" [ngValue]="e.id">{{ e.nombre }}</option>
                 </select>
 
-                <!-- Jugador: selector de jugador -->
                 <select *ngIf="requiereJugador(rangosPendientes[u.id].role)"
                   class="select-equipo"
                   [(ngModel)]="rangosPendientes[u.id].jugadorId">
                   <option [ngValue]="null">{{ 'ADMIN.SIN_JUGADOR_ASIGNAR' | translate }}</option>
-                  <!-- Mostrar el jugador ya vinculado aunque no esté en "sin-usuario" -->
                   <option *ngIf="u.jugadorId && !jugadoresSinUsuario.find(j => j.id === u.jugadorId)"
                     [ngValue]="u.jugadorId">
                     {{ 'ADMIN.VINCULADO_ACTUAL' | translate }}
@@ -92,7 +88,6 @@
                   </option>
                 </select>
 
-                <!-- Espectador/Admin: sin vinculación -->
                 <span *ngIf="!requiereEquipo(rangosPendientes[u.id].role) && !requiereJugador(rangosPendientes[u.id].role)"
                   class="sin-vinculacion">—</span>
               </td>
@@ -121,10 +116,8 @@
       </div>
     </div>
 
-    <!-- SECCIÓN CONVOCATORIA -->
     <div class="card panel-convocatoria" *ngIf="tabActiva === 'convocatoria'">
 
-      <!-- ── VISTA: LISTA DE PARTIDOS PENDIENTES ── -->
       <ng-container *ngIf="!partidoConvocatoria">
         <div class="card-header">
           <h3>{{ 'ADMIN.CONVOCATORIA_TITULO' | translate }}</h3>
@@ -149,7 +142,6 @@
         </div>
       </ng-container>
 
-      <!-- ── VISTA: DETALLE DE PARTIDO ── -->
       <ng-container *ngIf="partidoConvocatoria">
         <div class="card-header">
           <button class="btn btn-small" (click)="volverListaConvocatoria()">{{ 'ADMIN.BTN_VOLVER_LISTA' | translate }}</button>
@@ -163,7 +155,6 @@
 
         <div class="conv-detalle-grid" *ngIf="!cargandoConvJugadores">
 
-          <!-- LOCAL -->
           <div class="conv-equipo-panel">
             <div class="conv-equipo-header">
               <span class="conv-equipo-nombre">🏠 {{ partidoConvocatoria.local?.nombre }}</span>
@@ -190,7 +181,6 @@
             </div>
           </div>
 
-          <!-- VISITANTE -->
           <div class="conv-equipo-panel">
             <div class="conv-equipo-header">
               <span class="conv-equipo-nombre">🚌 {{ partidoConvocatoria.visitante?.nombre }}</span>
@@ -222,7 +212,6 @@
 
     </div>
 
-    <!-- ─── TAB PAGOS ──────────────────────────────────────────── -->
     <div class="card panel-pagos" *ngIf="tabActiva === 'pagos'">
       <div class="card-header">
         <h3>{{ 'ADMIN.CUOTAS_TITULO' | translate }}</h3>
@@ -286,7 +275,6 @@
 
 </div>
 
-<!-- EDITOR DE RESULTADOS FULL-SCREEN -->
 <div class="match-editor-screen" *ngIf="editorActivo">
   <div class="editor-header">
     <button class="back-btn" (click)="cerrarModal()">
@@ -305,10 +293,8 @@
 
   <div class="editor-container">
 
-    <!-- ── GRID TRIPLE COLUMNA ─────────────────────────────── -->
     <div class="editor-acta-grid">
 
-      <!-- COLUMNA LOCAL -->
       <div class="columna-equipo">
         <div class="equipo-cabecera">
           <span class="equipo-rol-tag">{{ 'COMUN.LOCAL' | translate }}</span>
@@ -340,7 +326,6 @@
         </ng-template>
       </div>
 
-      <!-- COLUMNA CENTRAL: MARCADOR -->
       <div class="columna-central">
         <div class="score-grupo">
           <span class="score-label">{{ 'COMUN.LOCAL' | translate }}</span>
@@ -363,7 +348,6 @@
         </div>
       </div>
 
-      <!-- COLUMNA VISITANTE -->
       <div class="columna-equipo">
         <div class="equipo-cabecera equipo-cabecera--der">
           <span class="equipo-rol-tag">{{ 'COMUN.VISITANTE' | translate }}</span>
@@ -397,7 +381,6 @@
 
     </div>
 
-    <!-- ── LOG DE INCIDENCIAS ──────────────────────────────── -->
     <div class="incidencias-seccion">
       <div class="section-title">
         <h3>{{ 'ADMIN.INCIDENCIAS_TITULO' | translate }}</h3>

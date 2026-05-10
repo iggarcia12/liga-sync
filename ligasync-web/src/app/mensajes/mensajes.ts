@@ -80,7 +80,6 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  // Pre-carga del universo de usuarios para habilitar la búsqueda instantánea
   cargarTodosUsuarios() {
     this.http.get<any[]>(`${this.urlBase}/mensajes/usuarios`).subscribe({
       next: (usuarios) => {
@@ -207,7 +206,6 @@ export class MensajesComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  // Gestión automática del scroll al final del chat tras cambios en la vista
   private scrollAlFinal() {
     if (this.chatHistoryEl) {
       const el = this.chatHistoryEl.nativeElement;
