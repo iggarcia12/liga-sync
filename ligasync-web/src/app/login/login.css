@@ -36,9 +36,10 @@
   max-width: 420px;
 }
 
-.login-lateral__icono {
-  font-size: 3.5rem;
-  display: block;
+.login-lateral__logo {
+  max-width: 80%;
+  max-height: 200px;
+  object-fit: contain;
   margin-bottom: 2rem;
   filter: drop-shadow(0 0 24px rgba(75, 159, 255, 0.6));
   animation: float 4s ease-in-out infinite;
@@ -47,21 +48,6 @@
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
-}
-
-.login-lateral__marca {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(5rem, 10vw, 9rem);
-  font-weight: 400;
-  line-height: 0.88;
-  letter-spacing: 0.06em;
-  margin: 0 0 1.75rem 0;
-  color: #e4eeff;
-}
-
-.login-lateral__marca span {
-  color: #4b9fff;
-  display: block;
 }
 
 .login-lateral__lema {
@@ -119,12 +105,13 @@
 .login-brand-movil {
   display: none;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   margin-bottom: 2rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  letter-spacing: 0.06em;
-  color: var(--accent-color);
+}
+.login-brand-movil__logo {
+  max-width: 200px;
+  max-height: 50px;
+  object-fit: contain;
 }
 
 .tarjeta-login h2 {
@@ -246,10 +233,6 @@
     padding: 2.5rem 2rem;
   }
 
-  .login-lateral__marca {
-    font-size: 5rem;
-  }
-
   .login-brand-movil {
     display: flex;
   }
@@ -257,7 +240,7 @@
 
 @media (max-width: 640px) {
   .login-lateral { min-height: 28vh; padding: 1.5rem; }
-  .login-lateral__marca { font-size: 3.5rem; }
+
   .login-lateral__lema { font-size: 0.82rem; }
   .login-formulario { padding: 1.5rem 1rem; }
   .tarjeta-login h2 { font-size: 1.6rem; }

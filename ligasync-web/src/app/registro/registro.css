@@ -22,12 +22,13 @@
 .registro-brand-movil {
   display: none;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   margin-bottom: 2rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  letter-spacing: 0.06em;
-  color: var(--accent-color);
+}
+.registro-brand-movil__logo {
+  max-width: 200px;
+  max-height: 50px;
+  object-fit: contain;
 }
 
 .tarjeta-registro h2 {
@@ -436,9 +437,10 @@
   max-width: 420px;
 }
 
-.registro-lateral__icono {
-  font-size: 3.5rem;
-  display: block;
+.registro-lateral__logo {
+  max-width: 80%;
+  max-height: 200px;
+  object-fit: contain;
   margin-bottom: 1.5rem;
   filter: drop-shadow(0 0 24px rgba(16, 185, 129, 0.5));
   animation: float 4s ease-in-out infinite;
@@ -447,21 +449,6 @@
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
-}
-
-.registro-lateral__marca {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(5rem, 10vw, 9rem);
-  font-weight: 400;
-  line-height: 0.88;
-  letter-spacing: 0.06em;
-  margin: 0 0 1.5rem 0;
-  color: #e4eeff;
-}
-
-.registro-lateral__marca span {
-  color: #10b981;
-  display: block;
 }
 
 .registro-lateral__lema {
@@ -542,9 +529,7 @@
     order: 2;
   }
 
-  .registro-lateral__marca {
-    font-size: 5rem;
-  }
+
 
   .registro-brand-movil {
     display: none;

@@ -60,17 +60,12 @@
   flex-shrink: 0;
 }
 
-.brand-icon { font-size: 1.2rem; line-height: 1; }
-
-.brand-name {
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 400;
-  letter-spacing: 0.09em;
-  color: #e2eeff;
-  line-height: 1;
+.brand-logo-img {
+  max-width: 100%;
+  max-height: 40px;
+  object-fit: contain;
+  transition: all 0.3s ease;
 }
-.brand-name strong { color: var(--sb-active-color); font-weight: 400; }
 
 /* ── Navegación ─────────────────────────────────────────── */
 .sidebar-nav {
@@ -181,7 +176,6 @@
 }
 
 /* ─── Lógica visual cuando está colapsado ────────────────── */
-.app-shell.is-collapsed .brand-name,
 .app-shell.is-collapsed .nav-text,
 .app-shell.is-collapsed .nav-section-label {
   display: none;
@@ -365,7 +359,6 @@
   .page-container   { padding: 1rem; }
 
   /* Reset collapsed state styles on mobile */
-  .app-shell.is-collapsed .brand-name,
   .app-shell.is-collapsed .nav-text,
   .app-shell.is-collapsed .nav-section-label {
     display: block;
