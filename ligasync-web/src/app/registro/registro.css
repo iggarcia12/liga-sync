@@ -434,12 +434,12 @@
   text-align: center;
   color: white;
   padding: 3rem 2.5rem;
-  max-width: 420px;
+  max-width: 550px;
 }
 
 .registro-lateral__logo {
-  max-width: 90%;
-  max-height: 320px;
+  max-width: 100%;
+  max-height: 400px;
   object-fit: contain;
   margin-bottom: 1.5rem;
   filter: drop-shadow(0 0 24px rgba(16, 185, 129, 0.5));
