@@ -62,7 +62,7 @@
 
 .brand-logo-img {
   max-width: 100%;
-  max-height: 40px;
+  max-height: 55px;
   object-fit: contain;
   transition: all 0.3s ease;
 }

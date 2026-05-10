@@ -37,8 +37,8 @@
 }
 
 .login-lateral__logo {
-  max-width: 80%;
-  max-height: 200px;
+  max-width: 90%;
+  max-height: 320px;
   object-fit: contain;
   margin-bottom: 2rem;
   filter: drop-shadow(0 0 24px rgba(75, 159, 255, 0.6));
@@ -109,8 +109,8 @@
   margin-bottom: 2rem;
 }
 .login-brand-movil__logo {
-  max-width: 200px;
-  max-height: 50px;
+  max-width: 250px;
+  max-height: 70px;
   object-fit: contain;
 }
 
