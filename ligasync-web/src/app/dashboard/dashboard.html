@@ -51,6 +51,39 @@
     </div>
   </div>
 
+  <div class="card card-noticias">
+    <div class="card-header-kpi">
+      <span class="card-tag">📰</span>
+      <h3>Últimas Noticias</h3>
+      <span class="badge noticias-badge-live">● LIVE</span>
+    </div>
+
+    <div *ngIf="cargandoNoticias" class="noticias-loading">
+      <span class="noticias-spinner"></span>
+      <span>Cargando noticias...</span>
+    </div>
+
+    <div *ngIf="!cargandoNoticias">
+      <div class="noticias-track" *ngIf="noticias.length > 0; else sinNoticias">
+        <article class="noticia-item" *ngFor="let n of noticias">
+          <span class="noticia-icono">{{ getIconoNoticia(n) }}</span>
+          <div class="noticia-cuerpo">
+            <p class="noticia-titulo">{{ n.titulo }}</p>
+            <p class="noticia-preview" *ngIf="n.contenido">{{ n.contenido }}</p>
+            <time class="noticia-fecha">{{ formatearFecha(n.fecha) }}</time>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #sinNoticias>
+        <div class="estado-vacio-mini">
+          <span class="icon-vacio">📰</span>
+          <p>No hay noticias publicadas aún.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
   <div class="dashboard-grid">
 
     <div class="main-column">
