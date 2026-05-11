@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Pantalla de Login
-   ============================================================ */
+/* Pantalla de Login */
 
 .pagina-login {
   min-height: 100vh;
@@ -8,7 +6,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
-/* --- Panel Lateral Visual ----------------------------------- */
+/*  Panel Lateral Visual  */
 .login-lateral {
   background: linear-gradient(145deg, #060d1a 0%, #0d2347 55%, #071430 100%);
   display: flex;
@@ -87,7 +85,7 @@
   border-color: rgba(16, 185, 129, 0.08);
 }
 
-/* --- Panel del Formulario ----------------------------------- */
+/*  Panel del Formulario  */
 .login-formulario {
   display: flex;
   align-items: center;
@@ -191,7 +189,7 @@
   text-decoration: underline;
 }
 
-/* --- OAuth / Google ----------------------------------------- */
+/* OAuth / Google  */
 .separador-oauth {
   display: flex;
   align-items: center;
@@ -222,7 +220,7 @@
   width: 100% !important;
 }
 
-/* --- Responsivo -------------------------------------------- */
+/* Responsive */
 @media (max-width: 900px) {
   .pagina-login {
     grid-template-columns: 1fr;

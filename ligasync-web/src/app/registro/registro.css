@@ -4,7 +4,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
-/* --- Panel del Formulario (izquierda) ---------------------- */
+/* Panel del Formulario (izquierda) */
 .registro-formulario {
   display: flex;
   align-items: center;
@@ -47,7 +47,7 @@
   line-height: 1.6;
 }
 
-/* --- Selector CREAR / UNIRSE ------------------------------- */
+/* Selector CREAR / UNIRSE  */
 .selector-accion {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -107,7 +107,7 @@
   line-height: 1.3;
 }
 
-/* --- Selector de Deporte (CREAR) --------------------------- */
+/* Selector de Deporte (CREAR) */
 .selector-deporte {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -158,7 +158,7 @@
   color: var(--accent-color);
 }
 
-/* --- Dropdown filtro de deporte (UNIRSE) ------------------- */
+/* Dropdown filtro de deporte (UNIRSE) */
 .select-deporte {
   width: 100%;
   padding: 0.8rem 1rem;
@@ -182,7 +182,7 @@
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* --- Tags en sugerencias de liga --------------------------- */
+/*  Tags en sugerencias de liga  */
 .sugerencia-nombre {
   flex: 1;
 }
@@ -205,7 +205,7 @@
   color: #f97316;
 }
 
-/* --- Buscador de liga (UNIRSE) ----------------------------- */
+/* Buscador de liga (UNIRSE) */
 .buscador-liga {
   position: relative;
 }
@@ -408,7 +408,7 @@
   text-decoration: underline;
 }
 
-/* --- Panel Visual (derecha) -------------------------------- */
+/* Panel Visual (derecha) */
 .registro-lateral {
   background: linear-gradient(145deg, #071430 0%, #0d2347 55%, #060d1a 100%);
   display: flex;
@@ -514,7 +514,7 @@
   border-color: rgba(75, 159, 255, 0.08);
 }
 
-/* --- Responsivo -------------------------------------------- */
+/* Responsive */
 @media (max-width: 900px) {
   .pagina-registro {
     grid-template-columns: 1fr;

@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Shell Layout  ·  Sidebar + Main
-   ============================================================ */
+/* Sidebar + Main */
 
 :host {
   --sidebar-width: 260px;
@@ -24,11 +22,8 @@
   --sidebar-width: var(--sidebar-collapsed);
 }
 
-/* ══════════════════════════════════════════════════════════
-   SIDEBAR  —  Siempre oscuro ("Dark Pro")
-   ══════════════════════════════════════════════════════════ */
+/*  SIDEBAR */
 .sidebar {
-  /* Colores propios del sidebar, fijos en modo oscuro */
   --sb-bg:          #0d1520;
   --sb-border:      rgba(255, 255, 255, 0.07);
   --sb-text:        rgba(200, 215, 235, 0.65);
@@ -50,7 +45,7 @@
 }
 .sidebar::-webkit-scrollbar { display: none; }
 
-/* ── Brand ──────────────────────────────────────────────── */
+/* Brand */
 .sidebar-brand {
   display: flex;
   align-items: center;
@@ -67,7 +62,7 @@
   transition: all 0.3s ease;
 }
 
-/* ── Navegación ─────────────────────────────────────────── */
+/* Navegación */
 .sidebar-nav {
   flex: 1;
   padding: 0.5rem 0;
@@ -142,7 +137,7 @@
   background: var(--sb-active-color);
 }
 
-/* ── Footer del sidebar ─────────────────────────────────── */
+/* Footer del sidebar */
 .sidebar-footer {
   display: flex;
   flex-direction: column;
@@ -175,7 +170,7 @@
   border-color: var(--sb-active-color);
 }
 
-/* ─── Lógica visual cuando está colapsado ────────────────── */
+/* Lógica visual cuando está colapsado */
 .app-shell.is-collapsed .nav-text,
 .app-shell.is-collapsed .nav-section-label {
   display: none;
@@ -202,9 +197,7 @@
   margin: 0;
 }
 
-/* ══════════════════════════════════════════════════════════
-   ÁREA PRINCIPAL
-   ══════════════════════════════════════════════════════════ */
+/* ÁREA PRINCIPAL */
 .main-layout {
   display: flex;
   flex-direction: column;
@@ -215,7 +208,7 @@
   overflow: hidden;
 }
 
-/* ── Top Bar ───────────────────────────────────────────── */
+/* Top Bar */
 .top-navbar {
   height: var(--topbar-height);
   display: flex;
@@ -228,9 +221,9 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Hamburguesa — solo visible en móvil (o para colapsar en desktop) */
+/* Hamburguesa — solo visible en móvil */
 .btn-hamburger {
-  display: flex; /* Siempre visible ahora, para poder colapsar en desktop */
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -298,7 +291,7 @@
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
-/* ── Contenido de página ────────────────────────────────── */
+/* Contenido de página */
 .page-container {
   overflow-y: auto;
   overflow-x: hidden;
@@ -309,9 +302,7 @@
   max-width: 100%;
 }
 
-/* ══════════════════════════════════════════════════════════
-   OVERLAY MÓVIL
-   ══════════════════════════════════════════════════════════ */
+/* OVERLAY MÓVIL */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -329,9 +320,7 @@
   pointer-events: auto;
 }
 
-/* ══════════════════════════════════════════════════════════
-   RESPONSIVE < 768px
-   ══════════════════════════════════════════════════════════ */
+/* RESPONSIVE */
 @media (max-width: 767px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -346,7 +335,7 @@
     height: 100dvh;
     box-shadow: none;
     transition: left 0.3s ease;
-    width: 260px; /* Valor fijo: --sidebar-width puede ser 70px si está colapsado */
+    width: 260px;
   }
 
   .sidebar.mobile-open {
@@ -358,7 +347,6 @@
   .btn-hamburger  { display: flex; }
   .page-container   { padding: 1rem; }
 
-  /* Reset collapsed state styles on mobile */
   .app-shell.is-collapsed .nav-text,
   .app-shell.is-collapsed .nav-section-label {
     display: block;
@@ -372,7 +360,7 @@
   }
 }
 
-/* ── Botón idioma flotante (páginas sin sidebar) ─────────── */
+/* ── Botón idioma flotante (páginas sin sidebar) */
 .btn-lang-flotante {
   position: fixed;
   top: 1rem;

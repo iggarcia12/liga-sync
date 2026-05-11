@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Calendario de Partidos
-   ============================================================ */
+/*Calendario de Partidos*/
 
 .seccion-container {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 2rem;
 }
 
-/* --- Cabecera ----------------------------------------------- */
+/* Cabecera  */
 .cabecera-seccion {
   display: flex;
   justify-content: space-between;
@@ -52,7 +50,7 @@
 
 .btn-nuevo:active { transform: scale(0.97); }
 
-/* --- Estados ----------------------------------------------- */
+/* Estados */
 .estado-mensaje {
   text-align: center;
   padding: 3rem;
@@ -68,7 +66,7 @@
   background: transparent;
 }
 
-/* --- Lista de Partidos ------------------------------------- */
+/* Lista de Partidos */
 .lista-partidos {
   display: flex;
   flex-direction: column;
@@ -78,7 +76,7 @@
   width: 100%;
 }
 
-/* --- Tarjeta de Marcador ----------------------------------- */
+/* Tarjeta de Marcador */
 .card-marcador {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
@@ -246,7 +244,7 @@
   background: rgba(255, 255, 255, 0.01);
 }
 
-/* --- Cabecera de la card (jornada + estado) ----------------- */
+/* Cabecera de la card (jornada + estado) */
 .card-header-row {
   display: flex;
   align-items: center;
@@ -349,9 +347,7 @@
   border-color: #059669;
 }
 
-/* ============================================================
-   MODAL DE ACTA DEL PARTIDO
-   ============================================================ */
+/* MODAL DE ACTA DEL PARTIDO */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -853,7 +849,7 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Overlay de confirmación (dentro del modal) */
+/* Overlay de confirmación */
 .confirmacion-overlay {
   position: absolute;
   inset: 0;

@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Estadísticas de la Liga
-   ============================================================ */
+/* Estadísticas de la Liga */
 
 .estadisticas-page {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 2rem;
 }
 
-/* --- Layout en Columnas ------------------------------------ */
+/* Layout en Columnas  */
 .stats-grid {
   display: grid;
   grid-template-columns: 3fr 2fr;
@@ -26,7 +24,7 @@
   .stats-grid { grid-template-columns: 1fr; }
 }
 
-/* --- Gráfico ChartJS --------------------------------------- */
+/* Gráfico ChartJS */
 .chart-container {
   position: relative;
   height: 320px;
@@ -36,7 +34,7 @@
   align-items: center;
 }
 
-/* --- Tabla de Sanciones ------------------------------------ */
+/*  Tabla de Sanciones */
 .table-responsive {
   overflow-x: auto;
   border-radius: var(--radius-md);
@@ -90,7 +88,7 @@
 .text-amarilla { color: #f59e0b; font-weight: 800; }
 .text-roja     { color: var(--danger-color); font-weight: 800; }
 
-/* --- Top Lists (Rankings) ---------------------------------- */
+/*  Rankings */
 .top-list {
   display: flex;
   flex-direction: column;

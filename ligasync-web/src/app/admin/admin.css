@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Panel de Administración
-   ============================================================ */
+/*LigaSync PRO — Panel de Administración*/
 
 .admin-page {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 2rem;
 }
 
-/* ── Tabs ─────────────────────────────────────────────────── */
+/* Tabs */
 .admin-tabs {
   display: flex;
   gap: 0.25rem;
@@ -35,14 +33,14 @@
 .tab-btn:hover { color: var(--text-primary); }
 .tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
 
-/* ── Grid Admin ───────────────────────────────────────────── */
+/* Grid Admin  */
 .admin-grid {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-/* ── Panel headers ────────────────────────────────────────── */
+/* Panel headers  */
 .panel-usuarios .card-header,
 .panel-partidos .card-header {
   padding-bottom: 1rem;
@@ -62,7 +60,7 @@
   font-weight: 800;
 }
 
-/* ── Tabla ────────────────────────────────────────────────── */
+/* Tabla */
 .table-responsive {
   overflow-x: auto;
   border-radius: var(--radius-md);
@@ -99,7 +97,7 @@
 
 [data-theme="dark"] .table th { background-color: rgba(255,255,255,0.02); }
 
-/* ── Badges de Rol ────────────────────────────────────────── */
+/* Badges de Rol */
 .badge-admin {
   background-color: rgba(139,92,246,0.12);
   color: #8b5cf6;
@@ -121,7 +119,7 @@
   border: 1px solid rgba(100,116,139,0.2);
 }
 
-/* ── Celda de usuario con avatar ──────────────────────────── */
+/*  Celda de usuario con avatar */
 .usuario-cell {
   display: flex;
   align-items: center;
@@ -148,7 +146,7 @@
   font-size: 0.82rem;
 }
 
-/* ── Selectores de rango y equipo ─────────────────────────── */
+/*  Selectores de rango y equipo  */
 .select-rango,
 .select-equipo {
   padding: 0.45rem 0.75rem;
@@ -189,7 +187,7 @@
   text-align: center;
 }
 
-/* ── Mensajes de feedback de rango ───────────────────────── */
+/* Mensajes de feedback de rango */
 .caja-exito-rango {
   background-color: rgba(16,185,129,0.08);
   border: 1px solid rgba(16,185,129,0.3);
@@ -216,7 +214,7 @@
   font-family: var(--font-ui);
 }
 
-/* ── Score Display (tabla de partidos) ────────────────────── */
+/* Score Display (tabla de partidos) */
 .score-display {
   background: var(--bg-surface);
   padding: 0.35rem 0.9rem;
@@ -232,7 +230,7 @@
   color: var(--text-primary);
 }
 
-/* ── Acciones en celdas ───────────────────────────────────── */
+/* Acciones en celdas */
 .acciones-celda {
   display: flex;
   gap: 6px;
@@ -240,7 +238,7 @@
   flex-wrap: wrap;
 }
 
-/* ── Estado vacío ─────────────────────────────────────────── */
+/*  Estado vacío  */
 .estado-vacio {
   padding: 2.5rem 1rem;
   text-align: center;
@@ -249,9 +247,7 @@
   font-size: 0.88rem;
 }
 
-/* ============================================================
-   EDITOR DE RESULTADOS FULL-SCREEN
-   ============================================================ */
+/* EDITOR DE RESULTADOS */
 .admin-page.editing-mode { padding: 0; margin: 0; }
 
 .match-editor-screen {
@@ -271,7 +267,7 @@
   to   { transform: translateY(0);    opacity: 1; }
 }
 
-/* ── Header del Editor ────────────────────────────────────── */
+/* Header del Editor*/
 .editor-header {
   padding: 1.25rem 2rem;
   background: rgba(6,13,26,0.85);
@@ -342,7 +338,7 @@
   letter-spacing: 0.04em;
 }
 
-/* ── Contenedor del Editor ────────────────────────────────── */
+/*  Contenedor del Editor */
 .editor-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -353,7 +349,7 @@
   gap: 3rem;
 }
 
-/* ── Grid Triple Columna (1fr auto 1fr) ───────────────────── */
+/*  Grid Triple Columna (1fr auto 1fr) */
 .editor-acta-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -361,7 +357,7 @@
   align-items: start;
 }
 
-/* ── Columnas de Equipo ───────────────────────────────────── */
+/* Columnas de Equipo */
 .columna-equipo {
   display: flex;
   flex-direction: column;
@@ -427,7 +423,7 @@
   line-height: 1.1;
 }
 
-/* ── Lista de Jugadores ───────────────────────────────────── */
+/* Lista de Jugadores */
 .lista-jugadores-editor {
   display: flex;
   flex-direction: column;
@@ -476,7 +472,7 @@
   min-width: 0;
 }
 
-/* ── Botones de Estadísticas ──────────────────────────────── */
+/* Botones de Estadísticas */
 .btn-stat {
   width: 26px;
   height: 26px;
@@ -513,7 +509,7 @@
   margin: 0;
 }
 
-/* ── Columna Central: Marcador ────────────────────────────── */
+/*  Columna Central: Marcador */
 .columna-central {
   display: flex;
   flex-direction: column;
@@ -612,7 +608,7 @@
 .vs-central::before { bottom: 100%; }
 .vs-central::after  { top: 100%; }
 
-/* ── Sección de Incidencias ───────────────────────────────── */
+/* Sección de Incidencias */
 .incidencias-seccion {
   display: flex;
   flex-direction: column;
@@ -736,7 +732,7 @@
   background: rgba(239,68,68,0.1);
 }
 
-/* ── Responsive ───────────────────────────────────────────── */
+/* Responsive */
 
 /* Cards con tabla: overflow hidden para que table-responsive funcione */
 .panel-usuarios,
@@ -849,9 +845,7 @@
   .celda-vinculacion { min-width: 0; }
 }
 
-/* ============================================================
-   PANEL CONVOCATORIA (admin)
-   ============================================================ */
+/*  PANEL CONVOCATORIA (admin) */
 .panel-convocatoria {
   width: 100%;
 }
@@ -1059,7 +1053,7 @@
   text-align: center;
 }
 
-/* ── Buscador de Usuarios ─────────────────────────────────── */
+/* Buscador de Usuarios */
 .buscador-usuarios {
   position: relative;
   display: flex;
@@ -1123,9 +1117,7 @@
   font-style: italic;
 }
 
-/* ============================================================
-   PANEL PAGOS
-   ============================================================ */
+/*  PANEL PAGOS */
 .panel-pagos {
   width: 100%;
 }

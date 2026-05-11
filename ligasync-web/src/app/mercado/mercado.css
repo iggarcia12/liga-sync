@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Mercado de Fichajes
-   ============================================================ */
+/* Mercado de Fichajes */
 
 .mercado-page {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 2rem;
 }
 
-/* --- Panel de Presupuesto ---------------------------------- */
+/* Panel de Presupuesto  */
 .presupuesto-panel {
   display: flex;
   justify-content: space-between;
@@ -98,7 +96,7 @@
   color: var(--text-primary);
 }
 
-/* --- Sección Agentes --------------------------------------- */
+/* Sección Agentes */
 .seccion-agentes h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
@@ -115,7 +113,7 @@
   gap: 1.25rem;
 }
 
-/* --- Tarjeta de Mercado ------------------------------------ */
+/* Tarjeta de Mercado  */
 .market-card {
   display: flex;
   flex-direction: column;
@@ -215,14 +213,14 @@
 
 .btn-block { width: 100%; }
 
-/* --- Modal ------------------------------------------------- */
+/* Modal */
 .presupuesto-acciones {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-/* --- Títulos de sección ------------------------------------ */
+/* Títulos de sección  */
 .seccion-mercado-titulo {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.8rem;
@@ -262,7 +260,7 @@
   color: var(--accent-color);
 }
 
-/* --- Tarjeta jugador en activo ----------------------------- */
+/*  Tarjeta jugador en activo */
 .market-card--activo::before {
   background: linear-gradient(90deg, var(--accent-color), #8b5cf6);
 }
@@ -284,7 +282,7 @@
   width: 100%;
 }
 
-/* --- Botón Hacer Oferta ------------------------------------ */
+/* Botón Hacer Oferta  */
 .btn-oferta {
   background: transparent;
   border: 1.5px solid var(--accent-color);
@@ -314,7 +312,7 @@
   font-style: italic;
 }
 
-/* --- Modal Oferta ------------------------------------------ */
+/* Modal Oferta */
 .modal-oferta {
   max-width: 420px;
 }
@@ -372,7 +370,7 @@
 
 .modal-aviso strong { color: var(--success-color); }
 
-/* --- Modal base -------------------------------------------- */
+/* Modal base */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -447,7 +445,7 @@
   margin-top: 0.75rem;
 }
 
-/* ── Banner ventana de mercado ────────────────────────────── */
+/* Banner ventana de mercado */
 .ventana-banner {
   display: flex;
   align-items: center;
@@ -523,7 +521,7 @@
   text-align: center;
 }
 
-/* ===== BUSCADOR ===== */
+/* BUSCADOR */
 .buscador-mercado {
   margin: 0 0 2rem;
 }

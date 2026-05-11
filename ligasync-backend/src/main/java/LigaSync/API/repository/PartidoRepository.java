@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface PartidoRepository extends JpaRepository<Partido, Long> {
 
-    // Versiones scoped por liga — usarlas siempre en lugar de las globales
+    // Versiones scoped por liga
     List<Partido> findByLigaId(Long ligaId);
 
     List<Partido> findByJornadaAndLigaId(Integer jornada, Long ligaId);

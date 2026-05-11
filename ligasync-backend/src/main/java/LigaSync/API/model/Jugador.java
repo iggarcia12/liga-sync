@@ -36,7 +36,7 @@ public class Jugador {
 
     private Boolean convocado = false;
 
-    // Liga a la que pertenece el jugador (persiste aunque sea agente libre)
+    // Liga a la que pertenece el jugador
     private Long ligaId;
 
     @ManyToOne

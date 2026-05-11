@@ -4,7 +4,7 @@
   padding: 2.5rem 1.5rem;
 }
 
-/* --- Cabecera del equipo ----------------------------------- */
+/* Cabecera del equipo  */
 .equipo-header {
   display: flex;
   align-items: center;
@@ -148,7 +148,7 @@
   background: rgba(75, 159, 255, 0.05);
 }
 
-/* --- Modal ------------------------------------------------- */
+/* Modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -252,7 +252,7 @@
   box-shadow: 0 4px 14px var(--accent-glow);
 }
 
-/* --- Plantilla tabla --------------------------------------- */
+/* Plantilla tabla */
 .seccion-titulo {
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
@@ -350,7 +350,7 @@
 .jugador-stat--amarilla { color: #f59e0b; }
 .jugador-stat--roja     { color: var(--danger-color); }
 
-/* --- Estados ---------------------------------------------- */
+/* Estados */
 .estado-carga, .estado-vacio {
   text-align: center;
   padding: 5rem 2rem;
@@ -407,7 +407,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* --- Media stat destacada ---------------------------------- */
+/* Media stat destacada  */
 .jugador-stat--media {
   font-weight: 800;
   color: var(--accent-color);
@@ -417,7 +417,7 @@
 .icono-tarjeta--amarilla { color: #f59e0b; }
 .icono-tarjeta--roja     { color: var(--danger-color); }
 
-/* --- Botón Despedir ---------------------------------------- */
+/* Botón Despedir */
 .btn-despedir {
   padding: 0.35rem 0.75rem;
   background: transparent;
@@ -437,7 +437,7 @@
   border-color: #ef4444;
 }
 
-/* --- Navegación de pestañas -------------------------------- */
+/* Navegación de pestañas */
 .tabs-nav {
   display: flex;
   gap: 0.25rem;
@@ -482,7 +482,7 @@
   font-weight: 800;
 }
 
-/* --- Bandeja de Ofertas ------------------------------------ */
+/* Bandeja de Ofertas */
 .seccion-ofertas { margin-top: 0.5rem; }
 
 .lista-ofertas {
@@ -578,7 +578,7 @@
 
 .btn-aceptar:hover, .btn-rechazar:hover { opacity: 0.8; }
 
-/* --- Pizarra Táctica (Fase 3) ------------------------------ */
+/* Pizarra Táctica (Fase 3) */
 .seccion-tactica {
   margin-top: 0.5rem;
   animation: fadeIn 0.3s ease-out;
@@ -750,7 +750,7 @@
   .tabs-nav { overflow-x: visible; }
 }
 
-/* --- Campo de Fútbol --- */
+/* Campo de Fútbol */
 .campo-futbol {
   position: relative;
   width: 100%;
@@ -765,7 +765,7 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* --- Cancha de Baloncesto --- */
+/* Cancha de Baloncesto */
 .cancha-basket {
   position: relative;
   width: 100%;
@@ -792,7 +792,7 @@
   z-index: 1;
 }
 
-/* La zona (The key) — media cancha: solo aro inferior */
+/* La zona — media cancha: solo aro inferior */
 .cancha-basket .area-grande {
   width: 36%;
   left: 32%;
@@ -870,7 +870,7 @@
 .area-grande--arriba { top: -2px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; }
 .area-grande--abajo { bottom: -2px; border-top-left-radius: 40px; border-top-right-radius: 40px; }
 
-/* --- Jugadores en el campo --- */
+/* Jugadores en el campo */
 .jugador-spot {
   position: absolute;
   display: flex;
@@ -949,7 +949,7 @@
   text-transform: uppercase;
 }
 
-/* --- Lista de Suplentes --- */
+/* Lista de Suplentes */
 .suplentes-container {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -1104,9 +1104,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================================
-   CARD TESORERÍA
-   ============================================================ */
+/* CARD TESORERÍA */
 .card-tesoreria {
   display: flex;
   align-items: center;
@@ -1188,9 +1186,7 @@
   cursor: not-allowed;
 }
 
-/* ============================================================
-   CARD CONVOCATORIA (jugador)
-   ============================================================ */
+/* CARD CONVOCATORIA */
 .card-convocatoria {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -1321,9 +1317,7 @@
   color: #991b1b;
 }
 
-/* ============================================================
-   PESTAÑA ASISTENCIA (entrenador)
-   ============================================================ */
+/* PESTAÑA ASISTENCIA */
 .seccion-asistencia {
   display: flex;
   flex-direction: column;

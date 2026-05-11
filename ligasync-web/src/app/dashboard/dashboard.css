@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Dashboard  · "Alto Rendimiento Deportivo"
-   ============================================================ */
+/* Dashboard */
 
 .dashboard-page {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 1.25rem;
 }
 
-/* ── Fila superior: título + admin bar ─────────────────────── */
+/* Fila superior: título + admin bar */
 .dashboard-top-row {
   display: flex;
   align-items: center;
@@ -25,7 +23,7 @@
   min-width: 0;
 }
 
-/* ── Admin Action Bar ──────────────────────────────────────── */
+/* Admin Action Bar  */
 .admin-action-bar {
   display: flex;
   flex-direction: column;
@@ -117,7 +115,7 @@
 .msg-ok  { color: var(--success-color); background: rgba(16, 185, 129, 0.08); }
 .msg-err { color: var(--danger-color);  background: rgba(220, 38, 38, 0.08); }
 
-/* ── KPI ── Panel de Estadísticas ─────────────────────────── */
+/* Panel de Estadísticas */
 .panel-estadisticas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
@@ -176,7 +174,7 @@
 .metric-verde   { background: linear-gradient(135deg, #065f46, #10b981); box-shadow: 0 6px 28px rgba(16,185,129,0.32); }
 .metric-naranja { background: linear-gradient(135deg, #92400e, #f59e0b); box-shadow: 0 6px 28px rgba(245,158,11,0.32); }
 
-/* ── Grid principal 2fr / 1fr ────────────────────────────── */
+/* Grid principal 2fr / 1fr  */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -184,7 +182,7 @@
   align-items: start;
 }
 
-/* ── Card header compacto ────────────────────────────────── */
+/* Card header compacto  */
 .card-header-kpi {
   display: flex;
   align-items: center;
@@ -222,7 +220,7 @@
   border: 1px solid var(--border-color);
 }
 
-/* ── Tabla de Clasificación ──────────────────────────────── */
+/* Tabla de Clasificación  */
 .tabla-clasificacion {
   width: 100%;
   border-collapse: collapse;
@@ -265,7 +263,7 @@
   vertical-align: middle;
 }
 
-/* Fila líder: acento izquierdo dorado via box-shadow (funciona con border-collapse) */
+/* Fila líder */
 .fila-lider td:first-child {
   box-shadow: inset 3px 0 0 #f59e0b;
 }
@@ -325,7 +323,7 @@
   line-height: 1;
 }
 
-/* ── Columna lateral ─────────────────────────────────────── */
+/*  Columna lateral */
 .side-column {
   display: flex;
   flex-direction: column;
@@ -334,7 +332,7 @@
   top: calc(var(--topbar-height, 56px) + 1rem);
 }
 
-/* ── Card: Último Resultado ──────────────────────────────── */
+/*  Card: Último Resultado  */
 .card-resultado {
   overflow: hidden;
 }
@@ -404,7 +402,7 @@
   margin-top: 0.5rem;
 }
 
-/* ── Card: Top Goleadores ────────────────────────────────── */
+/*  Card: Top Goleadores  */
 .lista-goleadores {
   display: flex;
   flex-direction: column;
@@ -467,7 +465,7 @@
   color: var(--text-secondary);
 }
 
-/* ── Estado vacío ────────────────────────────────────────── */
+/* Estado vacío */
 .estado-vacio {
   display: flex;
   flex-direction: column;
@@ -501,7 +499,7 @@
   opacity: 0.28;
 }
 
-/* ── Card Tesorería Admin ────────────────────────────────── */
+/*  Card Tesorería Admin */
 .card-tesoreria-admin {
   border-left: 3px solid #f59e0b;
 }
@@ -554,7 +552,7 @@
   color: #b45309;
 }
 
-/* ── Link "Ver todo" ─────────────────────────────────────── */
+/* Link "Ver todo" */
 .card-footer-link {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
@@ -579,7 +577,7 @@
 .btn-ver-todo:hover { opacity: 0.75; gap: 0.65rem; }
 .btn-ver-todo .flecha { font-size: 0.85rem; }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* Responsive */
 /* Con sidebar de 240px, el viewport efectivo se reduce — bajamos el breakpoint */
 @media (max-width: 1200px) {
   .dashboard-top-row {
@@ -625,7 +623,7 @@
   .admin-action-controles { flex-wrap: wrap; width: 100%; }
   .admin-action-controles .btn-playoffs { flex: 1; }
 
-  /* Solo quedan: #, Equipo, PG, PP, Pts — suficiente para el resumen */
+  /* Solo quedan: #, Equipo, PG, PP, Pts */
   .th-pj, .col-pj,
   .th-pe, .col-pe,
   .th-gf, .col-gf,

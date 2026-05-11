@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Clasificación Completa
-   ============================================================ */
+/* Clasificación Completa */
 
 .clasificacion-page {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 1.75rem;
 }
 
-/* ── Cabecera de página ──────────────────────────────────── */
+/* Cabecera de página  */
 .page-header {
   display: flex;
   align-items: flex-start;
@@ -69,7 +67,7 @@
   color: var(--text-secondary);
 }
 
-/* ── Tabla ───────────────────────────────────────────────── */
+/* Tabla  */
 .card-tabla {
   padding: 0;
   overflow-x: auto;
@@ -196,7 +194,7 @@
   line-height: 1;
 }
 
-/* ── Estados de carga / error / vacío ────────────────────── */
+/* Estados de carga / error / vacío */
 .estado-cargando {
   display: flex;
   flex-direction: column;
@@ -280,7 +278,7 @@
   opacity: 0.28;
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* Responsive  */
 @media (max-width: 768px) {
   .page-titulo { font-size: 2.2rem; }
 

@@ -1,6 +1,4 @@
-/* ============================================================
-   LigaSync PRO — Gestión de Equipos / Plantillas
-   ============================================================ */
+/* Gestión de Equipos / Plantillas */
 
 .equipos-page {
   display: flex;
@@ -8,7 +6,7 @@
   gap: 2rem;
 }
 
-/* --- Filtros y Selector ------------------------------------ */
+/* Filtros y Selector  */
 .filtros-card {
   display: flex;
   justify-content: space-between;
@@ -59,7 +57,7 @@
   gap: 0.75rem;
 }
 
-/* --- Layout Principal --------------------------------------- */
+/*  Layout Principal  */
 .team-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -93,9 +91,7 @@
   .team-summary h2 { font-size: 1.6rem; }
 }
 
-/* ============================================================
-   PIZARRA TÁCTICA (SOCCER PITCH)
-   ============================================================ */
+/* PIZARRA TÁCTICA  */
 .pitch-container {
   padding: 0;
   overflow: hidden;
@@ -119,12 +115,10 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Muestra solo el área inferior del campo (recorte del ~40% inferior) */
+/* Muestra solo el área inferior del campo */
 .campo-preview {
   position: relative;
   overflow: hidden;
-  /* Con aspect-ratio 5/3 el contenedor tiene h = w*0.6; el campo tiene h = w*1.5
-     → se ve el 40% inferior, suficiente para ver el área y un par de líneas de jugadores */
   aspect-ratio: 5 / 3;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
@@ -179,7 +173,7 @@
 .area-grande--arriba { top: -2px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; }
 .area-grande--abajo { bottom: -2px; border-top-left-radius: 40px; border-top-right-radius: 40px; }
 
-/* --- Cancha de Baloncesto --- */
+/*  Cancha de Baloncesto */
 .campo-preview--basket {
   aspect-ratio: 1 / 1;
 }
@@ -210,7 +204,7 @@
   z-index: 1;
 }
 
-/* La zona (The key) */
+/* La zona */
 .cancha-basket .area-grande {
   width: 32%;
   left: 34%;
@@ -232,7 +226,7 @@
   aspect-ratio: 1;
   border: 3px solid #ffffff;
   border-radius: 50%;
-  left: -3px; /* account for parent border */
+  left: -3px; 
   box-sizing: content-box;
 }
 
@@ -248,7 +242,7 @@
   clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
 }
 
-/* Línea de triple (3-point line) */
+/* Línea de triple */
 .linea-triple {
   position: absolute;
   width: 84%;
@@ -270,7 +264,7 @@
   border-radius: 50% 50% 0 0 / 45% 45% 0 0;
 }
 
-/* --- Jugadores en el campo (Read-Only) --- */
+/* ugadores en el campo  */
 .jugador-spot-read {
   position: absolute;
   display: flex;
@@ -334,9 +328,7 @@
   text-transform: uppercase;
 }
 
-/* ============================================================
-   LATERAL: PLANTILLA
-   ============================================================ */
+/* LATERAL: PLANTILLA */
 .plantilla-container {
   display: flex;
   flex-direction: column;

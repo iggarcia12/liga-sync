@@ -7,7 +7,7 @@ public class RegistroRequest {
     private String pass;
     private String tipoAccion; // "CREAR" o "UNIRSE"
     private String nombreLiga;
-    private String deporte;   // "FUTBOL" o "BALONCESTO" (solo en CREAR)
+    private String deporte;   // "FUTBOL" o "BALONCESTO"
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

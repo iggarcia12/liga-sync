@@ -13,7 +13,7 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
     List<Jugador> findByEquipoId(Long equipoId);
 
-    // Incluye agentes libres (equipo IS NULL con ligaId propio) y jugadores con equipo de la liga
+    // Incluye agentes libres y jugadores con equipo de la liga
     @Query("SELECT j FROM Jugador j LEFT JOIN j.equipo e WHERE j.ligaId = :ligaId OR e.ligaId = :ligaId")
     List<Jugador> findAllByLiga(@Param("ligaId") Long ligaId);
 

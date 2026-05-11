@@ -47,7 +47,7 @@ public class PdfService {
             PdfFont fBold    = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
             PdfFont fRegular = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
-            // ── 1. BANNER CABECERA ────────────────────────────────────────────
+            // 1. BANNER CABECERA 
             Table banner = new Table(UnitValue.createPercentArray(new float[]{1}))
                     .useAllAvailableWidth();
             banner.addCell(new Cell()
@@ -85,7 +85,7 @@ public class PdfService {
                     .setPaddingRight(10).setPaddingTop(7).setPaddingBottom(7));
             document.add(subBanner);
 
-            // ── 2. MARCADOR CENTRAL ───────────────────────────────────────────
+            // 2. MARCADOR CENTRAL
             String localNombre     = partido.getLocal()     != null ? partido.getLocal().getNombre()     : "Local";
             String visitanteNombre = partido.getVisitante() != null ? partido.getVisitante().getNombre() : "Visitante";
             String scoreLocal      = partido.getGolesLocal()     != null ? String.valueOf(partido.getGolesLocal())     : "—";
@@ -94,7 +94,7 @@ public class PdfService {
             Table scoreTable = new Table(UnitValue.createPercentArray(new float[]{30, 40, 30}))
                     .useAllAvailableWidth().setMarginBottom(4);
 
-            // Columna local (30%) — texto a la derecha
+            // Columna local — texto a la derecha
             scoreTable.addCell(new Cell()
                     .add(new Paragraph(localNombre)
                             .setFont(fBold).setFontSize(13).setFontColor(COLOR_TEXTO_OSCURO)
@@ -106,7 +106,7 @@ public class PdfService {
                     .setPadding(14)
                     .setVerticalAlignment(VerticalAlignment.MIDDLE));
 
-            // Columna marcador (40%) — fondo azul, resultado grande y centrado
+            // Columna marcador — fondo azul, resultado grande y centrado
             scoreTable.addCell(new Cell()
                     .add(new Paragraph(scoreLocal + "  —  " + scoreVisitante)
                             .setFont(fBold).setFontSize(28).setFontColor(COLOR_BLANCO)
@@ -116,7 +116,7 @@ public class PdfService {
                     .setPadding(14)
                     .setVerticalAlignment(VerticalAlignment.MIDDLE));
 
-            // Columna visitante (30%) — texto a la izquierda
+            // Columna visitante  — texto a la izquierda
             scoreTable.addCell(new Cell()
                     .add(new Paragraph(visitanteNombre)
                             .setFont(fBold).setFontSize(13).setFontColor(COLOR_TEXTO_OSCURO)
@@ -134,7 +134,7 @@ public class PdfService {
                     .setBorderBottom(new SolidBorder(COLOR_ACENTO, 2))
                     .setMarginBottom(14));
 
-            // ── 3. TABLA DE DETALLES ──────────────────────────────────────────
+            // 3. TABLA DE DETALLES 
             document.add(new Paragraph("DATOS DEL ENCUENTRO")
                     .setFont(fBold).setFontSize(9).setFontColor(COLOR_TEXTO_MUTED)
                     .setMarginBottom(6));
@@ -158,7 +158,7 @@ public class PdfService {
 
             document.add(detalles);
 
-            // ── 4. INCIDENCIAS / ESTADÍSTICAS ─────────────────────────────────
+            // 4. INCIDENCIAS / ESTADÍSTICAS
             document.add(new Paragraph()
                     .setBorderBottom(new SolidBorder(COLOR_GRIS_CLARO, 1))
                     .setMarginBottom(10));
@@ -209,7 +209,7 @@ public class PdfService {
             }
             document.add(incidencias);
 
-            // ── 5. SECCIÓN DE FIRMAS ──────────────────────────────────────────
+            //  5. SECCIÓN DE FIRMAS
             document.add(new Paragraph("FIRMAS OFICIALES")
                     .setFont(fBold).setFontSize(9).setFontColor(COLOR_TEXTO_MUTED)
                     .setMarginTop(8).setMarginBottom(0));
@@ -224,7 +224,7 @@ public class PdfService {
             firmas.addCell(celdaFirma(fBold, fRegular, "Capitán Visitante"));
             document.add(firmas);
 
-            // ── 6. PIE DE PÁGINA ──────────────────────────────────────────────
+            // 6. PIE DE PÁGINA
             document.add(new Paragraph()
                     .setBorderTop(new SolidBorder(COLOR_GRIS_CLARO, 1))
                     .setMarginTop(14).setMarginBottom(6));
@@ -240,7 +240,7 @@ public class PdfService {
         return out.toByteArray();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // Helpers
 
     private void addCeldaCabecera(Table table, PdfFont font, String texto) {
         table.addCell(new Cell()

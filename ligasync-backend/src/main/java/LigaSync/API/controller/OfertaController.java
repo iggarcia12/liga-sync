@@ -81,7 +81,7 @@ public class OfertaController {
         oferta.setEstado(Oferta.Estado.PENDIENTE);
         Oferta ofertaGuardada = ofertaRepository.save(oferta);
 
-        // Notificación async al entrenador del equipo vendedor (no bloquea la respuesta HTTP)
+        // Notificación async al entrenador del equipo vendedor
         var entrenadorOpt = usuarioRepository.findByTeamIdAndRole(oferta.getEquipoDestinoId().intValue(), "entrenador");
         if (entrenadorOpt.isEmpty()) {
             System.err.println("[OfertaController] No se encontró entrenador para equipo ID=" + oferta.getEquipoDestinoId() + " con role='entrenador'");

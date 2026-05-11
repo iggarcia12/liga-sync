@@ -290,7 +290,7 @@ public class PartidoController {
                 .orElse(false);
     }
 
-    /** Fútbol: V=3, E=1, D=0 | Baloncesto (FIBA): V=2, D=1, sin empates */
+    //Fútbol: V=3, E=1, D=0 | Baloncesto: V=2, D=1, sin empates
     private void actualizarClasificacion(Equipo equipo, int golesF, int golesC, boolean esBasket) {
         equipo.setPj(safe(equipo.getPj()) + 1);
         equipo.setGf(safe(equipo.getGf()) + golesF);

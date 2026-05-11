@@ -1,10 +1,7 @@
-/* ============================================================
-   LigaSync PRO — Sistema de Diseño Global
-   Dirección: "Editorial Deportivo Moderno / Alto Rendimiento"
-   ============================================================ */
+/* Sistema de Diseño Global */
 
 :root {
-  /* === TEMA CLARO: Editorial Limpio === */
+  /* TEMA CLARO */
   --bg-color: #f0f4f9;
   --bg-surface: #e8eef6;
   --card-bg: #ffffff;
@@ -37,7 +34,7 @@
 }
 
 [data-theme="dark"] {
-  /* === TEMA OSCURO: Panel de Alto Rendimiento === */
+  /* TEMA OSCURO */
   --bg-color: #060d1a;
   --bg-surface: #0a1628;
   --card-bg: #0e1e33;
@@ -58,9 +55,7 @@
   --accent-blue: #4b9fff;
 }
 
-/* ============================================================
-   RESET Y BASE
-   ============================================================ */
+/* RESET Y BASE */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -86,9 +81,7 @@ body {
   width: 100%;
 }
 
-/* ============================================================
-   TIPOGRAFÍA
-   ============================================================ */
+/* TIPOGRAFÍA */
 .page-title {
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 5vw, 3.8rem);
@@ -112,9 +105,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* ============================================================
-   CARDS
-   ============================================================ */
+/* CARDS */
 .card {
   background-color: var(--card-bg);
   border-radius: var(--radius-lg);
@@ -124,9 +115,7 @@ body {
   transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 
-/* ============================================================
-   TABLAS
-   ============================================================ */
+/* TABLAS */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
@@ -165,9 +154,7 @@ body {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* ============================================================
-   BOTONES
-   ============================================================ */
+/* BOTONES */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -239,9 +226,7 @@ body {
   font-size: 0.75rem;
 }
 
-/* ============================================================
-   BADGES
-   ============================================================ */
+/* BADGES */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -269,9 +254,7 @@ body {
   border-color: rgba(75, 159, 255, 0.2);
 }
 
-/* ============================================================
-   FORMULARIOS
-   ============================================================ */
+/* FORMULARIOS */
 .grupo-input {
   margin-bottom: 1.25rem;
 }
@@ -310,9 +293,7 @@ body {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* ============================================================
-   MODAL
-   ============================================================ */
+/* MODAL */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -388,9 +369,7 @@ body {
   }
 }
 
-/* ============================================================
-   CARD HEADER
-   ============================================================ */
+/* CARD HEADER  */
 .card-header {
   padding-bottom: 1rem;
   margin-bottom: 1rem;
@@ -410,9 +389,7 @@ body {
   font-family: var(--font-ui);
 }
 
-/* ============================================================
-   ESTADO VACÍO Y MENSAJES
-   ============================================================ */
+/* ESTADO VACÍO Y MENSAJES */
 .estado-vacio {
   display: flex;
   flex-direction: column;
@@ -444,9 +421,7 @@ body {
   background: transparent;
 }
 
-/* ============================================================
-   UTILIDADES
-   ============================================================ */
+/* UTILIDADES */
 .mt-4 { margin-top: 1.5rem; }
 .text-center { text-align: center; }
 .font-weight-bold { font-weight: 700; }

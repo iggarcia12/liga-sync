@@ -33,8 +33,6 @@ public class Usuario {
     private Long ligaId;
 
     // --- GETTERS Y SETTERS ---
-    // En Java puro (sin Lombok) necesitamos escribir esto para que Spring pueda
-    // leer y guardar los datos.
 
     public Long getId() {
         return id;
