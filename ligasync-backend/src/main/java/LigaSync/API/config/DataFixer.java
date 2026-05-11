@@ -21,6 +21,7 @@ public class DataFixer {
     @Autowired
     private PartidoRepository partidoRepository;
 
+    // Recalcula toda la clasificación desde cero al arrancar para corregir posibles desincronizaciones en BD
     @PostConstruct
     public void fixClassification() {
         System.out.println("[DataFixer] Recalculando clasificación al inicio...");

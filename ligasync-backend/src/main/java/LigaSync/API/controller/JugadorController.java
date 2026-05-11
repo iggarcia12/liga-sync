@@ -161,6 +161,7 @@ public class JugadorController {
                         noticiaRepository.save(noticia);
                     }
 
+                    // El equipo vendedor recupera el valor del jugador al ceder un traspaso entre clubes
                     if (equipoViejo != null) {
                         Optional<Equipo> eqViejoOpt = equipoRepository.findById(equipoViejo.getId());
                         if (eqViejoOpt.isPresent()) {

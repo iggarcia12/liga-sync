@@ -60,6 +60,7 @@ export class MercadoComponent implements OnInit {
     return this.authService.esBaloncesto() ? this.posicionesBasket : this.posicionesFutbol;
   }
 
+  // Ventana abierta: antes del primer partido (j=0), cada 3 jornadas, o si el admin la fuerza
   get ventanaAbierta(): boolean {
     return this.mercadoForzadoAbierto || this.jornadaActual === 0 || this.jornadaActual % 3 === 0;
   }
@@ -141,6 +142,7 @@ export class MercadoComponent implements OnInit {
 
   get miEquipoId(): number | null { return this._miEquipoId; }
 
+  // El setter carga el presupuesto y oculta los jugadores del propio equipo en el mercado
   set miEquipoId(val: number | null) {
     this._miEquipoId = val;
     if (val) this.cargarPresupuesto(val);

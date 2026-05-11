@@ -91,6 +91,7 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(usuarioDB.getEmail(), usuarioDB.getRole(), usuarioDB.getLigaId());
 
+        // getLigaId() puede ser null (usuario sin liga aún); findById(null) devuelve empty → FUTBOL por defecto
         String deporte = ligaRepository.findById(usuarioDB.getLigaId())
                 .map(l -> l.getDeporte().name())
                 .orElse("FUTBOL");

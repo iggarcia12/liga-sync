@@ -65,6 +65,7 @@ public class AuthService {
             usuario = new Usuario();
             usuario.setNombre(nombre != null ? nombre : email);
             usuario.setEmail(email);
+            // Contraseña aleatoria: el usuario de Google nunca la usará (solo entra por OAuth)
             usuario.setPass(passwordEncoder.encode(UUID.randomUUID().toString()));
             usuario.setRole("espectador");
             usuarioRepository.save(usuario);

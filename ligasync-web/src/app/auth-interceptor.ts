@@ -10,6 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let peticionFinal = req;
 
+  // Los endpoints de autenticación no llevan token (aún no existe o se está creando)
   const esLogin = req.url.includes('/api/login')
     || req.url.includes('/api/auth/registro')
     || req.url.includes('/api/auth/google');

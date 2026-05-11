@@ -14,7 +14,7 @@ public class JwtUtil {
 
     private static final String SECRET_KEY = "LigaSyncTFG_SuperSecretaClaveParaGenerarTokens123456789";
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    private static final long EXPIRATION_TIME = 86400000;
+    private static final long EXPIRATION_TIME = 86400000; // 24 horas en ms
 
     public String generateToken(String email, String rol, Long ligaId) {
         return Jwts.builder()

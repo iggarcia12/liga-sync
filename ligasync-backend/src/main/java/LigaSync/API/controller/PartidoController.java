@@ -29,12 +29,18 @@ import java.util.Optional;
 @RequestMapping("/api/partidos")
 public class PartidoController {
 
-    @Autowired private PartidoRepository partidoRepository;
-    @Autowired private NoticiaRepository noticiaRepository;
-    @Autowired private EquipoRepository equipoRepository;
-    @Autowired private JugadorRepository jugadorRepository;
-    @Autowired private LigaRepository ligaRepository;
-    @Autowired private PdfService pdfService;
+    @Autowired
+    private PartidoRepository partidoRepository;
+    @Autowired
+    private NoticiaRepository noticiaRepository;
+    @Autowired
+    private EquipoRepository equipoRepository;
+    @Autowired
+    private JugadorRepository jugadorRepository;
+    @Autowired
+    private LigaRepository ligaRepository;
+    @Autowired
+    private PdfService pdfService;
 
     private static final double MULTA_AMARILLA = 500_000.0;
     private static final double MULTA_ROJA = 1_000_000.0;
@@ -66,7 +72,8 @@ public class PartidoController {
     public ResponseEntity<List<Partido>> generarCalendario() {
         Long ligaId = SecurityUtils.getLigaId();
         List<Equipo> equipos = equipoRepository.findByLigaId(ligaId);
-        if (equipos.size() < 2) return ResponseEntity.badRequest().build();
+        if (equipos.size() < 2)
+            return ResponseEntity.badRequest().build();
 
         partidoRepository.deleteAll(partidoRepository.findByLigaId(ligaId));
 
@@ -84,39 +91,50 @@ public class PartidoController {
         jugadorRepository.saveAll(jugadores);
 
         for (Equipo e : equipos) {
-            e.setPts(0); e.setPj(0); e.setPg(0);
-            e.setPe(0);  e.setPp(0); e.setGf(0);
-            e.setGc(0);  e.setDeudaAcumulada(0.0);
+            e.setPts(0);
+            e.setPj(0);
+            e.setPg(0);
+            e.setPe(0);
+            e.setPp(0);
+            e.setGf(0);
+            e.setGc(0);
+            e.setDeudaAcumulada(0.0);
         }
         equipoRepository.saveAll(equipos);
 
         List<Partido> partidosGenerados = new ArrayList<>();
         int numEquipos = equipos.size();
         boolean esImpar = (numEquipos % 2 != 0);
-        if (esImpar) numEquipos++;
+        if (esImpar)
+            numEquipos++; // Equipo virtual para que el round-robin funcione con número impar
 
         int jornadas = numEquipos - 1;
         int partidosPorJornada = numEquipos / 2;
 
+        // Algoritmo de rotación circular: el último equipo es fijo, el resto rota
+        // jornada a jornada
         for (int j = 0; j < jornadas; j++) {
             for (int p = 0; p < partidosPorJornada; p++) {
                 int localIdx = (j + p) % (numEquipos - 1);
                 int visitanteIdx = (j + numEquipos - 1 - p) % (numEquipos - 1);
-                if (p == 0) visitanteIdx = numEquipos - 1;
+                if (p == 0)
+                    visitanteIdx = numEquipos - 1;
 
                 if (!esImpar || (localIdx < equipos.size() && visitanteIdx < equipos.size())) {
                     Equipo local = equipos.get(localIdx);
                     Equipo visitante = equipos.get(visitanteIdx);
 
                     Partido ida = new Partido();
-                    ida.setLocal(local); ida.setVisitante(visitante);
+                    ida.setLocal(local);
+                    ida.setVisitante(visitante);
                     ida.setJornada(j + 1);
                     ida.setFecha(LocalDate.now().plusDays(j * 7).toString());
                     ida.setLigaId(ligaId);
                     partidosGenerados.add(ida);
 
                     Partido vuelta = new Partido();
-                    vuelta.setLocal(visitante); vuelta.setVisitante(local);
+                    vuelta.setLocal(visitante);
+                    vuelta.setVisitante(local);
                     vuelta.setJornada(j + 1 + jornadas);
                     vuelta.setFecha(LocalDate.now().plusDays((j + jornadas) * 7).toString());
                     vuelta.setLigaId(ligaId);
@@ -144,7 +162,8 @@ public class PartidoController {
         if (request.getIncidencias() != null) {
             for (MatchResultRequest.IncidenciaDTO inc : request.getIncidencias()) {
                 Optional<Jugador> jugOpt = jugadorRepository.findById(inc.getJugadorId());
-                if (jugOpt.isEmpty()) continue;
+                if (jugOpt.isEmpty())
+                    continue;
                 Jugador j = jugOpt.get();
                 procesarIncidencia(j, inc.getTipo(), inc.getValorAnotacion(), resumen, esBasket);
                 jugadorRepository.save(j);
@@ -180,7 +199,8 @@ public class PartidoController {
 
         Partido partido = partidoOpt.get();
         if (partido.getEstado() == Partido.EstadoPartido.FINALIZADO_Y_FIRMADO)
-            return ResponseEntity.badRequest().body("El acta de este partido ya ha sido firmada y no puede modificarse.");
+            return ResponseEntity.badRequest()
+                    .body("El acta de este partido ya ha sido firmada y no puede modificarse.");
 
         boolean esBasket = esLigaDeBaloncesto(ligaId);
         int gL = safe(request.getGolesLocal());
@@ -190,8 +210,7 @@ public class PartidoController {
         boolean esPlayoff = partido.getTipoPartido() != null && partido.getTipoPartido() != Partido.TipoPartido.REGULAR;
         if ((esBasket || esPlayoff) && gL == gV)
             return ResponseEntity.badRequest().body(
-                esBasket ? "En baloncesto no puede haber empate." : "En los play-offs no puede haber empate."
-            );
+                    esBasket ? "En baloncesto no puede haber empate." : "En los play-offs no puede haber empate.");
 
         partido.setGolesLocal(request.getGolesLocal());
         partido.setGolesVisitante(request.getGolesVisitante());
@@ -201,10 +220,12 @@ public class PartidoController {
         if (request.getIncidencias() != null) {
             for (FirmarActaRequest.IncidenciaDTO inc : request.getIncidencias()) {
                 Optional<Jugador> jugOpt = jugadorRepository.findById(inc.getJugadorId());
-                if (jugOpt.isEmpty()) continue;
+                if (jugOpt.isEmpty())
+                    continue;
                 Jugador jugador = jugOpt.get();
                 procesarIncidenciaFirma(jugador, inc.getTipo(), inc.getValorAnotacion(), resumen, esBasket);
-                if (jugador.getEquipo() != null) equipoRepository.save(jugador.getEquipo());
+                if (jugador.getEquipo() != null)
+                    equipoRepository.save(jugador.getEquipo());
                 jugadorRepository.save(jugador);
             }
         }
@@ -233,7 +254,8 @@ public class PartidoController {
             boolean todosFinalizados = partidoRepository.findByLigaId(ligaId).stream()
                     .filter(p -> p.getTipoPartido() == null || p.getTipoPartido() == Partido.TipoPartido.REGULAR)
                     .allMatch(p -> p.getEstado() == Partido.EstadoPartido.FINALIZADO_Y_FIRMADO);
-            if (todosFinalizados) generarCuartosDeFinSiProcede(ligaId);
+            if (todosFinalizados)
+                generarCuartosDeFinSiProcede(ligaId);
         }
 
         publicarNoticia(guardado, ligaId, esBasket);
@@ -257,7 +279,10 @@ public class PartidoController {
         Long ligaId = SecurityUtils.getLigaId();
         return partidoRepository.findById(id)
                 .filter(p -> ligaId.equals(p.getLigaId()))
-                .map(p -> { partidoRepository.delete(p); return ResponseEntity.noContent().<Void>build(); })
+                .map(p -> {
+                    partidoRepository.delete(p);
+                    return ResponseEntity.noContent().<Void>build();
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -282,7 +307,7 @@ public class PartidoController {
         return ResponseEntity.ok().headers(headers).body(pdf);
     }
 
-    // ── Helpers ─────────────────────────────────────────────────────────────
+    // Helpers
 
     private boolean esLigaDeBaloncesto(Long ligaId) {
         return ligaRepository.findById(ligaId)
@@ -290,7 +315,7 @@ public class PartidoController {
                 .orElse(false);
     }
 
-    //Fútbol: V=3, E=1, D=0 | Baloncesto: V=2, D=1, sin empates
+    // Fútbol: V=3, E=1, D=0 | Baloncesto: V=2, D=1, sin empates
     private void actualizarClasificacion(Equipo equipo, int golesF, int golesC, boolean esBasket) {
         equipo.setPj(safe(equipo.getPj()) + 1);
         equipo.setGf(safe(equipo.getGf()) + golesF);
@@ -303,11 +328,13 @@ public class PartidoController {
             equipo.setPts(safe(equipo.getPts()) + 1);
         } else {
             equipo.setPp(safe(equipo.getPp()) + 1);
-            if (esBasket) equipo.setPts(safe(equipo.getPts()) + 1);
+            if (esBasket)
+                equipo.setPts(safe(equipo.getPts()) + 1);
         }
     }
 
-    private void procesarIncidencia(Jugador j, String tipo, Integer valorAnotacion, StringBuilder resumen, boolean esBasket) {
+    private void procesarIncidencia(Jugador j, String tipo, Integer valorAnotacion, StringBuilder resumen,
+            boolean esBasket) {
         switch (tipo.toUpperCase()) {
             case "GOL":
             case "PUNTOS":
@@ -342,7 +369,8 @@ public class PartidoController {
         }
     }
 
-    private void procesarIncidenciaFirma(Jugador jugador, String tipo, Integer valorAnotacion, StringBuilder resumen, boolean esBasket) {
+    private void procesarIncidenciaFirma(Jugador jugador, String tipo, Integer valorAnotacion, StringBuilder resumen,
+            boolean esBasket) {
         switch (tipo.toUpperCase()) {
             case "GOL":
             case "PUNTOS":
@@ -385,7 +413,8 @@ public class PartidoController {
     }
 
     private void aplicarMulta(Equipo equipo, double multa) {
-        if (equipo == null) return;
+        if (equipo == null)
+            return;
         equipo.setDeudaAcumulada((equipo.getDeudaAcumulada() != null ? equipo.getDeudaAcumulada() : 0.0) + multa);
     }
 
@@ -406,10 +435,13 @@ public class PartidoController {
         noticiaRepository.save(noticia);
     }
 
-    private Partido crearPartidoPlayoff(Equipo local, Equipo visitante, Partido.TipoPartido tipo, String codigo, Long ligaId) {
+    private Partido crearPartidoPlayoff(Equipo local, Equipo visitante, Partido.TipoPartido tipo, String codigo,
+            Long ligaId) {
         Partido p = new Partido();
-        p.setLocal(local); p.setVisitante(visitante);
-        p.setTipoPartido(tipo); p.setCodigoEliminatoria(codigo);
+        p.setLocal(local);
+        p.setVisitante(visitante);
+        p.setTipoPartido(tipo);
+        p.setCodigoEliminatoria(codigo);
         p.setFecha(LocalDate.now().plusDays(7).toString());
         p.setEstado(Partido.EstadoPartido.PENDIENTE);
         p.setLigaId(ligaId);
@@ -417,22 +449,29 @@ public class PartidoController {
     }
 
     private void generarCuartosDeFinSiProcede(Long ligaId) {
-        if (partidoRepository.existsByTipoPartidoAndLigaId(Partido.TipoPartido.CUARTOS, ligaId)) return;
+        if (partidoRepository.existsByTipoPartidoAndLigaId(Partido.TipoPartido.CUARTOS, ligaId))
+            return;
 
         List<Equipo> clasificacion = new ArrayList<>(equipoRepository.findByLigaId(ligaId));
-        if (clasificacion.size() < 8) return;
+        if (clasificacion.size() < 8)
+            return;
 
         clasificacion.sort((a, b) -> {
             int ptsDiff = safe(b.getPts()) - safe(a.getPts());
-            if (ptsDiff != 0) return ptsDiff;
+            if (ptsDiff != 0)
+                return ptsDiff;
             return (safe(b.getGf()) - safe(b.getGc())) - (safe(a.getGf()) - safe(a.getGc()));
         });
 
         List<Partido> cuartos = new ArrayList<>();
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(0), clasificacion.get(7), Partido.TipoPartido.CUARTOS, "CUARTOS_1", ligaId));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(3), clasificacion.get(4), Partido.TipoPartido.CUARTOS, "CUARTOS_2", ligaId));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(1), clasificacion.get(6), Partido.TipoPartido.CUARTOS, "CUARTOS_3", ligaId));
-        cuartos.add(crearPartidoPlayoff(clasificacion.get(2), clasificacion.get(5), Partido.TipoPartido.CUARTOS, "CUARTOS_4", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(0), clasificacion.get(7), Partido.TipoPartido.CUARTOS,
+                "CUARTOS_1", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(3), clasificacion.get(4), Partido.TipoPartido.CUARTOS,
+                "CUARTOS_2", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(1), clasificacion.get(6), Partido.TipoPartido.CUARTOS,
+                "CUARTOS_3", ligaId));
+        cuartos.add(crearPartidoPlayoff(clasificacion.get(2), clasificacion.get(5), Partido.TipoPartido.CUARTOS,
+                "CUARTOS_4", ligaId));
         partidoRepository.saveAll(cuartos);
 
         Noticia noticia = new Noticia();
@@ -444,16 +483,44 @@ public class PartidoController {
     }
 
     private void avanzarGanador(String codigoActual, Equipo ganador, Long ligaId) {
-        if (codigoActual == null) return;
-        String siguienteCodigo; boolean esLocal; Partido.TipoPartido siguienteTipo;
+        if (codigoActual == null)
+            return;
+        String siguienteCodigo;
+        boolean esLocal;
+        Partido.TipoPartido siguienteTipo;
         switch (codigoActual) {
-            case "CUARTOS_1": siguienteCodigo = "SEMI_1"; esLocal = true;  siguienteTipo = Partido.TipoPartido.SEMIFINAL; break;
-            case "CUARTOS_2": siguienteCodigo = "SEMI_1"; esLocal = false; siguienteTipo = Partido.TipoPartido.SEMIFINAL; break;
-            case "CUARTOS_3": siguienteCodigo = "SEMI_2"; esLocal = true;  siguienteTipo = Partido.TipoPartido.SEMIFINAL; break;
-            case "CUARTOS_4": siguienteCodigo = "SEMI_2"; esLocal = false; siguienteTipo = Partido.TipoPartido.SEMIFINAL; break;
-            case "SEMI_1":    siguienteCodigo = "FINAL";  esLocal = true;  siguienteTipo = Partido.TipoPartido.FINAL;     break;
-            case "SEMI_2":    siguienteCodigo = "FINAL";  esLocal = false; siguienteTipo = Partido.TipoPartido.FINAL;     break;
-            default: return;
+            case "CUARTOS_1":
+                siguienteCodigo = "SEMI_1";
+                esLocal = true;
+                siguienteTipo = Partido.TipoPartido.SEMIFINAL;
+                break;
+            case "CUARTOS_2":
+                siguienteCodigo = "SEMI_1";
+                esLocal = false;
+                siguienteTipo = Partido.TipoPartido.SEMIFINAL;
+                break;
+            case "CUARTOS_3":
+                siguienteCodigo = "SEMI_2";
+                esLocal = true;
+                siguienteTipo = Partido.TipoPartido.SEMIFINAL;
+                break;
+            case "CUARTOS_4":
+                siguienteCodigo = "SEMI_2";
+                esLocal = false;
+                siguienteTipo = Partido.TipoPartido.SEMIFINAL;
+                break;
+            case "SEMI_1":
+                siguienteCodigo = "FINAL";
+                esLocal = true;
+                siguienteTipo = Partido.TipoPartido.FINAL;
+                break;
+            case "SEMI_2":
+                siguienteCodigo = "FINAL";
+                esLocal = false;
+                siguienteTipo = Partido.TipoPartido.FINAL;
+                break;
+            default:
+                return;
         }
         Partido siguiente = partidoRepository.findByCodigoEliminatoriaAndLigaId(siguienteCodigo, ligaId)
                 .orElseGet(() -> {
@@ -465,9 +532,14 @@ public class PartidoController {
                     nuevo.setLigaId(ligaId);
                     return nuevo;
                 });
-        if (esLocal) siguiente.setLocal(ganador); else siguiente.setVisitante(ganador);
+        if (esLocal)
+            siguiente.setLocal(ganador);
+        else
+            siguiente.setVisitante(ganador);
         partidoRepository.save(siguiente);
     }
 
-    private int safe(Integer val) { return val != null ? val : 0; }
+    private int safe(Integer val) {
+        return val != null ? val : 0;
+    }
 }
