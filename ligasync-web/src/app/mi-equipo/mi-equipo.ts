@@ -71,7 +71,11 @@ export class MiEquipoComponent implements OnInit {
         localStorage.setItem('deporte', deporte);
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error al obtener deporte de la liga:', err)
+      error: (err) => {
+        console.error('Error al obtener deporte de la liga:', err);
+        this.deporteLiga = 'FUTBOL';
+        this.cdr.detectChanges();
+      }
     });
 
     const userId = this.authService.getUserId();
@@ -425,6 +429,12 @@ export class MiEquipoComponent implements OnInit {
     });
   }
 
+  private get formacionActual(): string {
+    const formacionDefault = this.esBaloncesto ? '2-1-2' : '4-4-2';
+    const guardada = this.equipo?.formacion;
+    return (guardada && this.formaciones.includes(guardada)) ? guardada : formacionDefault;
+  }
+
   getSlots(formacionStr: string) {
     if (!formacionStr) return [];
     const parts = formacionStr.split('-').map(Number);
@@ -474,9 +484,7 @@ export class MiEquipoComponent implements OnInit {
 
   estaFueraDePosicion(jugador: any, index: number): boolean {
     if (!this.equipo) return false;
-    const formacionDefault = this.esBaloncesto ? '2-1-2' : '4-4-2';
-    const formacion = this.equipo.formacion || formacionDefault;
-    const slots = this.getSlots(formacion);
+    const slots = this.getSlots(this.formacionActual);
     const slot = slots[index];
     if (!slot) return false;
 
@@ -495,9 +503,7 @@ export class MiEquipoComponent implements OnInit {
 
   getPosicionEstilo(jugador: any, index: number) {
     if (!this.equipo) return {};
-    const formacionDefault = this.esBaloncesto ? '2-1-2' : '4-4-2';
-    const formacion = this.equipo.formacion || formacionDefault;
-    const slots = this.getSlots(formacion);
+    const slots = this.getSlots(this.formacionActual);
     const slot = slots[index];
 
     if (!slot) return { display: 'none' };

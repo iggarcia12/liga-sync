@@ -138,12 +138,26 @@ export class EquiposComponent implements OnInit {
       );
     }
 
-    const por = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'POR').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 1);
-    const def = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEF').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
-    const med = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'MED').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
-    const del = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEL').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 2);
+    // Auto-pick if no titulares saved
+    let autoPicked: any[] = [];
+    if (this.esBaloncesto) {
+      const bases = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'BASE').sort((a,b)=>(b.media||0)-(a.media||0)).slice(0,1);
+      const escoltas = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'ESCOLTA').sort((a,b)=>(b.media||0)-(a.media||0)).slice(0,1);
+      const aleros = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'ALERO').sort((a,b)=>(b.media||0)-(a.media||0)).slice(0,1);
+      const alaPivots = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'ALA_PIVOT').sort((a,b)=>(b.media||0)-(a.media||0)).slice(0,1);
+      const pivots = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'PIVOT').sort((a,b)=>(b.media||0)-(a.media||0)).slice(0,1);
+      autoPicked = [...bases, ...escoltas, ...aleros, ...alaPivots, ...pivots];
+    } else {
+      const por = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'POR').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 1);
+      const def = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEF').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
+      const med = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'MED').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 4);
+      const del = this.jugadoresFiltrados.filter(j => this.normalizarPos(j.pos) === 'DEL').sort((a,b) => (b.media||0)-(a.media||0)).slice(0, 2);
+      autoPicked = [...por, ...def, ...med, ...del];
+    }
 
-    return [...por, ...def, ...med, ...del];
+    // Mark them visually as titular so the side list shows them correctly
+    autoPicked.forEach(j => j.titular = true);
+    return autoPicked;
   }
 
   getSlots(formacionStr: string) {
