@@ -1,7 +1,10 @@
 <div class="seccion-container">
   <div class="cabecera-seccion">
     <h2>{{ 'PARTIDOS.TITULO' | translate }}</h2>
-    <button class="btn-nuevo btn-generar" *ngIf="esAdmin" (click)="generarCalendario()">{{ 'PARTIDOS.BTN_GENERAR' | translate }}</button>
+    <div class="botones-cabecera">
+      <button class="btn-nuevo btn-generar" *ngIf="esAdmin" (click)="abrirModalNuevoPartido()">➕ Generar Partido Manual</button>
+      <button class="btn-nuevo btn-generar" *ngIf="esAdmin" (click)="generarCalendario()">{{ 'PARTIDOS.BTN_GENERAR' | translate }}</button>
+    </div>
   </div>
 
   <div class="estado-mensaje" *ngIf="cargando">
@@ -214,5 +217,49 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Modal para crear un partido manual -->
+<div class="modal-overlay" *ngIf="mostrarModalNuevoPartido" (click)="cerrarModalNuevoPartido()">
+  <div class="modal-acta" (click)="$event.stopPropagation()" style="max-width: 400px; padding: 2rem;">
+    <div class="modal-acta__header" style="margin-bottom: 1.5rem;">
+      <h2 class="modal-acta__titulo" style="font-size: 1.25rem;">Crear Partido Manual</h2>
+      <button class="btn-cerrar-modal" (click)="cerrarModalNuevoPartido()">✕</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <label style="font-weight: 600; color: #cbd5e1; font-size: 0.875rem;">Equipo Local</label>
+        <select [(ngModel)]="nuevoPartido.local" style="padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #334155; background: #0f172a; color: #f8fafc;">
+          <option [ngValue]="null">Selecciona equipo local...</option>
+          <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+        </select>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <label style="font-weight: 600; color: #cbd5e1; font-size: 0.875rem;">Equipo Visitante</label>
+        <select [(ngModel)]="nuevoPartido.visitante" style="padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #334155; background: #0f172a; color: #f8fafc;">
+          <option [ngValue]="null">Selecciona equipo visitante...</option>
+          <option *ngFor="let eq of equipos" [value]="eq.id">{{ eq.nombre }}</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+          <label style="font-weight: 600; color: #cbd5e1; font-size: 0.875rem;">Jornada</label>
+          <input type="number" [(ngModel)]="nuevoPartido.jornada" min="1" style="padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #334155; background: #0f172a; color: #f8fafc;"/>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 2;">
+          <label style="font-weight: 600; color: #cbd5e1; font-size: 0.875rem;">Fecha</label>
+          <input type="date" [(ngModel)]="nuevoPartido.fecha" style="padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #334155; background: #0f172a; color: #f8fafc; color-scheme: dark;"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-acta__footer" style="margin-top: 2rem;">
+      <button class="btn-cancelar" (click)="cerrarModalNuevoPartido()">Cancelar</button>
+      <button class="btn-firmar" (click)="crearPartidoManual()">Generar Partido</button>
+    </div>
   </div>
 </div>

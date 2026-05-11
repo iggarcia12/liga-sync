@@ -41,6 +41,11 @@ export class PartidosComponent implements OnInit {
   guardandoResultado = false;
   mensajeErrorActa = '';
 
+  equipos: any[] = [];
+  mostrarModalNuevoPartido = false;
+  nuevoPartido = { local: null, visitante: null, jornada: 1, fecha: '' };
+
+
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   public authService = inject(AuthService);
@@ -70,6 +75,14 @@ export class PartidosComponent implements OnInit {
         this.cargando = false;
         this.cdr.detectChanges();
       }
+    });
+
+    this.http.get<any[]>(`${this.urlBase}/equipos`).subscribe({
+      next: (datos) => {
+        this.equipos = datos;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar equipos', err)
     });
   }
 
@@ -241,6 +254,46 @@ export class PartidosComponent implements OnInit {
         error: (err) => console.error(`Error al eliminar el partido #${id}`, err)
       });
     }
+  }
+
+  abrirModalNuevoPartido() {
+    this.mostrarModalNuevoPartido = true;
+    this.nuevoPartido = { local: null, visitante: null, jornada: 1, fecha: new Date().toISOString().split('T')[0] };
+  }
+
+  cerrarModalNuevoPartido() {
+    this.mostrarModalNuevoPartido = false;
+  }
+
+  crearPartidoManual() {
+    if (!this.nuevoPartido.local || !this.nuevoPartido.visitante) {
+      alert('Debes seleccionar un equipo local y un visitante.');
+      return;
+    }
+    if (this.nuevoPartido.local === this.nuevoPartido.visitante) {
+      alert('El equipo local y visitante no pueden ser el mismo.');
+      return;
+    }
+
+    const payload = {
+      local: this.equipos.find(e => e.id == this.nuevoPartido.local),
+      visitante: this.equipos.find(e => e.id == this.nuevoPartido.visitante),
+      jornada: this.nuevoPartido.jornada,
+      fecha: this.nuevoPartido.fecha,
+      estado: 'PENDIENTE'
+    };
+
+    this.http.post<any>(`${this.urlBase}/partidos`, payload).subscribe({
+      next: (partidoGuardado) => {
+        alert('Partido generado exitosamente.');
+        this.cerrarModalNuevoPartido();
+        this.cargarPartidos();
+      },
+      error: (err) => {
+        console.error('Error al crear partido manual', err);
+        alert('Hubo un error al generar el partido manual.');
+      }
+    });
   }
 
   tipoIcono(tipo: string): string {
