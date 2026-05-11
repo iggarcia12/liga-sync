@@ -3,24 +3,14 @@
 .dashboard-page {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-}
-
-/* Fila superior: título + admin bar */
-.dashboard-top-row {
-  display: flex;
-  align-items: center;
   gap: 1.5rem;
 }
 
-.dashboard-top-row .header-section {
-  flex-shrink: 0;
-  margin-bottom: 0;
-}
-
-.dashboard-top-row .admin-action-bar {
-  flex: 1;
-  min-width: 0;
+/* Header standalone */
+.dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 /* Admin Action Bar  */
@@ -118,7 +108,7 @@
 /* Panel de Estadísticas */
 .panel-estadisticas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
@@ -699,12 +689,7 @@
 .btn-ver-todo .flecha { font-size: 0.85rem; }
 
 /* Responsive */
-/* Con sidebar de 240px, el viewport efectivo se reduce — bajamos el breakpoint */
 @media (max-width: 1200px) {
-  .dashboard-top-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -712,11 +697,24 @@
     position: static;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
   }
 }
 
-/* Previene que las columnas del grid desborden su celda */
-.main-column,
+@media (max-width: 900px) {
+  .panel-estadisticas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Columna principal: clasificación + noticias apilados */
+.main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
 .side-column {
   min-width: 0;
 }
@@ -728,18 +726,23 @@
 }
 
 @media (max-width: 640px) {
+  .panel-estadisticas {
+    grid-template-columns: 1fr 1fr;
+  }
   .side-column {
     grid-template-columns: 1fr;
   }
   .marcador-numero { font-size: 3rem; }
 
-  /* Tabla clasificación: reduce padding para que quepan las columnas */
   .tabla-clasificacion thead th,
   .tabla-clasificacion tbody td { padding: 0.4rem 0.5rem; }
   .col-pts { font-size: 1.15rem; }
 }
 
 @media (max-width: 480px) {
+  .panel-estadisticas {
+    grid-template-columns: 1fr;
+  }
   .stat-info .stat-value { font-size: 2rem; }
   .admin-action-controles { flex-wrap: wrap; width: 100%; }
   .admin-action-controles .btn-playoffs { flex: 1; }

@@ -1,28 +1,28 @@
 <div class="dashboard-page">
 
-  <div class="dashboard-top-row">
+  <div class="dashboard-header">
     <div class="header-section">
       <h1 class="page-title">{{ 'DASHBOARD.TITULO' | translate }}</h1>
       <p class="page-subtitle">{{ 'DASHBOARD.SUBTITULO' | translate }}</p>
     </div>
+  </div>
 
-    <div class="admin-action-bar card" *ngIf="isAdmin">
-      <div class="admin-action-content">
-        <span class="admin-action-icon">🏆</span>
-        <div class="admin-action-info">
-          <strong>{{ 'DASHBOARD.FASE_FINAL' | translate }}</strong>
-          <span>{{ 'DASHBOARD.FASE_FINAL_DESC' | translate }}</span>
-        </div>
-        <div class="admin-action-controles">
-          <button class="btn-playoffs" (click)="generarPlayoffs()" [disabled]="generandoPlayoffs">
-            {{ (generandoPlayoffs ? 'DASHBOARD.BTN_GENERANDO_PLAYOFFS' : 'DASHBOARD.BTN_GENERAR_PLAYOFFS') | translate }}
-          </button>
-          <a routerLink="/playoffs" class="btn-ver-playoffs">{{ 'DASHBOARD.BTN_VER_CUADRO' | translate }}</a>
-        </div>
+  <div class="admin-action-bar card" *ngIf="isAdmin">
+    <div class="admin-action-content">
+      <span class="admin-action-icon">🏆</span>
+      <div class="admin-action-info">
+        <strong>{{ 'DASHBOARD.FASE_FINAL' | translate }}</strong>
+        <span>{{ 'DASHBOARD.FASE_FINAL_DESC' | translate }}</span>
       </div>
-      <p class="admin-action-msg msg-ok"  *ngIf="mensajePlayoffs && !hayErrorPlayoffs">✓ {{ mensajePlayoffs }}</p>
-      <p class="admin-action-msg msg-err" *ngIf="mensajePlayoffs &&  hayErrorPlayoffs">⚠ {{ mensajePlayoffs }}</p>
+      <div class="admin-action-controles">
+        <button class="btn-playoffs" (click)="generarPlayoffs()" [disabled]="generandoPlayoffs">
+          {{ (generandoPlayoffs ? 'DASHBOARD.BTN_GENERANDO_PLAYOFFS' : 'DASHBOARD.BTN_GENERAR_PLAYOFFS') | translate }}
+        </button>
+        <a routerLink="/playoffs" class="btn-ver-playoffs">{{ 'DASHBOARD.BTN_VER_CUADRO' | translate }}</a>
+      </div>
     </div>
+    <p class="admin-action-msg msg-ok"  *ngIf="mensajePlayoffs && !hayErrorPlayoffs">✓ {{ mensajePlayoffs }}</p>
+    <p class="admin-action-msg msg-err" *ngIf="mensajePlayoffs &&  hayErrorPlayoffs">⚠ {{ mensajePlayoffs }}</p>
   </div>
 
   <div class="panel-estadisticas">
@@ -51,42 +51,10 @@
     </div>
   </div>
 
-  <div class="card card-noticias">
-    <div class="card-header-kpi">
-      <span class="card-tag">📰</span>
-      <h3>Últimas Noticias</h3>
-      <span class="badge noticias-badge-live">● LIVE</span>
-    </div>
-
-    <div *ngIf="cargandoNoticias" class="noticias-loading">
-      <span class="noticias-spinner"></span>
-      <span>Cargando noticias...</span>
-    </div>
-
-    <div *ngIf="!cargandoNoticias">
-      <div class="noticias-track" *ngIf="noticias.length > 0; else sinNoticias">
-        <article class="noticia-item" *ngFor="let n of noticias">
-          <span class="noticia-icono">{{ getIconoNoticia(n) }}</span>
-          <div class="noticia-cuerpo">
-            <p class="noticia-titulo">{{ n.titulo }}</p>
-            <p class="noticia-preview" *ngIf="n.contenido">{{ n.contenido }}</p>
-            <time class="noticia-fecha">{{ formatearFecha(n.fecha) }}</time>
-          </div>
-        </article>
-      </div>
-
-      <ng-template #sinNoticias>
-        <div class="estado-vacio-mini">
-          <span class="icon-vacio">📰</span>
-          <p>No hay noticias publicadas aún.</p>
-        </div>
-      </ng-template>
-    </div>
-  </div>
-
   <div class="dashboard-grid">
 
     <div class="main-column">
+
       <div class="card card-clasificacion">
         <div class="card-header-kpi">
           <span class="card-tag">🏆</span>
@@ -148,6 +116,40 @@
           </a>
         </div>
       </div>
+
+      <div class="card card-noticias">
+        <div class="card-header-kpi">
+          <span class="card-tag">📰</span>
+          <h3>Últimas Noticias</h3>
+          <span class="badge noticias-badge-live">● LIVE</span>
+        </div>
+
+        <div *ngIf="cargandoNoticias" class="noticias-loading">
+          <span class="noticias-spinner"></span>
+          <span>Cargando noticias...</span>
+        </div>
+
+        <div *ngIf="!cargandoNoticias">
+          <div class="noticias-track" *ngIf="noticias.length > 0; else sinNoticias">
+            <article class="noticia-item" *ngFor="let n of noticias">
+              <span class="noticia-icono">{{ getIconoNoticia(n) }}</span>
+              <div class="noticia-cuerpo">
+                <p class="noticia-titulo">{{ n.titulo }}</p>
+                <p class="noticia-preview" *ngIf="n.contenido">{{ n.contenido }}</p>
+                <time class="noticia-fecha">{{ formatearFecha(n.fecha) }}</time>
+              </div>
+            </article>
+          </div>
+
+          <ng-template #sinNoticias>
+            <div class="estado-vacio-mini">
+              <span class="icon-vacio">📰</span>
+              <p>No hay noticias publicadas aún.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
     </div>
 
     <aside class="side-column">
