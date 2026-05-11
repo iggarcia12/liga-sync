@@ -2,15 +2,18 @@ package LigaSync.API.controller;
 
 import LigaSync.API.model.Equipo;
 import LigaSync.API.model.Jugador;
+import LigaSync.API.model.Noticia;
 import LigaSync.API.model.Usuario;
 import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
+import LigaSync.API.repository.NoticiaRepository;
 import LigaSync.API.repository.UsuarioRepository;
 import LigaSync.API.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +31,9 @@ public class JugadorController {
 
     @Autowired
     private EquipoRepository equipoRepository;
+
+    @Autowired
+    private NoticiaRepository noticiaRepository;
 
     @GetMapping
     public List<Jugador> obtenerJugadores() {
@@ -144,6 +150,17 @@ public class JugadorController {
                     }
                     eqN.setPresupuesto(eqN.getPresupuesto() - precio);
                     equipoRepository.save(eqN);
+
+                    // Noticia automática solo al fichar agente libre
+                    if (equipoViejo == null) {
+                        Noticia noticia = new Noticia();
+                        noticia.setTitulo("AGENTE LIBRE FICHADO: " + jugadorAActualizar.getNombre() + " se une a " + eqN.getNombre());
+                        noticia.setContenido(jugadorAActualizar.getNombre() + " llega a " + eqN.getNombre() + " como agente libre.");
+                        noticia.setFecha(LocalDate.now().toString());
+                        noticia.setLigaId(eqN.getLigaId());
+                        noticiaRepository.save(noticia);
+                    }
+
                     if (equipoViejo != null) {
                         Optional<Equipo> eqViejoOpt = equipoRepository.findById(equipoViejo.getId());
                         if (eqViejoOpt.isPresent()) {

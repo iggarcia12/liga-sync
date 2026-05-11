@@ -4,10 +4,12 @@ import LigaSync.API.model.Deporte;
 import LigaSync.API.model.Equipo;
 import LigaSync.API.model.Jugador;
 import LigaSync.API.model.Liga;
+import LigaSync.API.model.Noticia;
 import LigaSync.API.model.Oferta;
 import LigaSync.API.repository.EquipoRepository;
 import LigaSync.API.repository.JugadorRepository;
 import LigaSync.API.repository.LigaRepository;
+import LigaSync.API.repository.NoticiaRepository;
 import LigaSync.API.repository.OfertaRepository;
 import LigaSync.API.repository.PartidoRepository;
 import LigaSync.API.repository.UsuarioRepository;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +33,7 @@ public class OfertaController {
     @Autowired private PartidoRepository partidoRepository;
     @Autowired private UsuarioRepository usuarioRepository;
     @Autowired private LigaRepository ligaRepository;
+    @Autowired private NoticiaRepository noticiaRepository;
     @Autowired private EmailService emailService;
 
     @GetMapping("/recibidas/{equipoId}")
@@ -137,6 +141,15 @@ public class OfertaController {
 
         oferta.setEstado(Oferta.Estado.ACEPTADA);
         ofertaRepository.save(oferta);
+
+        // Noticia automática de fichaje
+        Noticia noticia = new Noticia();
+        noticia.setTitulo("FICHAJE OFICIAL: " + jugador.getNombre() + " firma por " + origen.getNombre());
+        noticia.setContenido(jugador.getNombre() + " llega a " + origen.getNombre() +
+                " procedente de " + destino.getNombre() + " por " + oferta.getMonto() + "M€.");
+        noticia.setFecha(LocalDate.now().toString());
+        noticia.setLigaId(origen.getLigaId());
+        noticiaRepository.save(noticia);
 
         // Rechazo automático de otras ofertas por el mismo jugador
         List<Oferta> pendientes = ofertaRepository.findByJugadorIdAndEstado(
